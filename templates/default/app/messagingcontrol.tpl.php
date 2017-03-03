@@ -747,10 +747,12 @@ $access = $applogin->getAccess();
 					//{id: "ports", text: "Ports", icon: "documents.png"},
 					//{id: "device", text: "Devices", icon: "documents.png"},
 					//{id: "logs", text: "Logs", icon: "documents.png"},
+					<?php */ ?>
 					{type: "separator"},
 					<?php if(in_array('options',$access)) { ?>
 					{id: "options", text: "Options", icon: "documents.png"},
 					<?php } ?>
+					<?php /* ?>
 					<?php if(in_array('autoreply',$access)) { ?>
 					{id: "autoreply", text: "Auto Reply", icon: "documents.png"},
 					<?php } */ ?>

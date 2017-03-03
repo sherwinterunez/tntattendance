@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,22 +24,22 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_Tap')) {
 
 	class APP_Tap extends APP_Base {
-	
+
 		var $pathid = 'tap';
 		var $desc = 'Tap';
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
-	
+
 		function __construct() {
 			parent::__construct();
 		}
-		
+
 		function __destruct() {
 			parent::__destruct();
 		}
-		
+
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
@@ -59,7 +59,7 @@ if(!class_exists('APP_Tap')) {
 			$apptemplate->add_script('/'.$this->pathid.'/js/');
 			//$apptemplate->add_script('/'.$this->pathid.'/js/?t='.time());
 			//$apptemplate->add_script($apptemplate->templates_urlpath().'js/login.js');
-			
+
 		}
 
 		function add_rules() {
@@ -72,6 +72,7 @@ if(!class_exists('APP_Tap')) {
 			global $approuter;
 
 			$approuter->addroute(array('^/'.$this->pathid.'/tapped/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'tapped'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/getbulletin/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getBulletin'))));
 
 
 			///$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));
@@ -165,7 +166,7 @@ if(!class_exists('APP_Tap')) {
 					}
 
 					json_error_return(3); // 3 => 'Username has been disabled.'
-				} 
+				}
 
 				if(!($result = $appdb->update('tbl_users',array('loginfailed'=>'#loginfailed + 1#','loginfailedstamp'=>'now()'),"user_login='".pgFixString($this->post['username'])."'"))) {
 					json_error_return(1); // 1 => 'Error in SQL execution.'
@@ -207,7 +208,7 @@ if(!class_exists('APP_Tap')) {
 				$_SESSION['ROLE'] = $roleinfo;
 /////
 			}
-		
+
 			if(!($result = $appdb->update('tbl_users',array('lastloginstamp'=>'now()','loginfailed'=>0),'user_id='.$userinfo['user_id']))) {
 				json_error_return(1); // 1 => 'Error in SQL execution.'
 			}
@@ -218,8 +219,25 @@ if(!class_exists('APP_Tap')) {
 
 		}
 
+		function getBulletin($vars) {
+			global $appdb, $appaccess;
+
+			//pre(array('$vars'=>$vars));
+
+			$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
+
+			$retval = array();
+			$retval['vars'] = $vars;
+			$retval['bulletin'] = $bulletin;
+
+			header_json();
+			json_encode_return($retval);
+		}
+
 		function tapped($vars) {
 			global $appdb, $appaccess;
+
+			//pre(array('$vars'=>$vars));
 
 			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])) {
 
@@ -227,12 +245,14 @@ if(!class_exists('APP_Tap')) {
 
 				if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_rfid='".$post['rfid']."'"))) {
 					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;				
+					die;
 				}
 
 				if(!empty($result['rows'][0]['studentprofile_id'])) {
 					$vars['studentinfo'] = $result['rows'][0];
 				}
+
+				//pre(array('$vars'=>$vars));
 
 				if(!empty($vars['studentinfo']['studentprofile_id'])) {
 
@@ -248,7 +268,7 @@ if(!class_exists('APP_Tap')) {
 
 					if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 1"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-						die;				
+						die;
 					}
 
 					$type = 'IN';
@@ -292,7 +312,7 @@ if(!class_exists('APP_Tap')) {
 
 						if(!($result = $appdb->insert("tbl_studentdtr",$content,"studentdtr_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$vars['studentdtr_result'] = $result;
@@ -320,7 +340,7 @@ if(!class_exists('APP_Tap')) {
 
 							if(!($result = $appdb->update("tbl_studentprofile",$content,"studentprofile_id=".$vars['studentinfo']['studentprofile_id']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$retval = array();
@@ -330,6 +350,29 @@ if(!class_exists('APP_Tap')) {
 							$retval['late'] = intval($studentprofile_late);
 							$retval['type'] = $type;
 							$retval['image'] = '/studentphoto.php?pid='.$vars['studentinfo']['studentprofile_id'];
+							$retval['studentinfo'] = $vars['studentinfo'];
+							$retval['studentdtr'] = $vars['studentdtr'];
+
+							$fullname = '';
+
+							if(!empty($vars['studentinfo']['studentprofile_firstname'])) {
+								$fullname .= trim($vars['studentinfo']['studentprofile_firstname']).' ';
+							}
+
+							if(!empty($vars['studentinfo']['studentprofile_middlename'])) {
+								$fullname .= trim($vars['studentinfo']['studentprofile_middlename']).' ';
+							}
+
+							if(!empty($vars['studentinfo']['studentprofile_lastname'])) {
+								$fullname .= trim($vars['studentinfo']['studentprofile_lastname']).' ';
+							}
+
+							$retval['fullname'] = strtoupper(trim($fullname));
+
+							$retval['yearlevel'] = !empty($vars['studentinfo']['studentprofile_yearlevel']) ? getGroupRefName($vars['studentinfo']['studentprofile_yearlevel']) : 'Year Level';
+							$retval['section'] = !empty($vars['studentinfo']['studentprofile_section']) ? getGroupRefName($vars['studentinfo']['studentprofile_section']) : 'Section';
+
+							//pre(array('$retval'=>$retval));
 
 							header_json();
 							json_encode_return($retval);
@@ -344,7 +387,7 @@ if(!class_exists('APP_Tap')) {
 
 			}
 
-			pre(array('$vars'=>$vars));
+			//pre(array('$vars'=>$vars));
 			die;
 		}
 
@@ -358,15 +401,15 @@ if(!class_exists('APP_Tap')) {
 
 		function render($vars) {
 			global $apptemplate, $appform, $current_page;
-			
+
 			$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'tapheader');
 
 			//$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topnav');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -374,9 +417,9 @@ if(!class_exists('APP_Tap')) {
 			//$apptemplate->page('login');
 
 			$apptemplate->footer();
-			
+
 		} // render
-								
+
 	} // class APP_Tap
 
 	$apptap = new APP_Tap;

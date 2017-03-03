@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -480,7 +480,7 @@ function getContactNickByNumber($number=false) {
 		$number = $res[2].$res[3];
 		$sql = "select contact_nick from tbl_contact where contact_number like '%$number'";
 	} else {
-		$sql = "select contact_nick from tbl_contact where contact_number='$number'";		
+		$sql = "select contact_nick from tbl_contact where contact_number='$number'";
 	}
 
 	if(!($result = $appdb->query($sql))) {
@@ -561,7 +561,7 @@ function getSimNameByNumber($number=false) {
 
 		if(!($result = $appdb->query("select * from tbl_sim"))) {
 			return false;
-		}		
+		}
 
 		if(!empty($result['rows'][0]['sim_name'])) {
 
@@ -597,7 +597,7 @@ function getSimNameByNumber($number=false) {
 
 		if(!($result = $appdb->query("select * from tbl_sim where sim_number='$number'"))) {
 			return false;
-		}		
+		}
 	}
 
 	if(!empty($result['rows'][0]['sim_name'])) {
@@ -623,7 +623,7 @@ function getSimNameByNumber($number=false) {
 	} else {
 		if(!($result = $appdb->query("select * from tbl_sim where sim_number='$number'"))) {
 			return false;
-		}		
+		}
 	}
 
 	if(!empty($result['rows'][0]['sim_name'])) {
@@ -1173,7 +1173,7 @@ function doLog($str=false,$sim='') {
 	$logfile = 'log';
 
 	if(!empty($sim)) {
-		$logfile .= '-'.$sim;	
+		$logfile .= '-'.$sim;
 	}
 
 	$logfile .= '-'.date('Ymd');
@@ -1193,7 +1193,7 @@ function sendSMS($sms=false,$number=false,$message=false) {
 
 	$msg = array();
 
-	$msg['message'] = $message;	
+	$msg['message'] = $message;
 	$msg['number'] = $number;
 	//$msg['smsc'] = '+639180000101';
 	$msg['class'] = -1;
@@ -1209,32 +1209,32 @@ function sendSMS($sms=false,$number=false,$message=false) {
 
 		$x=1;
 
-		$max=10; 
+		$max=10;
 
 		if(strlen($msg['message'])>160) {
-			$dta=str_split($msg['message'],152); 
-			
-			$ref=mt_rand(100,250); 
-			
-			$sms->udh['msg_count']=$sms->dechex_str(count($dta)); 
+			$dta=str_split($msg['message'],152);
+
+			$ref=mt_rand(100,250);
+
+			$sms->udh['msg_count']=$sms->dechex_str(count($dta));
 
 			if(count($dta)>$max) {
-				$sms->udh['msg_count']=$sms->dechex_str($max); 
+				$sms->udh['msg_count']=$sms->dechex_str($max);
 
 			}
 
-			$sms->udh['reference']=$sms->dechex_str($ref); 
+			$sms->udh['reference']=$sms->dechex_str($ref);
 
 			$ctr=1;
 
 			$break = false;
 
-			foreach($dta as $part) { 
-				$sms->udh['msg_part']=$sms->dechex_str($x); 
+			foreach($dta as $part) {
+				$sms->udh['msg_part']=$sms->dechex_str($x);
 				$msg['message'] = $part . ' ';
 				$msg['udh'] = implode('', $sms->udh);
 				$chop[] = $msg;
-				$x++; 
+				$x++;
 
 				$stra = $pdu->encode($msg,true);
 
@@ -1272,7 +1272,7 @@ function sendSMS($sms=false,$number=false,$message=false) {
 				if($break) {
 					break;
 				}
-			} 
+			}
 
 			if($break) {
 				$retval = false;
@@ -1314,7 +1314,7 @@ function sendSMS($sms=false,$number=false,$message=false) {
 			if($break) {
 				$retval = false;
 			} else {
-				$retval = 1;			
+				$retval = 1;
 			}
 
 		}
@@ -1323,10 +1323,10 @@ function sendSMS($sms=false,$number=false,$message=false) {
 	return $retval;
 }
 
-function dechex_str($ref) { 
+function dechex_str($ref) {
 	$hex = ($ref <= 15 )?'0'.dechex($ref):dechex($ref);
-	return strtoupper($hex); 
-} 
+	return strtoupper($hex);
+}
 
 function pgDate($dt=false,$format=false) {
 	if(!empty($dt)) {
@@ -1396,11 +1396,11 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 
 	if(strlen($message)>160) {
 
-		$smsparts = str_split($message,152); 
+		$smsparts = str_split($message,152);
 
-		$smsoutbox_udhref = dechex_str(mt_rand(100,250)); 
+		$smsoutbox_udhref = dechex_str(mt_rand(100,250));
 
-		$smsoutbox_total = count($smsparts); 
+		$smsoutbox_total = count($smsparts);
 
 		$content = array();
 		$content['smsoutbox_contactid'] = $contactid;
@@ -1490,7 +1490,7 @@ function smsdt($timestamp=false) {
 /*
 sherwint_sms101=# \d tbl_atlog
                                          Table "public.tbl_atlog"
-     Column      |           Type           |                          Modifiers                          
+     Column      |           Type           |                          Modifiers
 -----------------+--------------------------+-------------------------------------------------------------
  atlog_id        | bigint                   | not null default nextval(('tbl_atlog_seq'::text)::regclass)
  atlog_text      | text                     | not null default ''::text
@@ -1548,9 +1548,9 @@ function modemFunction2($sms=false,$simfunctions=false) {
 				if(!empty($func['regx'])) {
 
 					if(!empty($func['regx'][0])&&is_array($func['regx'])) {
-						$REGX = $func['regx'][0];						
+						$REGX = $func['regx'][0];
 					} else {
-						$REGX = $func['regx'];						
+						$REGX = $func['regx'];
 					}
 
 					/*if(!empty($func['param'])) {
@@ -1594,7 +1594,7 @@ function modemFunction2($sms=false,$simfunctions=false) {
 					do {
 
 						if($repeatCtr) {
-							$repeatCtr--;							
+							$repeatCtr--;
 						}
 
 						if($sms->sendMessageReadPort($FUNC."\r\n", $REGX)) {
@@ -1621,7 +1621,7 @@ function modemFunction2($sms=false,$simfunctions=false) {
 								print_r(array('$repeatCtr'=>$repeatCtr));
 								if(!$repeatCtr) {
 									$break = true;
-									break;									
+									break;
 								}
 							}
 
@@ -1655,7 +1655,7 @@ function modemFunction2($sms=false,$simfunctions=false) {
 
 					} while($repeatCtr);
 
-					if($break) break; 
+					if($break) break;
 
 				} else {
 
@@ -1664,7 +1664,7 @@ function modemFunction2($sms=false,$simfunctions=false) {
 			} // if(!empty($func['command'])) {
 
 		} // foreach($simfunctions as $func) {
-			
+
 	} // if(!empty($simfunctions)) {
 
 	//print_r(array('history'=>$sms->getHistory()));
@@ -1695,9 +1695,9 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 				if(!empty($func['regx'])) {
 
 					if(!empty($func['regx'][0])&&is_array($func['regx'])) {
-						$REGX = $func['regx'][0];						
+						$REGX = $func['regx'][0];
 					} else {
-						$REGX = $func['regx'];						
+						$REGX = $func['regx'];
 					}
 
 					/*if(!empty($func['param'])) {
@@ -1745,7 +1745,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 					do {
 
 						if($repeatCtr) {
-							$repeatCtr--;							
+							$repeatCtr--;
 						}
 
 						if($debug) $sms->showBuffer();
@@ -1767,7 +1767,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 							//$FUNC = "AT+STGR=3,1\r09493621618".chr(26);
 							//$sms->showBuffer();
 						} else {
-							$FUNC = $FUNC."\r\n";							
+							$FUNC = $FUNC."\r\n";
 						}
 
 						if($debug) print_r(array('$oFUNC'=>$oFUNC,'$FUNC'=>$FUNC,'flat'=>str_replace(chr(26),'(x26)',$sms->tocrlf($FUNC))));
@@ -1801,7 +1801,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 								if($debug) print_r(array('$repeatCtr'=>$repeatCtr));
 								if(!$repeatCtr) {
 									$break = true;
-									break;									
+									break;
 								}
 							}
 
@@ -1839,7 +1839,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 
 					} while($repeatCtr);
 
-					if($break) break; 
+					if($break) break;
 
 				} else {
 
@@ -1848,7 +1848,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 			} // if(!empty($func['command'])) {
 
 		} // foreach($simfunctions as $func) {
-			
+
 	} // if(!empty($simfunctions)) {
 
 	//print_r(array('history'=>$sms->getHistory()));
@@ -1939,13 +1939,13 @@ function  smsCommandMatched($content=false){
 				}
 
 				$matched = true;
-				
+
 				//print_r(array('$smscommands_key0'=>$smscommands_key0,'$match'=>$match));
 
 				if(isset($match[1])) {
 					$allmatched[$smsc['smscommands_key0']] = $match[1];
 				} else {
-					$allmatched[$smsc['smscommands_key0']] = $match[0];							
+					$allmatched[$smsc['smscommands_key0']] = $match[0];
 				}
 
 			} else {
@@ -1977,7 +1977,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key1']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key1']] = $match[0];									
+							$allmatched[$smsc['smscommands_key1']] = $match[0];
 						}
 					}
 
@@ -2017,7 +2017,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key2']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key2']] = $match[0];									
+							$allmatched[$smsc['smscommands_key2']] = $match[0];
 						}
 					}
 
@@ -2055,7 +2055,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key3']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key3']] = $match[0];									
+							$allmatched[$smsc['smscommands_key3']] = $match[0];
 						}
 					}
 
@@ -2093,7 +2093,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key4']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key4']] = $match[0];									
+							$allmatched[$smsc['smscommands_key4']] = $match[0];
 						}
 					}
 
@@ -2131,7 +2131,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key5']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key5']] = $match[0];									
+							$allmatched[$smsc['smscommands_key5']] = $match[0];
 						}
 					}
 
@@ -2169,7 +2169,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key6']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key6']] = $match[0];									
+							$allmatched[$smsc['smscommands_key6']] = $match[0];
 						}
 					}
 
@@ -2207,7 +2207,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key7']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key7']] = $match[0];									
+							$allmatched[$smsc['smscommands_key7']] = $match[0];
 						}
 					}
 
@@ -2245,7 +2245,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key8']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key8']] = $match[0];									
+							$allmatched[$smsc['smscommands_key8']] = $match[0];
 						}
 					}
 
@@ -2283,7 +2283,7 @@ function  smsCommandMatched($content=false){
 						if(isset($match[1])) {
 							$allmatched[$smsc['smscommands_key9']] = $match[1];
 						} else {
-							$allmatched[$smsc['smscommands_key9']] = $match[0];									
+							$allmatched[$smsc['smscommands_key9']] = $match[0];
 						}
 					}
 
@@ -2319,7 +2319,7 @@ function processSMS($content=false) {
 
 	if($matched===false) {
 		return false;
-	} 
+	}
 
 	//print_r(array('$matched'=>$matched));
 

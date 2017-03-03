@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -127,9 +127,36 @@ srt.etap = function() {
 			}
 
 			if(typeof data.image != 'undefined' ) {
-				console.log(typeof(data.image));
+				//console.log(typeof(data.image));
 				jQuery('#studentphoto').html('<img src="'+data.image+'" />');
 			}
+
+			if(typeof data.fullname != 'undefined' ) {
+				//console.log(typeof(data.image));
+				jQuery('#studentname').html(data.fullname);
+			}
+
+			var yearlevelsection = '';
+
+			if(typeof data.yearlevel != 'undefined' ) {
+				//console.log(typeof(data.image));
+				//jQuery('#studentname').html(data.fullname);
+				yearlevelsection += data.yearlevel + ' - ';
+			}
+
+			if(typeof data.section != 'undefined' ) {
+				//console.log(typeof(data.image));
+				//jQuery('#studentname').html(data.fullname);
+				yearlevelsection += data.section;
+			}
+
+			jQuery('#studentyearsection').html(yearlevelsection);
+
+			if(typeof data.remarks != 'undefined' ) {
+				//console.log(typeof(data.image));
+				jQuery('#studentremarks').html(data.remarks);
+			}
+
 		});
 
 
@@ -137,6 +164,39 @@ srt.etap = function() {
 
 };
 
+srt.doMarquee = function() {
+	postData('/'+settings.router_id+'/getbulletin/','marquee='+moment().format('X'),function(data){
+
+		//console.log(typeof(data));
+
+		if(typeof(data)!='object') {
+			return false;
+		}
+
+		//console.log(data);
+
+		if(typeof data.bulletin != 'undefined') {
+			jQuery('#marquee').html(data.bulletin);
+			jQuery('#marquee').marquee({duration: 10000});
+		}
+	});
+}
+
+srt.doShowDateTime = function() {
+	var dt = moment().format('LLLL');
+
+	jQuery('#currentdatetime').html(dt);
+}
+
 jQuery(document).ready(function($) {
 	srt.etap();
+	srt.doMarquee();
+
+	setInterval(function(){
+		srt.doMarquee();
+	},60000);
+
+	setInterval(function(){
+		srt.doShowDateTime();
+	},1000);
 });

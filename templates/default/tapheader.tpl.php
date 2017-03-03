@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -28,7 +28,7 @@ if(defined('ANNOUNCE')) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <title><?php $this->title(); ?></title>
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-<?php 
+<?php
 do_action('action_meta_content_type');
 do_action('action_meta_description');
 do_action('action_meta_author');
@@ -82,7 +82,7 @@ do_action('action_header_bottom');
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		height: auto;		
+		height: auto;
 		font-size: 40px;
 		color: #ffffff;
 		opacity: 1;
@@ -100,9 +100,17 @@ do_action('action_header_bottom');
 
 	#contentleft {
 		display: block;
-		width: 70%;
+		width: 35%;
 		height: auto;
 		/*border: 1px solid #0f0;*/
+		float: left;
+	}
+
+	#contentmid {
+		display: block;
+		width: 35%;
+		height: auto;
+		/*border: 1px solid #f00;*/
 		float: left;
 	}
 
@@ -182,11 +190,70 @@ do_action('action_header_bottom');
 		height: auto;
 	}
 
+	#studentname {
+		display: block;
+		font-size: 45px;
+		margin: 120px 10px 10px 10px;
+	}
+
+	#studentyearsection {
+		display: block;
+		font-size: 35px;
+		margin: 10px 10px;
+	}
+
+	#studentremarks {
+		display: block;
+		font-size: 35px;
+		margin: 20px 10px 10px 10px;
+	}
+
+	#contenttopleft {
+		display: block;
+		width: 50%;
+		height: auto;
+		float: left;
+	}
+
+	#contenttopright {
+		display: block;
+		width: 50%;
+		height: auto;
+		float: right;
+	}
+
+	#currentdatetime {
+		display: block;
+		font-size: 25px;
+		line-height: 100px;
+		float: right;
+		margin-right: 20px;
+	}
+
+	#schoolname {
+		display: block;
+		font-size: 30px;
+		line-height: 100px;
+		margin-left: 20px;
+	}
+
 </style>
-<div id="contenttop">#contenttop</div>
+<div id="contenttop">
+	<div id="contenttopleft">
+		<div id="schoolname">ABC Montessori</div>
+	</div>
+	<div id="contenttopright">
+		<div id="currentdatetime"></div>
+	</div>
+</div>
 <div id="contentmiddle">
 	<div id="contentleft">
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
+	</div>
+	<div id="contentmid">
+		<div id="studentname">&nbsp;</div>
+		<div id="studentyearsection">&nbsp;</div>
+		<div id="studentremarks">&nbsp;</div>
 	</div>
 	<div id="contentright">
 		<div id="sidenumber">
@@ -209,10 +276,5 @@ do_action('action_header_bottom');
 	</div>
 	<br style="clear:both;" />
 </div>
-<div id="marquee">The quick brown fox jump over the lazy dog besides the river bank.</div>
+<div id="marquee">&nbsp;</div>
 <div id="contentbottom">&nbsp;</div>
-<script>
-$('#marquee').marquee({duration: 10000});
-</script>
-
-
