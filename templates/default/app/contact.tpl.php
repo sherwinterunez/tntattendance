@@ -140,6 +140,8 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 	function <?php echo $wid.$templatedetailid.$submod; ?>_%formval%() {
 
+		var that = this;
+
 		var $ = jQuery;
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
@@ -153,7 +155,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbContactRecords", "Contact Records");
 		//myTabbar.addTab("tbLoginNotification", "Login Notification");
 
@@ -168,7 +170,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -232,6 +234,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				obj.method = 'onrowselect';
 				obj.rowid = rowId;
 				obj.formval = '%formval%';
+				obj.parentwid = '<?php echo $wid; ?>';
 
 				//obj.title = 'Sim Cards / '+myGrid.cells(rowId,2).getValue()+' / '+myGrid.cells(rowId,3).getValue();
 
@@ -253,6 +256,12 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 							});
 							odata.winobj.toolbar.toolbardata = ddata.toolbar;
 							odata.winobj.toolbar.parentobj = winobj;
+							odata.winobj.toolbar.owin = odata.obj;
+							odata.winobj.toolbar.parenttoolbar = myWinToolbar;
+							odata.winobj.toolbar.parentcontext = that;
+							odata.winobj.toolbar.parentrefresh = function() {
+								myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(myWinToolbar,['<?php echo $moduleid; ?>refresh',odata.obj.formval]);
+							};
 							odata.winobj.toolbar.tbRender(ddata.toolbar);
 							odata.winobj.toolbar.attachEvent("onClick", function(id){
 								showMessage("ToolbarOnClick: "+id,5000);
@@ -274,7 +283,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						}
 						if(ddata.html) {
 							jQuery("#"+odata.obj.wid).html(ddata.html);
-							//layout_resize_%formval%();								
+							//layout_resize_%formval%();
 						}
 					});
 				});
@@ -287,7 +296,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				}, function(ddata,odata){
 					if(ddata.html) {
 						jQuery("#formdiv_%formval% #<?php echo $templatedetailid; ?>").parent().html(ddata.html);
-						layout_resize_%formval%();								
+						layout_resize_%formval%();
 					}
 				});*/
 
@@ -296,7 +305,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 			try {
 				myGridContacts.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridContacts.forEachRow(function(id){
 						//myGridContacts.cells(id,1).setDisabled(true);
@@ -364,7 +373,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new') { ?> 
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -374,9 +383,9 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'edit') { ?> 
+		<?php } else if($method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -386,9 +395,9 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -396,7 +405,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -414,7 +423,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		<?php 	}*/ ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -509,7 +518,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -612,6 +621,12 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 						});
 						odata.winobj.toolbar.toolbardata = ddata.toolbar;
 						odata.winobj.toolbar.parentobj = winobj;
+						odata.winobj.toolbar.owin = odata.obj;
+						odata.winobj.toolbar.parenttoolbar = myWinToolbar;
+						odata.winobj.toolbar.parentcontext = that;
+						odata.winobj.toolbar.parentrefresh = function() {
+							myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(myWinToolbar,['<?php echo $moduleid; ?>refresh',odata.obj.formval]);
+						};
 						odata.winobj.toolbar.tbRender(ddata.toolbar);
 						odata.winobj.toolbar.attachEvent("onClick", function(id){
 							showMessage("ToolbarOnClick: "+id,5000);
@@ -633,7 +648,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					}
 					if(ddata.html) {
 						jQuery("#"+odata.obj.wid).html(ddata.html);
-						//layout_resize_%formval%();								
+						//layout_resize_%formval%();
 					}
 				});
 			});
@@ -712,7 +727,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -766,7 +781,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
 
 							showMessage(data.return_message,5000);

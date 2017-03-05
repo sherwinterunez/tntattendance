@@ -188,7 +188,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 				}
 				if(ddata.html) {
 					jQuery("#"+odata.obj.wid).html(ddata.html);
-					//layout_resize_%formval%();								
+					//layout_resize_%formval%();
 				}
 			});
 		});
@@ -209,7 +209,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbStudentProfile", "Student Profile");
 
 		myTabbar.tabs("tbStudentProfile").setActive();
@@ -223,7 +223,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $templatedetailid.$submod; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -247,7 +247,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new') { ?> 
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -257,9 +257,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'edit') { ?> 
+		<?php } else if($method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -269,9 +269,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -279,7 +279,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -289,15 +289,15 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	/*if(empty($vars['post']['rowid'])) { ?>
+		<?php 	/*if(empty($vars['post']['rowid'])) {
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
 
-		<?php 	}*/ ?>
+		 	}*/ ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -392,7 +392,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -465,8 +465,8 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 			console.log('wid: '+wid);
 
 			//console.log(this.parentobj.getId());
-			console.log(this.parentobj);
-			console.log(this.parentobj.form);
+			console.log('this.parentobj',this.parentobj);
+			console.log('this.parentobj.form',this.parentobj.form);
 
 			console.log('method: '+myForm.getItemValue('method'));
 
@@ -481,6 +481,60 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 					jQuery("#"+wid).html(ddata.html);
 				}
 			});
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>delete').onClick = function(id,formval) {
+			//showMessage("toolbar: "+id,5000);
+
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			console.log('id: '+id);
+			console.log('formval: '+formval);
+			console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			console.log('this.owin',this.owin);
+			console.log('this.parentobj',this.parentobj);
+			console.log('this.parentobj.form',this.parentobj.form);
+
+			console.log('method: '+myForm.getItemValue('method'));
+
+			var rowid = myForm.getItemValue('rowid');
+
+			if(rowid) {
+				showConfirmWarning('Are you sure you want to delete this Student Profile?',function(val){
+
+					if(val) {
+
+						myTab.postData('/'+settings.router_id+'/json/', {
+							odata: {wid:wid,o:this,formval:formval},
+							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&rowid="+rowid+"&method="+id+"&formval="+formval+"&wid="+wid,
+						}, function(ddata,odata){
+							//if(ddata.html) {
+								//jQuery("#formdiv_%formval% #<?php echo $wid; ?>").parent().html(ddata.html);
+								//jQuery("#"+wid).html(ddata.html);
+							//}
+
+							//var wid = obj.winObj.getId();
+
+							closeWindow(odata.wid);
+
+							if(ddata&&ddata.return_code&&ddata.return_code=='SUCCESS') {
+								showAlert(ddata.return_message);
+							}
+
+							odata.o.parentrefresh();
+
+							//odata.o.parenttoolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(odata.o.parentcontext,['<?php echo $moduleid; ?>refresh',odata.formval]);
+
+						});
+					}
+				});
+			}
+
 		};
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>cancel').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval) {
@@ -538,7 +592,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -594,8 +648,12 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 						if(data.return_code=='SUCCESS') {
 
 							var wid = obj.winObj.getId();
-	
+
 							closeWindow(wid);
+
+							//console.log('obj.o',obj.o);
+
+							obj.o.parentrefresh();
 
 							//myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
 

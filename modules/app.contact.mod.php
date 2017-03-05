@@ -284,6 +284,23 @@ if(!class_exists('APP_app_contact')) {
 					die;
 
 				} else
+				if(!empty($post['method'])&&$post['method']=='contactdelete') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Contact successfully deleted!';
+					$retval['wid'] = $post['wid'];
+					$retval['post'] = $post;
+
+					if(!empty($post['rowid'])) {
+						if(!($result = $appdb->query("delete from tbl_studentprofile where studentprofile_id=".$post['rowid']))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				} else
 				if(!empty($post['method'])&&$post['method']=='contactsave') {
 					$retval = array();
 					$retval['return_code'] = 'SUCCESS';
