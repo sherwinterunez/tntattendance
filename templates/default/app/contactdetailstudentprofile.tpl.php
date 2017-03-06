@@ -510,7 +510,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 					if(val) {
 
 						myTab.postData('/'+settings.router_id+'/json/', {
-							odata: {wid:wid,o:this,formval:formval},
+							odata: {wid:wid,o:myWinToolbar,formval:formval},
 							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatedetailid.$submod; ?>&module=<?php echo $moduleid; ?>&rowid="+rowid+"&method="+id+"&formval="+formval+"&wid="+wid,
 						}, function(ddata,odata){
 							//if(ddata.html) {
@@ -525,6 +525,8 @@ $myToolbar = array($moduleid.'edit',$moduleid.'delete',$moduleid.'save',$modulei
 							if(ddata&&ddata.return_code&&ddata.return_code=='SUCCESS') {
 								showAlert(ddata.return_message);
 							}
+
+							console.log('odata.o',odata.o);
 
 							odata.o.parentrefresh();
 
