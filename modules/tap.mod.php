@@ -397,7 +397,7 @@ if(!class_exists('APP_Tap')) {
 	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='IN' and studentdtr_late>0 and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
 	*/
 
-							pre(array('$result'=>$result));
+							//pre(array('$result'=>$result));
 
 							$retval = array();
 							$retval['db'] = intval($studentprofile_db);
