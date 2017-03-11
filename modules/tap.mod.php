@@ -320,28 +320,84 @@ if(!class_exists('APP_Tap')) {
 						if(!empty($result['returning'][0]['studentdtr_id'])) {
 
 							$content = array();
-							$content['studentprofile_db'] = $studentprofile_db = $vars['studentinfo']['studentprofile_db'] + 1;
+							$content['studentprofile_db'] = $vars['studentinfo']['studentprofile_db'] + 1;
 
 							if($type=='IN') {
-								$content['studentprofile_in'] = $studentprofile_in = $vars['studentinfo']['studentprofile_in'] + 1;
+								$content['studentprofile_in'] = $vars['studentinfo']['studentprofile_in'] + 1;
 								$studentprofile_out = $vars['studentinfo']['studentprofile_out'];
 							} else {
-								$content['studentprofile_out'] = $studentprofile_out = $vars['studentinfo']['studentprofile_out'] + 1;
+								$content['studentprofile_out'] = $vars['studentinfo']['studentprofile_out'] + 1;
 								$studentprofile_in = $vars['studentinfo']['studentprofile_in'];
 							}
 
-							$late = false;
+							/*$late = false;
 
 							if($late) {
 								$content['studentprofile_late'] = $studentprofile_late = $vars['studentinfo']['studentprofile_late'] + 1;
 							} else {
 								$studentprofile_late = $vars['studentinfo']['studentprofile_late'];
-							}
+							}*/
 
 							if(!($result = $appdb->update("tbl_studentprofile",$content,"studentprofile_id=".$vars['studentinfo']['studentprofile_id']))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
+
+							//$from = date2timestamp("$month/$day/$year 00:00:00",'m/d/Y H:i:s');
+							//$to = date2timestamp("$month/$day/$year 23:59:59",'m/d/Y H:i:s');
+
+							$studentprofile_db = 0;
+							$studentprofile_in = 0;
+							$studentprofile_out = 0;
+							$studentprofile_late = 0;
+
+							if(!($result = $appdb->query("select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['db'])) {
+								$studentprofile_db = $result['rows'][0]['db'];
+							}
+
+							if(!($result = $appdb->query("select count(studentdtr_id) as in from tbl_studentdtr where studentdtr_type='IN' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['in'])) {
+								$studentprofile_in = $result['rows'][0]['in'];
+							}
+
+							if(!($result = $appdb->query("select count(studentdtr_id) as out from tbl_studentdtr where studentdtr_type='OUT' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['out'])) {
+								$studentprofile_out = $result['rows'][0]['out'];
+							}
+
+							if(!($result = $appdb->query("select count(studentdtr_id) as late from tbl_studentdtr where studentdtr_type='IN'and studentdtr_late>0  and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							if(!empty($result['rows'][0]['late'])) {
+								$studentprofile_late = $result['rows'][0]['late'];
+							}
+
+	/*
+	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
+
+	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='IN' and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
+
+	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='OUT' and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
+
+	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='IN' and studentdtr_late>0 and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
+	*/
+
+							pre(array('$result'=>$result));
 
 							$retval = array();
 							$retval['db'] = intval($studentprofile_db);

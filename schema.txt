@@ -1431,5 +1431,6 @@ alter table tbl_studentprofile add column studentprofile_update integer NOT NULL
 
 alter table tbl_studentdtr add column studentdtr_notified bigint NOT NULL DEFAULT 0;
 alter table tbl_studentdtr add column studentdtr_notifystamp timestamp with time zone DEFAULT now();
+alter table tbl_studentdtr add column studentdtr_late integer NOT NULL DEFAULT 0;
 
 alter table tbl_studentdtr drop column studentdtr_notified;
