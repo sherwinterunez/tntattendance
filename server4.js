@@ -39,7 +39,8 @@ var phpfpm = new PHPFPM(
     //documentRoot: '/WEBDEV/sms101.dev/',
     //documentRoot: '/srv/www/sms102.dev/',
     //documentRoot: '/srv/www/tntmobile.dev/',
-    documentRoot: '/WEBDEV/tntattendance.dev/',
+    //documentRoot: '/WEBDEV/tntattendance.dev/',
+    documentRoot: '/srv/www/tnt.dev/',
 });
 
 /*console.log(phpfpm);
