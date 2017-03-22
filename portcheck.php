@@ -218,6 +218,10 @@ function portCheck($dev=false,$localIP=false) {
 		$content['sim_online'] = 1;
 		$content['sim_ip'] = $localIP;
 
+		if($mobileNo=='UNKNOWN') {
+			$content['sim_disabled'] = 1;
+		}
+
 		$appdb->update('tbl_sim',$content,'sim_id='.$result['rows'][0]['sim_id']);
 	} else {
 		$content = array();
@@ -227,6 +231,10 @@ function portCheck($dev=false,$localIP=false) {
 		$content['sim_network'] = $mobileNetwork;
 		$content['sim_online'] = 1;
 		$content['sim_ip'] = $localIP;
+
+		if($mobileNo=='UNKNOWN') {
+			$content['sim_disabled'] = 1;
+		}
 
 		$result = $appdb->insert('tbl_sim',$content,'sim_id');
 
