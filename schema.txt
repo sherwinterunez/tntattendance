@@ -528,6 +528,8 @@ INSERT INTO tbl_network (network_number,network_name) VALUES ('974','Exetel');
 INSERT INTO tbl_network (network_number,network_name) VALUES ('978','Next');
 INSERT INTO tbl_network (network_number,network_name) VALUES ('979','Next');
 
+INSERT INTO tbl_network (network_number,network_name) VALUES ('998','Globe/Touch Mobile');
+
 -- tbl_port
 
 DROP SEQUENCE IF EXISTS tbl_port_seq CASCADE;
@@ -1434,3 +1436,21 @@ alter table tbl_studentdtr add column studentdtr_notifystamp timestamp with time
 alter table tbl_studentdtr add column studentdtr_late integer NOT NULL DEFAULT 0;
 
 alter table tbl_studentdtr drop column studentdtr_notified;
+
+alter table tbl_studentprofile alter column studentprofile_section drop default;
+alter table tbl_studentprofile alter column studentprofile_section type integer USING studentprofile_section::integer;
+alter table tbl_studentprofile alter column studentprofile_section set default 0;
+
+alter table tbl_studentprofile alter column studentprofile_yearlevel drop default;
+alter table tbl_studentprofile alter column studentprofile_yearlevel type integer USING studentprofile_yearlevel::integer;
+alter table tbl_studentprofile alter column studentprofile_yearlevel set default 0;
+
+alter table tbl_smsoutbox add column smsoutbox_sendpush integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_pushstatus integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_pushid bigint NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_pushcreatestamp timestamp with time zone DEFAULT now();
+alter table tbl_smsoutbox add column smsoutbox_pushsentstamp timestamp with time zone DEFAULT now();
+alter table tbl_smsoutbox add column smsoutbox_priority integer NOT NULL DEFAULT 0;
+
+
+---

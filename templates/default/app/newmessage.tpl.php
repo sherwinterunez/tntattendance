@@ -22,7 +22,9 @@ if(!empty($vars['post']['wid'])) {
 	die('Invalid Window ID');
 }
 
-$myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
+//$myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
+
+$myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 //pre(array('$vars'=>$vars));
 ?>
@@ -175,7 +177,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbDetails", "Compose");
 		///myTabbar.addTab("tbLoginNotification", "Login Notification");
 
@@ -190,7 +192,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -249,7 +251,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 			try {
 				myGridNewMessageContacts.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridNewMessageContacts.forEachRow(function(id){
 						//myGridNewMessageContacts.cells(id,1).setDisabled(true);
@@ -350,7 +352,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 			try {
 				myGridNewMessageYearLevel.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridNewMessageYearLevel.forEachRow(function(id){
 						//myGridNewMessageYearLevel.cells(id,1).setDisabled(true);
@@ -451,7 +453,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 			try {
 				myGridNewMessageSection.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridNewMessageSection.forEachRow(function(id){
 						//myGridNewMessageSection.cells(id,1).setDisabled(true);
@@ -519,7 +521,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new') { ?> 
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -529,9 +531,9 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'edit') { ?> 
+		<?php } else if($method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -541,9 +543,9 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -551,7 +553,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -561,15 +563,15 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	/*if(empty($vars['post']['rowid'])) { ?>
+		<?php 	/*if(empty($vars['post']['rowid'])) {
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
 
-		<?php 	}*/ ?>
+		}*/ ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -664,7 +666,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -765,6 +767,142 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 ///////////////////////////////////
 
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>outbox').onClick = myWinToolbar.getToolbarData('<?php echo $moduleid; ?>now').onClick = function(id,formval) {
+			//showMessage("toolbar: "+id,5000);
+
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			console.log('id: '+id);
+			console.log('formval: '+formval);
+			console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			console.log(this.parentobj);
+			console.log(this.parentobj.form);
+
+			myForm.trimAllInputs();
+
+			console.log('method: '+myForm.getItemValue('method'));
+
+			var newmessage_sms = myForm.getItemValue('newmessage_sms');
+
+			if(newmessage_sms) {
+			} else {
+				showAlertError('Cannot send an empty message!');
+				return false;
+			}
+
+			var newmessage_contacts = [];
+
+			myWinObj.myGridNewMessageContacts.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageContacts.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageContacts.cells(id,1).getValue();
+				if(checked&&val) {
+					newmessage_contacts.push(val);
+				}
+			});
+
+			//console.log({newmessage_contacts:newmessage_contacts});
+
+			var newmessage_yearlevel = [];
+
+			myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageYearLevel.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageYearLevel.cells(id,1).getValue();
+				if(checked&&val) {
+					newmessage_yearlevel.push(val);
+				}
+			});
+
+			console.log({newmessage_yearlevel:newmessage_yearlevel});
+
+			var newmessage_section = [];
+
+			myWinObj.myGridNewMessageSection.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageSection.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageSection.cells(id,1).getValue();
+				if(checked&&val) {
+					newmessage_section.push(val);
+				}
+			});
+
+			console.log({newmessage_section:newmessage_section});
+
+			var newmessage_sendto = [];
+
+			var to_number = myForm.getItemValue('newmessage_sendto');
+
+			var anum = to_number.split(/,|;| /);
+
+			for(var p in anum) {
+				if(srt.ValidateMobileNo(anum[p])) {
+					newmessage_sendto.push(anum[p]);
+				}
+			}
+
+			console.log({newmessage_sendto:newmessage_sendto});
+
+			//console.log(monumbers);
+
+			var newmessage_sendpushnotification = 0;
+
+			if(myForm.isItemChecked('newmessage_sendpushnotification')) {
+				newmessage_sendpushnotification = 1;
+			}
+
+			//if((newmessage_sendto&&newmessage_sendto.length>0)||newmessage_contacts||newmessage_yearlevel||newmessage_section) {
+			//} else {
+			//	showAlertError('Please select or enter where to send the message.');
+			//}
+
+			var valid = false;
+
+			if(newmessage_sendto&&newmessage_sendto.length>0) {
+				valid = true;
+			}
+
+			if(newmessage_contacts&&newmessage_contacts.length>0) {
+				valid = true;
+			}
+
+			if(newmessage_yearlevel&&newmessage_yearlevel.length>0) {
+				valid = true;
+			}
+
+			if(newmessage_section&&newmessage_section.length>0) {
+				valid = true;
+			}
+
+			if(valid) {
+			} else {
+				showAlertError('Please select or enter where to send the message.');
+				return false;
+			}
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				odata: {wid:wid},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $moduleid; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid+"&sms="+encodeURIComponent(newmessage_sms)+"&contacts="+encodeURIComponent(newmessage_contacts)+"&yearlevel="+encodeURIComponent(newmessage_yearlevel)+"&section="+encodeURIComponent(newmessage_section)+"&sendto="+encodeURIComponent(newmessage_sendto)+"&sendpushnotification="+newmessage_sendpushnotification,
+			}, function(ddata,odata){
+				//if(ddata.html) {
+				//	jQuery("#formdiv_%formval% #<?php echo $wid; ?>").parent().html(ddata.html);
+				//}
+				if(ddata.error_code) {
+					showAlertError(ddata.error_message);
+				}
+				if(ddata.return_code) {
+					if(ddata.return_code=='SUCCESS') {
+
+						//myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
+
+						showMessage(ddata.return_message,5000);
+					}
+				}
+			});
+		};
+
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>edit').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
 
@@ -829,7 +967,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -883,7 +1021,7 @@ $myToolbar = array($moduleid.'outbox',$moduleid.'now',$moduleid.'refresh');
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
 
 							showMessage(data.return_message,5000);

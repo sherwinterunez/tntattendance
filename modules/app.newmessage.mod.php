@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_newmessage')) {
 
 	class APP_app_newmessage extends APP_Base_Ajax {
-	
+
 		var $desc = 'newmessage';
 
 		var $pathid = 'newmessage';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_newmessage')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -80,9 +80,118 @@ if(!class_exists('APP_app_newmessage')) {
 
 				$readonly = true;
 
+				$push = 0;
+
 				if(!empty($post['method'])&&($post['method']=='newmessageedit')) {
 					$readonly = false;
 				}
+
+				if(!empty($post['method'])&&($post['method']=='newmessageoutbox'||$post['method']=='newmessagenow')) {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'New Message Queued to Outbox!';
+					$retval['post'] = $post;
+
+					if(!empty($post['sendpushnotification'])) {
+						$push = 1;
+					}
+
+					$contacts = array();
+
+					if(!empty($post['sendto'])) {
+						$sendto = explode(',',$post['sendto']);
+						if(!empty($sendto)&&is_array($sendto)) {
+							foreach($sendto as $k=>$v) {
+								$contacts[$v] = $v;
+							}
+						}
+					}
+
+					if(!empty($post['contacts'])) {
+						if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_id in (".$post['contacts'].")"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						if(!empty($result['rows'][0]['studentprofile_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								if(!empty($v['studentprofile_guardianmobileno'])) {
+									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+								}
+							}
+						}
+					}
+
+					if(!empty($post['yearlevel'])) {
+						if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_yearlevel in (".$post['yearlevel'].")"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						if(!empty($result['rows'][0]['studentprofile_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								if(!empty($v['studentprofile_guardianmobileno'])) {
+									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+								}
+							}
+						}
+					}
+
+					if(!empty($post['section'])) {
+						if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_section in (".$post['section'].")"))) {
+							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+							die;
+						}
+						if(!empty($result['rows'][0]['studentprofile_id'])) {
+							foreach($result['rows'] as $k=>$v) {
+								if(!empty($v['studentprofile_guardianmobileno'])) {
+									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+								}
+							}
+						}
+					}
+
+					$retval['contacts'] = $contacts;
+
+					/*if(!($result = $appdb->query("select * from tbl_studentprofile where upload_studentprofileid=0 and upload_sid='".$content['upload_sid']."' and upload_name='".$post['itemId']."'"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}*/
+
+					if(!empty($contacts)) {
+						$asim = getAllSims(8);
+
+						//pre(array('$asim'=>$asim));
+
+						if(!empty($asim)&&is_array($asim)) {
+
+							foreach($contacts as $mobileno) {
+								shuffle($asim);
+
+								foreach($asim as $m=>$n) {
+									//pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$sms'=>$post['sms']));
+									//sendToOutBox($mobileno,$n['sim_number'],$post['sms']);
+									sendToOutBoxPush($mobileno,$n['sim_number'],$post['sms'],$push);
+									break;
+								}
+
+							}
+						}
+					}
+
+					json_encode_return($retval);
+					die;
+				}
+
+				/*if(!empty($post['method'])&&$post['method']=='newmessagenow') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'New Message Sending Now!';
+					$retval['post'] = $post;
+
+					//pre(array('$post',$post));
+
+					json_encode_return($retval);
+					die;
+				}*/
 
 				if(!empty($post['method'])&&$post['method']=='newmessagesave') {
 					$retval = array();
@@ -225,11 +334,11 @@ if(!class_exists('APP_app_newmessage')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_group
 
 		function router() {
@@ -297,7 +406,7 @@ if(!class_exists('APP_app_newmessage')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -421,7 +530,7 @@ if(!class_exists('APP_app_newmessage')) {
 
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -440,7 +549,7 @@ if(!class_exists('APP_app_newmessage')) {
 
 						if(!($result = $appdb->query("select * from tbl_studentprofile order by studentprofile_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
@@ -473,7 +582,7 @@ if(!class_exists('APP_app_newmessage')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=2 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -492,7 +601,7 @@ if(!class_exists('APP_app_newmessage')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=1 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -525,7 +634,7 @@ if(!class_exists('APP_app_newmessage')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappnewmessage = new APP_app_newmessage;

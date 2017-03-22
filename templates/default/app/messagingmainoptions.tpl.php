@@ -8,7 +8,9 @@
 
 	myTab.layout.cells('c').expand();
 
-	myTab.layout.cells('b').setHeight(400);
+	//myTab.layout.cells('b').setHeight(400);
+
+	myTab.layout.cells('b').setHeight(<?php echo getOption('$OPTION_MAIN_HEIGHT',300); ?>);
 
 	myTab.layout.cells('d').collapse();
 
@@ -141,11 +143,11 @@
 					},'json');
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
 				//alert(typeof(rowId));
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				$("#formdiv_%formval% #messagingmainoptionsgrid div.objbox").html('Data Not Available');
 

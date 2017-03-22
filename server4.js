@@ -38,7 +38,8 @@ var phpfpm = new PHPFPM(
     //documentRoot: __dirname + '/',
     //documentRoot: '/WEBDEV/sms101.dev/',
     //documentRoot: '/srv/www/sms102.dev/',
-    documentRoot: '/srv/www/tntmobile.dev/',
+    //documentRoot: '/srv/www/tntmobile.dev/',
+    documentRoot: '/WEBDEV/tntattendance.dev/',
 });
 
 /*console.log(phpfpm);
@@ -221,6 +222,8 @@ function doInit() {
 
   portCheck();
 
+  syncToServer();
+
 }
 
 function syncToServer() {
@@ -240,10 +243,11 @@ function syncToServer() {
 
       //processCount--;
 
-      //setTimeout(function(){
+      setTimeout(function(){
       //  processCommands(dev,sim,ip);
         //processOutbox(dev,sim);
-      //}, TIMEOUT);
+        processNotification();
+      }, TIMEOUT);
 
       if (phpErrors) console.error(phpErrors);
   });
@@ -266,10 +270,11 @@ function processNotification() {
 
       //processCount--;
 
-      //setTimeout(function(){
+      setTimeout(function(){
       //  processCommands(dev,sim,ip);
         //processOutbox(dev,sim);
-      //}, TIMEOUT);
+        syncToServer();
+      }, TIMEOUT);
 
       if (phpErrors) console.error(phpErrors);
   });
@@ -277,9 +282,9 @@ function processNotification() {
 
 function portCheck() {
 
-  syncToServer();
-  processNotification();
-  
+  //syncToServer();
+  //processNotification();
+
   if(portCheckRunning) return false;
 
   if(processCount>0) {
@@ -630,5 +635,6 @@ function doTest(ctr) {
     });
 
 }
+
 
 //doCheck();

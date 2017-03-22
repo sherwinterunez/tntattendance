@@ -286,6 +286,24 @@ srt.init = function(){
 
 };
 
+srt.ValidateMobileNo = function(mobileNo) {
+
+	if(mobileNo) {
+
+		if(mobileNo.length<11||mobileNo.length>11) {
+			return false;
+		}
+
+		var m = mobileNo.match(/^0(\d{3})\d{7}$/);
+
+		if(m&&m[1]) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 srt.doOnClick = function(id) {
 
 	/*$(document.body).ajaxSubmit({

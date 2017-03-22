@@ -316,8 +316,8 @@ if(!class_exists('APP_app_contact')) {
 					$content['studentprofile_lastname'] = !empty($post['studentprofile_lastname']) ? $post['studentprofile_lastname'] : '';
 					$content['studentprofile_middlename'] = !empty($post['studentprofile_middlename']) ? $post['studentprofile_middlename'] : '';
 					$content['studentprofile_birthdate'] = !empty($post['studentprofile_birthdate']) ? $post['studentprofile_birthdate'] : '';
-					$content['studentprofile_yearlevel'] = !empty($post['studentprofile_yearlevel']) ? $post['studentprofile_yearlevel'] : '';
-					$content['studentprofile_section'] = !empty($post['studentprofile_section']) ? $post['studentprofile_section'] : '';
+					$content['studentprofile_yearlevel'] = !empty($post['studentprofile_yearlevel']) ? $post['studentprofile_yearlevel'] : 0;
+					$content['studentprofile_section'] = !empty($post['studentprofile_section']) ? $post['studentprofile_section'] : 0;
 					$content['studentprofile_guardianname'] = !empty($post['studentprofile_guardianname']) ? $post['studentprofile_guardianname'] : '';
 					$content['studentprofile_guardianmobileno'] = !empty($post['studentprofile_guardianmobileno']) ? $post['studentprofile_guardianmobileno'] : '';
 					$content['studentprofile_guardianemail'] = !empty($post['studentprofile_guardianemail']) ? $post['studentprofile_guardianemail'] : '';

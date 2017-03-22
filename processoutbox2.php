@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -133,12 +133,20 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 	}
 
 /////
-	
+
 	$sendsms = false;
 
-	if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
+	if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_priority=1 and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
 		//echo "\n0 message. processOutbox done.\n";
 		return false;
+	}
+
+	if(!empty($result['rows'][0]['smsoutbox_id'])) {
+	} else {
+		if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
+			//echo "\n0 message. processOutbox done.\n";
+			return false;
+		}		
 	}
 
 	if(!empty($result['rows'][0]['smsoutbox_id'])) {
@@ -154,7 +162,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 		if(!empty($sendsms)&&is_array($sendsms)) {
 
 			$total = 0;
-			
+
 			foreach($sendsms as $k=>$v) {
 				//if($v['smsoutbox_total']==1) {
 
@@ -197,7 +205,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 						}
 
 					} else {
-						$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>5),'smsoutbox_id='.$v['smsoutbox_id']);						
+						$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>5),'smsoutbox_id='.$v['smsoutbox_id']);
 
 						if(!empty($v['smsoutbox_promossentid'])) {
 							$appdb->update("tbl_promossent",array('promossent_status'=>5),'promossent_id='.$v['smsoutbox_promossentid']);
@@ -263,5 +271,3 @@ if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled
 	}
 
 }
-
-

@@ -62,9 +62,14 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 
 	$studentprofiles = $result['rows'];
 
-	print_r($studentprofiles);
+	//print_r($studentprofiles);
 
 	foreach($studentprofiles as $k=>$v) {
+
+		if(!empty($v['studentprofile_guardianmobileno'])) {
+		} else continue;
+
+		print_r(array('$studentprofiles['.$k.']'=>$v));
 
 		$ch = new MyCURL;
 
@@ -77,8 +82,11 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 			print_r(array('error'=>$retcont));
 		}
 
+		//print_r(array('$retcont'=>$retcont));
+
 		if(!empty($retcont['content'])) {
 			$retval = json_decode($retcont['content'],true);
+			print_r(array('$retval'=>$retval));
 		}
 
 		if(!empty($retval['userid'])) {

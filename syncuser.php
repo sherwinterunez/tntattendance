@@ -56,6 +56,24 @@ if(!empty($_POST)&&!empty($_POST['params'])&&empty($_POST['update'])) {
 
 		$params['computehash'] = array($params['studentprofile_guardianmobileno'],$params['defaultpass'],base64_encode($params['studentprofile_guardianmobileno']),base64_encode($params['defaultpass']));
 
+		if(!($result = $appdb->query("select * from tbl_users where user_login='".$params['studentprofile_guardianmobileno']."'"))) {
+			json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+			die;
+		}
+
+		//pre(array('$result'=>$result)); die;
+
+		if(!empty($result['rows'][0]['user_id'])) {
+			$ret = array();
+			$ret['userid'] = $result['rows'][0]['user_id'];
+			$ret['success'] = 1;
+
+			header_json();
+			//json_encode_return($params);
+			json_encode_return($ret);
+			die;
+		}
+
 		$content = array();
 		$content['role_id'] = 19; // Guardians
 		$content['user_login'] = $params['studentprofile_guardianmobileno'];

@@ -110,8 +110,9 @@ do_action('action_header_bottom');
 		display: block;
 		width: 35%;
 		height: auto;
-		/*border: 1px solid #f00;*/
+		border: 1px solid #f00;
 		float: left;
+		padding: 30px 0 0 0;
 	}
 
 	#contentright {
@@ -193,7 +194,9 @@ do_action('action_header_bottom');
 	#studentname {
 		display: block;
 		font-size: 45px;
-		margin: 120px 10px 10px 10px;
+		margin: 10px;
+		clear: both;
+		/*border: 1px solid #f00;*/
 	}
 
 	#studentyearsection {
@@ -237,6 +240,22 @@ do_action('action_header_bottom');
 		margin-left: 20px;
 	}
 
+	#contentprevious {
+		display: block;
+		border: 1px solid #f00;
+		height: 110px;
+		margin: 0 0 10px 0;
+	}
+
+	#studentprev {
+		display: block;
+		width: 100px;
+		height: 100px;
+		float: left;
+		border: 1px solid #f00;
+		margin: 5px;
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -251,9 +270,15 @@ do_action('action_header_bottom');
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
 	</div>
 	<div id="contentmid">
-		<div id="studentname">&nbsp;</div>
-		<div id="studentyearsection">&nbsp;</div>
-		<div id="studentremarks">&nbsp;</div>
+		<div id="contentprevious">
+			<div id="studentprev">#studentprev</div>
+			<div id="studentprev">#studentprev</div>
+			<div id="studentprev">#studentprev</div>
+			<div id="studentprev">#studentprev</div>
+		</div>
+		<div id="studentname">#studentname&nbsp;</div>
+		<div id="studentyearsection">#studentyearsection&nbsp;</div>
+		<div id="studentremarks">#studentremarks&nbsp;</div>
 	</div>
 	<div id="contentright">
 		<div id="sidenumber">

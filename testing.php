@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -43,10 +43,7 @@ require_once(INCLUDE_PATH.'utf8.inc.php');
 require_once(INCLUDE_PATH.'sms.inc.php');
 require_once(INCLUDE_PATH.'userfuncs.inc.php');
 
-print_r(array('STATUS_RETRIEVESMS'=>setOption('STATUS_RETRIEVESMS','1','SETTING',true)));
+//print_r(array('STATUS_RETRIEVESMS'=>setOption('STATUS_RETRIEVESMS','1','SETTING',true)));
 
 
-
-
-
-
+for($i=10;$i>0;$i--) { echo $i; }

@@ -407,7 +407,7 @@ if(!class_exists('APP_Tap')) {
 							$retval['type'] = $type;
 							$retval['image'] = '/studentphoto.php?pid='.$vars['studentinfo']['studentprofile_id'];
 							$retval['studentinfo'] = $vars['studentinfo'];
-							$retval['studentdtr'] = $vars['studentdtr'];
+							//$retval['studentdtr'] = $vars['studentdtr'];
 
 							$fullname = '';
 

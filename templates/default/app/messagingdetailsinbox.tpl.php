@@ -17,12 +17,12 @@ $savecancel = false;
 $toolbars = array('messagingforward','messagingrefresh');
 
 if(empty($params['smsinboxinfo']['smsinbox_contactsid'])) {
-	if(preg_match('/^\d+$/', $params['smsinboxinfo']['smsinbox_contactnumber'])) {
+	if(!empty($params['smsinboxinfo']['smsinbox_contactnumber'])&&preg_match('/^\d+$/', $params['smsinboxinfo']['smsinbox_contactnumber'])) {
 		$toolbars = array('messagingaddcontact','messagingreply','messagingforward','messagingrefresh','messagingexport');
 	}
 } else
 if(!empty($params['smsinboxinfo']['smsinbox_contactsid'])) {
-	$toolbars = array('messagingreply','messagingforward','messagingrefresh','messagingexport');	
+	$toolbars = array('messagingreply','messagingforward','messagingrefresh','messagingexport');
 }
 
 if(in_array('inboxdelete',$access)) {
@@ -103,9 +103,9 @@ if($savecancel) {
 
 	function messagingdetailsinbox_%formval%() {
 
-		<?php /* ?>
+		<?php /*
 		var myToolbar = ['messagingreply','messagingforward','messagingdelete','messagingrefresh'];
-		<?php */ ?>
+		*/ ?>
 
 		var myToolbar = <?php echo json_encode($toolbars); ?>
 
@@ -123,7 +123,7 @@ if($savecancel) {
 		myTab.toolbar.enableOnly(['messagingrefresh']);
 		<?php } ?>
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		myTab.toolbar.getToolbarData('messagingaddcontact').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);
@@ -144,7 +144,7 @@ if($savecancel) {
 							messagingmaininboxgrid_%formval%(rowid);
 						} else {
 							var rowid = myGrid_%formval%.getSelectedRowId();
-							messagingmaininboxgrid_%formval%(rowid);							
+							messagingmaininboxgrid_%formval%(rowid);
 						}
 						showAlert(ddata.return_message);
 					}
@@ -292,7 +292,7 @@ if($savecancel) {
 				var cell = myGrid_%formval%.cells(id,0);
 
 				jQuery(cell.cell).closest('tr').css('font-weight','bold');
-				
+
 				//srt.dummy.apply()
 				//return false;
 			});

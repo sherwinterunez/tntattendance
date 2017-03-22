@@ -35,11 +35,15 @@ function getContactIDByNumber($number=false) {
 
 		//$number = $parsedMobileNo['network'] . $parsedMobileNo['number'];
 
-		$sql = "select contact_id from tbl_contact where contact_number like '%".$number."'";
+		//$sql = "select contact_id from tbl_contact where contact_number like '%".$number."'";
+
+		$sql = "select studentprofile_id from tbl_studentprofile where studentprofile_guardianmobileno like '%".$number."'";
 
 	} else {
 
-		$sql = "select contact_id from tbl_contact where contact_number='".$number."'";
+		//$sql = "select contact_id from tbl_contact where contact_number='".$number."'";
+
+		$sql = "select studentprofile_id from tbl_studentprofile where studentprofile_guardianmobileno='".$number."'";
 
 	}
 
@@ -49,8 +53,8 @@ function getContactIDByNumber($number=false) {
 		return false;
 	}
 
-	if(!empty($result['rows'][0]['contact_id'])) {
-		return $result['rows'][0]['contact_id'];
+	if(!empty($result['rows'][0]['studentprofile_id'])) {
+		return $result['rows'][0]['studentprofile_id'];
 	}
 	return false;
 }
@@ -738,6 +742,15 @@ function getAllSims($mode=0) {
 			}
 
 			return $sims;
+		} else
+		if($mode==8) {
+			foreach($result['rows'] as $v) {
+				if(!empty($v['sim_online'])) {
+					$sims[$v['sim_number']] = $v;
+				}
+			}
+
+			return $sims;
 		}
 
 
@@ -1363,7 +1376,7 @@ function getDbDate($mode=0,$f1='m-d-Y',$f2='H:i') {
 	return false;
 }
 
-function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0) {
+function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0) {
 	global $appdb;
 
 	if(!empty($contactnumber)&&!empty($simnumber)&&!empty($message)) {
@@ -1412,6 +1425,7 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 		$content['smsoutbox_simnumber'] = $simnumber;
 		$content['smsoutbox_type'] = 1;
 		$content['smsoutbox_status'] = $status;
+		$content['smsoutbox_priority'] = $priority;
 
 		if(!empty($delay)&&is_numeric($delay)&&intval($delay)>0) {
 			$content['smsoutbox_delay'] = intval($delay);
@@ -1420,6 +1434,11 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 
 		if(!empty($eload)) {
 			$content['smsoutbox_eload'] = 1;
+		}
+
+		if(!empty($push)) {
+			$content['smsoutbox_sendpush'] = 1;
+			$content['smsoutbox_pushstatus'] = 1;
 		}
 
 	} else {
@@ -1432,6 +1451,7 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 		$content['smsoutbox_part'] = 1;
 		$content['smsoutbox_total'] = 1;
 		$content['smsoutbox_status'] = $status;
+		$content['smsoutbox_priority'] = $priority;
 
 		if(!empty($delay)&&is_numeric($delay)&&intval($delay)>0) {
 			$content['smsoutbox_delay'] = intval($delay);
@@ -1440,6 +1460,11 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 
 		if(!empty($eload)) {
 			$content['smsoutbox_eload'] = 1;
+		}
+
+		if(!empty($push)) {
+			$content['smsoutbox_sendpush'] = 1;
+			$content['smsoutbox_pushstatus'] = 1;
 		}
 
 	}
@@ -1453,6 +1478,14 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 	}
 
 	return false;
+}
+
+function sendToOutBoxPush($contactnumber=false,$simnumber=false,$message=false,$push=0) {
+	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push);
+}
+
+function sendToOutBoxPriority($contactnumber=false,$simnumber=false,$message=false,$push=0,$priority=1) {
+	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push,$priority);
 }
 
 function wLog($text='',$module='') {

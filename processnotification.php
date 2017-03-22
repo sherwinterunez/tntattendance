@@ -196,13 +196,122 @@ if(!empty($notifications)) {
 
 				if($v['studentdtr_type']=='IN') {
 					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin));
-					sendToOutBox($mobileno,$n['sim_number'],$msgin);
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin);
 				} else {
 					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout));
-					sendToOutBox($mobileno,$n['sim_number'],$msgout);
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout);
 				}
 
 				break;
+			}
+
+		}
+
+	}
+
+}
+
+$notifications = false;
+
+if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sendpush>0 and smsoutbox_pushstatus=1 order by smsoutbox_id asc limit 1"))) {
+	json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+	die;
+}
+
+if(!empty($result['rows'][0]['smsoutbox_id'])) {
+	$notifications = $result['rows'];
+}
+
+if(!empty($notifications)) {
+
+	print_r($notifications);
+
+	foreach($notifications as $k=>$v) {
+
+		$ch = new MyCURL;
+
+		$smsoutbox_message = $v['smsoutbox_message'];
+
+		$fullname = getStudentFullName($v['smsoutbox_contactid']);
+
+		$profile = getStudentProfile($v['smsoutbox_contactid']);
+
+		if(!empty($fullname)) {
+			$smsoutbox_message = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$smsoutbox_message);
+		}
+
+		$smsoutbox_message = str_replace('%FIRSTNAME%',strtoupper($profile['studentprofile_firstname']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%LASTNAME%',strtoupper($profile['studentprofile_lastname']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%MIDDLENAME%',strtoupper($profile['studentprofile_middlename']),$smsoutbox_message);
+
+		/*$smsoutbox_message = str_replace('%d%',date('d',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%F%',date('F',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%m%',date('m',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%M%',date('M',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%n%',date('n',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%y%',date('y',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%Y%',date('Y',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%a%',date('a',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%A%',date('A',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%g%',date('g',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%G%',date('G',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%h%',date('h',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%H%',date('H',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%i%',date('i',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%s%',date('s',$profile['studentdtr_unixtime']),$smsoutbox_message);
+		$smsoutbox_message = str_replace('%r%',date('r',$profile['studentdtr_unixtime']),$smsoutbox_message);*/
+
+		$dt = date('m/d/Y H:i:s',$profile['studentdtr_unixtime']);
+
+		$smsoutbox_message = str_replace('%DATETIME%',$dt,$smsoutbox_message);
+
+		$mobileno = getGuardianMobileNo($profile['studentdtr_studentid']);
+
+		$content = array();
+		$content['smsoutbox_pushstatus'] = 3;
+
+		if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
+			json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+			die;
+		}
+
+		$post = array();
+		$post['topic'] = 'tapntxt'.$mobileno;
+		$post['msg'] = $smsoutbox_message;
+		$post['title'] = 'Tap N Txt';
+
+		if(!($retcont = $ch->post(REMOTE_FCMSENDTOTOPIC_URL,$post))) {
+			print_r(array('error'=>$retcont));
+		}
+
+		print_r(array('$retcont'=>$retcont));
+
+		if(!empty($retcont['content'])) {
+			$retval = json_decode($retcont['content'],true);
+		}
+
+		if(!empty($retval['message_id'])) {
+
+			$content = array();
+			$content['smsoutbox_pushid'] = $retval['message_id'];
+			$content['smsoutbox_pushstatus'] = 4;
+			$content['smsoutbox_pushsentstamp'] = 'now()';
+
+			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
+				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+				die;
+			}
+
+		} else {
+
+			$content = array();
+			$content['smsoutbox_pushid'] = 1;
+			$content['smsoutbox_pushstatus'] = 5;
+			$content['smsoutbox_pushsentstamp'] = 'now()';
+
+			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
+				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+				die;
 			}
 
 		}
