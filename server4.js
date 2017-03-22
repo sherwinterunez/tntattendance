@@ -9,7 +9,7 @@ const ADDRESS = '0.0.0.0';
 var PHPFPM = require('./node_modules/node-phpfpm');
 
 //var io     = require('./node_modules/socket.io');
-//var spawn = require('child_process').spawn;
+var spawn = require('child_process').spawn;
 //var http = require('http');
 
 //var PHPFPM = require('/usr/local/etc/node_modules/node-phpfpm');
@@ -62,6 +62,10 @@ var processCount = 0;
 
 var terminateFlag = false;
 
+var poweroffFlag = false;
+
+var rebootFlag = false;
+
 var pauseFlag = false;
 
 var sims = false;
@@ -90,6 +94,22 @@ var server = http.createServer(function (req, res) {
 
     return true;
   }*/
+
+  if(req.url==='/poweroff') {
+    poweroffFlag = true;
+    runPortCheck = true;
+    res.end('powering off.\n');
+
+    return true;
+  }
+
+  if(req.url==='/reboot') {
+    rebootFlag = true;
+    runPortCheck = true;
+    res.end('rebooting.\n');
+
+    return true;
+  }
 
   if(req.url==='/terminate') {
     terminateFlag = true;
@@ -570,8 +590,16 @@ function systemPaused() {
 
     console.log('System is paused.');
 
-    if(terminateFlag) {
+    if(processCount==0&&terminateFlag) {
       process.exit(1);
+    }
+
+    if(processCount==0&&rebootFlag) {
+      spawn("reboot");
+    }
+
+    if(processCount==0&&poweroffFlag) {
+      spawn("halt", ["-p"]);
     }
 
     setTimeout(function(){
