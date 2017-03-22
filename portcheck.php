@@ -294,7 +294,7 @@ $okport = array();
 $mobileNos = array();
 $devices = array();
 
-$appdb->update('tbl_sim',array('sim_online'=>0,'sim_device'=>'','sim_ip'=''));
+$appdb->update('tbl_sim',array('sim_online'=>0,'sim_device'=>'','sim_ip'=>''));
 
 foreach($ports as $dev) {
 	if($mno=portCheck($dev,$localIP)) {
