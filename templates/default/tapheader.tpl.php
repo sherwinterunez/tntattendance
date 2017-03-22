@@ -63,6 +63,7 @@ do_action('action_header_bottom');
 		/*border: 1px solid #0f0;*/
 		clear: both;
 		margin: 0 auto;
+		background: #14ade3;
 	}
 
 	#contentbottom {
