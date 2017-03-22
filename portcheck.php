@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -106,7 +106,7 @@ function portCheck($dev=false,$localIP=false) {
 	if($sms->at()) {
 		$sms->clearHistory();
 	} else {
-		return false;		
+		return false;
 	}
 
 	if(!($result=$appdb->query('select * from tbl_port where port_device=\''.$dev.'\''))) {
@@ -126,7 +126,7 @@ function portCheck($dev=false,$localIP=false) {
 		$content['port_device'] = $dev;
 		$content['port_name'] = 'PORT'.str_replace('/','_',$dev);
 
-		$result = $appdb->insert('tbl_port',$content,'port_id');	
+		$result = $appdb->insert('tbl_port',$content,'port_id');
 
 		if(!empty($result['returning'][0]['port_id'])) {
 			$portid = $result['returning'][0]['port_id'];
@@ -194,10 +194,21 @@ function portCheck($dev=false,$localIP=false) {
 
 	//print_r(array('$mobileNo'=>$mobileNo,'$mobileNetwork'=>$mobileNetwork));
 
+	if($mobileNo=='UNKNOWN') {
+		$sql = "select * from tbl_sim where sim_number='$mobileNo' and sim_device='$dev'";
+	} else {
+		$sql = "select * from tbl_sim where sim_number='$mobileNo'";
+	}
 
-	if(!($result=$appdb->query('select * from tbl_sim where sim_number=\''.$mobileNo.'\''))) {
+	//if(!($result=$appdb->query('select * from tbl_sim where sim_number=\''.$mobileNo.'\''))) {
+	//	return false;
+	//}
+
+	if(!($result=$appdb->query($sql))) {
 		return false;
 	}
+
+	trigger_error($sql,E_USER_NOTICE);
 
 	if(!empty($result['rows'][0]['sim_id'])) {
 		$content = array();
@@ -217,7 +228,7 @@ function portCheck($dev=false,$localIP=false) {
 		$content['sim_online'] = 1;
 		$content['sim_ip'] = $localIP;
 
-		$result = $appdb->insert('tbl_sim',$content,'sim_id');	
+		$result = $appdb->insert('tbl_sim',$content,'sim_id');
 
 		setSetting('TIME_MODEMINIT_'.$dev,1);
 
@@ -283,13 +294,13 @@ $okport = array();
 $mobileNos = array();
 $devices = array();
 
-$appdb->update('tbl_sim',array('sim_online'=>0));
+$appdb->update('tbl_sim',array('sim_online'=>0,'sim_device'=>'','sim_ip'=''));
 
 foreach($ports as $dev) {
 	if($mno=portCheck($dev,$localIP)) {
 
 		setSetting('TIME_MODEMINIT_'.$mno,1);
-		
+
 		$devices[] = array('port'=>$dev,'sim'=>$mno,'ip'=>$localIP);
 		$mobileNos[] = "'".$mno."'";
 		$okport[] = $dev;
@@ -305,7 +316,3 @@ echo json_encode(array('ports'=>$okport,'devices'=>$devices,'time'=>$tstop));
 //print_r(array('$okport '=>$okport ));
 
 //echo "\nportCheck done. (".$tstop." secs).\n";
-
-
-
-
