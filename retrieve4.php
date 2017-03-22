@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -94,6 +94,8 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 		$sms->deviceClose();
 		return false;
 	}
+
+	setSetting('STATUS_SIMERROR','0');
 
 	$sms->clearHistory();
 
@@ -279,7 +281,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 				}
 
 			}
-		}		
+		}
 
 		//print_r(array('$messages'=>$messages));
 	}
@@ -330,7 +332,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 					$messages[$smsinboxtemp_contactnumber][$smsinboxtemp_udhref]['elapsedtime'] = $elapsedtime;
 				}
 			} else {
-				$messages[$smsinboxtemp_contactnumber][$smsinboxtemp_udhref]['elapsedtime'] = $elapsedtime;			
+				$messages[$smsinboxtemp_contactnumber][$smsinboxtemp_udhref]['elapsedtime'] = $elapsedtime;
 			}
 
 			$messages[$smsinboxtemp_contactnumber][$smsinboxtemp_udhref]['parts'][$smsinboxtemp_udhpart] = $smsinboxtemp_message;
@@ -432,6 +434,3 @@ if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled
 		setSetting('STATUS_RETRIEVESMS_'.$_GET['sim'],'0');
 	}
 }
-
-
-
