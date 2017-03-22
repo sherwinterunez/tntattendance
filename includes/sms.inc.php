@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -60,20 +60,20 @@ if(!class_exists('SMS')) {
 		function __construct() {
 			$this->_init();
 		}
-		
+
 		function __destruct() {
 		}
 
 		public function _init() {
 
-			$this->udh = array( 
-		        'udh_length'=>'05', //sms udh lenth 05 for 8bit udh, 06 for 16 bit udh 
-		        'identifier'=>'00', //use 00 for 8bit udh, use 08 for 16bit udh 
-		        'header_length'=>'03', //length of header including udh_length & identifier 
-		        'reference'=>'00', //use 2bit 00-ff if 8bit udh, use 4bit 0000-ffff if 16bit udh 
-		        'msg_count'=>1, //sms count 
-		        'msg_part'=>1 //sms part number 
-	        ); 
+			$this->udh = array(
+		        'udh_length'=>'05', //sms udh lenth 05 for 8bit udh, 06 for 16 bit udh
+		        'identifier'=>'00', //use 00 for 8bit udh, use 08 for 16bit udh
+		        'header_length'=>'03', //length of header including udh_length & identifier
+		        'reference'=>'00', //use 2bit 00-ff if 8bit udh, use 4bit 0000-ffff if 16bit udh
+		        'msg_count'=>1, //sms count
+		        'msg_part'=>1 //sms part number
+	        );
 
 	        setlocale(LC_ALL, "en_US");
 
@@ -130,7 +130,7 @@ if(!class_exists('SMS')) {
 
 	        //$this->buffer .= $str;
 
-	        $this->lastsentmessage = $str; 
+	        $this->lastsentmessage = $str;
 
 	        if (fwrite($this->handle, $str) !== false) {
 	            return true;
@@ -141,7 +141,7 @@ if(!class_exists('SMS')) {
 	        }
 
 	        if($waitForReply) {
-		        usleep((int) ($waitForReply * 1000000));        	
+		        usleep((int) ($waitForReply * 1000000));
 	        }
 	    }
 
@@ -164,7 +164,7 @@ if(!class_exists('SMS')) {
 
 				if($this->readPort($expected_result, $timeout, false, $str)) {
 					return true;
-				}	    
+				}
 
 				$history = $this->getHistory();
 
@@ -211,7 +211,7 @@ if(!class_exists('SMS')) {
 	    }
 
 	    public function hideBuffer() {
-	    	$this->showbuf = false;	    	
+	    	$this->showbuf = false;
 	    }
 
 	    public function isCMEError() {
@@ -322,7 +322,7 @@ if(!class_exists('SMS')) {
 					$this->buffer = '';
 					//print_r(array('readReply'=>'Found match1', '$expected_result'=>$expected_result, '$this->buffer'=>$this->buffer));
 					return true;
-				} else 
+				} else
 				if ($expected_result&&preg_match('/'.preg_quote($expected_result, '/').'/', $this->buffer, $match)) {
 					$this->buffer = str_replace($match[0],'',$this->buffer);
 					//print_r(array('readReply'=>'Found match2', '$expected_result'=>$expected_result, '$this->buffer'=>$this->buffer));
@@ -376,7 +376,7 @@ if(!class_exists('SMS')) {
 							}
 						}
 					} else {
-						print_r($apd);						
+						print_r($apd);
 					}
 
 					//$this->buffer = '';
@@ -498,7 +498,7 @@ if(!class_exists('SMS')) {
 					$this->buffer = str_replace($match[0],'',$this->buffer);
 					print_r(array('$tbuf'=>'{'.$this->tocrlf($tbuf).'}','$match1'=>$match,'$this->buffer'=>'{'.$this->tocrlf($this->buffer).'}'));
 					return true;
-				} else 
+				} else
 				if ($expected_result&&preg_match('/'.preg_quote($expected_result, '/').'/', $this->buffer, $match)) {
 					$tbuf = $this->buffer;
 					$this->buffer = str_replace($match[0],'',$this->buffer);
@@ -561,7 +561,7 @@ if(!class_exists('SMS')) {
 							} else break;
 						}
 
-						print_r(array('$match255'=>'{'.$this->buffer.'}','strlen'=>strlen($this->buffer),'str2hex'=>$this->str2hex($this->buffer)));					
+						print_r(array('$match255'=>'{'.$this->buffer.'}','strlen'=>strlen($this->buffer),'str2hex'=>$this->str2hex($this->buffer)));
 					}
 				}
 
@@ -613,7 +613,12 @@ if(!class_exists('SMS')) {
 
 				$this->buf .= $buffer;
 
-				if(strlen($this->buf)<1) continue;
+				if(strlen($this->buf)<1) {
+					usleep(10000); //0.02 sec
+					continue;
+				}
+
+				//if(strlen($this->buf)<1) continue;
 
 				if(preg_match("/\r\n\>\s/si",$this->buf)) {
 					$this->buf = str_replace("\r\n> ",">\r\n",$this->buf);
@@ -634,6 +639,7 @@ if(!class_exists('SMS')) {
 				}
 
 				if(preg_match("/^\+CMT\:(.+)$/s",$this->buf)&&!preg_match("/\+CMT\:(.+)\r\n(.+)\r\n$/s",$this->buf)) {
+					usleep(10000);//0.2 sec
 					continue;
 				}
 
@@ -668,7 +674,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -681,7 +687,7 @@ if(!class_exists('SMS')) {
 					$this->buffer = str_replace($match[0],'',$this->buffer);
 					//print_r(array('$exp'=>$exp,'$tbuf'=>'{'.$this->tocrlf($tbuf).'}','$match1'=>$match,'$this->buffer'=>'{'.$this->tocrlf($this->buffer).'}'));
 					$ret = true;
-				} else 
+				} else
 				if ($expected_result&&preg_match('/'.preg_quote($expected_result, '/').'/s', $this->buffer, $match)) {
 					$tbuf = $this->buffer;
 					//$this->adata = $exp = explode("\r\n", $tbuf);
@@ -696,7 +702,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -724,7 +730,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -748,7 +754,7 @@ if(!class_exists('SMS')) {
 
 				if($expected_result&&!$ret) {
 				} else {
-					$this->process();					
+					$this->process();
 				}
 
 				if (preg_match('/\+CME ERROR\:\ (\d{1,3})\r\n$/', $this->buffer, $match)) {
@@ -767,7 +773,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -801,7 +807,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -836,7 +842,7 @@ if(!class_exists('SMS')) {
 					foreach($exp as $v) {
 						$v = trim($v);
 						if(!empty($v)) {
-							$history[] = $this->tocrlf($v);							
+							$history[] = $this->tocrlf($v);
 						}
 					}
 
@@ -854,7 +860,7 @@ if(!class_exists('SMS')) {
 					return false;
 				}
 
-				usleep(20000);//0.2 sec
+				usleep(200000);//0.2 sec
 
 			} while ($timeoutat > time());
 
@@ -873,19 +879,19 @@ if(!class_exists('SMS')) {
 			foreach($exp as $v) {
 				$v = trim($v);
 				if(!empty($v)) {
-					$history[] = $this->tocrlf($v);							
+					$history[] = $this->tocrlf($v);
 				}
 			}
 
 			$history[] = 'Timed Out ('.$timeout.') ('.$commandstr.')! ('.$this->tocrlf($expected_result).')';
 
-			ob_start();
+			/*ob_start();
 
 			debug_print_backtrace();
 
 			$history[] = ob_get_contents();
 
-			ob_end_clean();
+			ob_end_clean();*/
 
 			if(!empty($history)) {
 				$this->history[] = $this->current = $history;
@@ -956,7 +962,7 @@ if(!class_exists('SMS')) {
 						} else break;
 					}
 
-					print_r(array('$match255'=>'{'.$this->buffer.'}','strlen'=>strlen($this->buffer),'str2hex'=>$this->str2hex($this->buffer)));					
+					print_r(array('$match255'=>'{'.$this->buffer.'}','strlen'=>strlen($this->buffer),'str2hex'=>$this->str2hex($this->buffer)));
 				}
 			}
 
@@ -1162,10 +1168,10 @@ if(!class_exists('SMS')) {
 	        return $retVal;
 		}
 
-		public function dechex_str($ref) { 
+		public function dechex_str($ref) {
 			$hex = ($ref <= 15 )?'0'.dechex($ref):dechex($ref);
-			return strtoupper($hex); 
-		} 
+			return strtoupper($hex);
+		}
 
 	    public function strlen($string, $encoding = 'UTF-8') {
 	        //@check
