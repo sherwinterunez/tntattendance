@@ -319,6 +319,14 @@ function portCheck() {
     process.exit(1);
   }
 
+  if(rebootFlag) {
+    spawn("reboot");
+  }
+
+  if(poweroffFlag) {
+    spawn("halt", ["-p"]);
+  }
+
   portCheckRunning = true;
 
   console.log("portcheck.php running...");
