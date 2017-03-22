@@ -95,6 +95,15 @@ var server = http.createServer(function (req, res) {
     return true;
   }*/
 
+  if(req.url==='/restartkiosk') {
+    //poweroffFlag = true;
+    //runPortCheck = true;
+    spawn("killall", ["electron-quick-start"]);
+    res.end('restarting kiosk.\n');
+
+    return true;
+  }
+
   if(req.url==='/poweroff') {
     poweroffFlag = true;
     runPortCheck = true;
