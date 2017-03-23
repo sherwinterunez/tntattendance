@@ -53,7 +53,7 @@ do_action('action_header_bottom');
 
 	body {
 		/*background: #ccc url("/templates/default/tap/bg.jpg") no-repeat -100px -113px;*/
-		background: #ffffff;
+		background: #f7f7f7;
 	}
 
 	#contenttop {
