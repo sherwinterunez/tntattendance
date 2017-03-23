@@ -47,7 +47,7 @@ do_action('action_header_bottom');
 <![endif]-->
 */ ?>
 </head>
-<body>
+<body id="body" style="opacity:0">
 <div id="myForm" style="margin-top:-10000px;margin-left:-10000px;height:100;"></div>
 <style>
 
@@ -273,6 +273,7 @@ do_action('action_header_bottom');
 </div>
 <div id="contentmiddle">
 	<div id="contentleft">
+		<div id="info"></div>
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
 	</div>
 	<div id="contentmid">

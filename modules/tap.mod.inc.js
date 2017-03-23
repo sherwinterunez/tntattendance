@@ -192,6 +192,15 @@ jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
 
+	var width = jQuery(window).width();
+	var height = jQuery(window).height();
+
+	jQuery("#info").html("width: "+width+", height: "+height);
+
+	setInterval(function(){
+		jQuery("#body").css({opacity:1});
+	},1000);
+
 	setInterval(function(){
 		srt.doMarquee();
 	},60000);
