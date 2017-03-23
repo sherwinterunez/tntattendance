@@ -104,7 +104,7 @@ do_action('action_header_bottom');
 		display: block;
 		width: 35%;
 		height: auto;
-		/*border: 1px solid #0f0;*/
+		border: 1px solid #0f0;
 		float: left;
 	}
 
