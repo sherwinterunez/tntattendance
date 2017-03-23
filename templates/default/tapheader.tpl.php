@@ -135,6 +135,9 @@ do_action('action_header_bottom');
 		background: url("/templates/default/tap/studentphoto.png?<?php echo time(); ?>") no-repeat 0px 0px;
 		/*border: 1px solid #00f;*/
 		overflow: hidden;
+		-moz-box-shadow: 0 0 20px #000000;
+		-webkit-box-shadow: 0 0 20px #000000;
+		box-shadow: 0 0 20px #000000;
 	}
 
 	#studentphoto {
