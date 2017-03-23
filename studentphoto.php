@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -53,8 +53,8 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 	if(!($result = $appdb->query("select * from tbl_upload where upload_studentprofileid=".intval($_GET['pid'])))) {
 		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-		die;				
-	}	
+		die;
+	}
 
 	if(!empty($result['rows'][0]['upload_content'])) {
 		//$retval['uploadid'] = $result['rows'][0]['upload_id'];
@@ -62,18 +62,28 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 	}
 
 	if(!empty($content)) {
+
+		if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
+			$size = intval($_GET['size']);
+		}
+
 		header("Content-Type: image/jpg");
-		print_r($content);
+
+		$img = new APP_SimpleImage;
+
+		$img->loadfromstring($content);
+
+		if(!empty($size)) {
+			$img->resizeToWidth($size);
+		}
+		
+		$img->output();
+
+		//print_r($content);
 	}
 
 	die();
 
-	//pre($result);					
+	//pre($result);
 
 }
-
-
-
-
-
-
