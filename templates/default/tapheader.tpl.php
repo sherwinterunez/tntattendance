@@ -142,15 +142,15 @@ do_action('action_header_bottom');
 
 	#studentphoto {
 		display: block;
-		width: 351px; /* 351px by 350px */
+		width: 350px; /* 351px by 350px */
 		height: 350px;
-		margin: 25px 0 0 29px;
+		/*margin: 25px 0 0 29px;*/
 		overflow: hidden;
 		/*border: 1px solid #f00;*/
 	}
 
 	#studentphoto img {
-		max-width: 351px; /* 351px by 350px */
+		max-width: 350px; /* 351px by 350px */
 		max-height: 350px;
 	}
 
