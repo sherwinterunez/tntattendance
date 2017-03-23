@@ -94,8 +94,8 @@ do_action('action_header_bottom');
 	#contentmiddle {
 		display: block;
 		width: 100%;
-		height: auto;
-		/*border: 1px solid #f00;*/
+		height: 100%;
+		border: 1px solid #f00;
 		clear: both;
 		margin: 0 auto;
 	}
