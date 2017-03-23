@@ -106,6 +106,7 @@ do_action('action_header_bottom');
 		height: auto;
 		border: 1px solid #0f0;
 		float: left;
+		height: 100%;
 	}
 
 	#contentmid {
