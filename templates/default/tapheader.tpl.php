@@ -128,8 +128,8 @@ do_action('action_header_bottom');
 
 	#studentphotobg {
 		display: block;
-		width: 436px;
-		height: 427px;
+		width: 350px;
+		height: 350px;
 		/*border: 1px solid #f00;*/
 		margin: 100px 0 0 50px;
 		background: url("/templates/default/tap/studentphoto.png?<?php echo time(); ?>") no-repeat 0px 0px;
