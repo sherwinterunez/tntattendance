@@ -197,9 +197,12 @@ jQuery(document).ready(function($) {
 	var contenttopHeight = 100;
 	var contentbottomHeight = 60;
 	var contentmiddleHeight = height - (contenttopHeight+contentbottomHeight);
+	var studentphotobgHeight = 350;
+	var studentphotobgPaddingTop = (contentmiddleHeight - studentphotobgHeight) / 2;
 
-	jQuery("#info").html("width: "+width+", height: "+height);
+	/*jQuery("#info").html("width: "+width+", height: "+height);*/
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
+	jQuery("#studentphotobg").css({marginTop:studentphotobgPaddingTop});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});

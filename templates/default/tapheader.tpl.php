@@ -132,7 +132,8 @@ do_action('action_header_bottom');
 		width: 350px;
 		height: 350px;
 		/*border: 1px solid #f00;*/
-		margin: 100px 0 0 50px;
+		/*margin: 100px 0 0 50px;*/
+		margin: 0 auto;
 		background: url("/templates/default/tap/studentphoto.png?<?php echo time(); ?>") no-repeat 0px 0px;
 		/*border: 1px solid #00f;*/
 		overflow: hidden;
