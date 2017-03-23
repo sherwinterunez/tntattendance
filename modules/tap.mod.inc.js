@@ -194,8 +194,12 @@ jQuery(document).ready(function($) {
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
+	var contenttopHeight = 100;
+	var contentbottomHeight = 60;
+	var contentmiddleHeight = height - (contenttopHeight+contentbottomHeight);
 
 	jQuery("#info").html("width: "+width+", height: "+height);
+	jQuery("#contentmiddle").css({height:contentmiddleHeight});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
