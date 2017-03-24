@@ -472,7 +472,7 @@ if(!class_exists('APP_Tap')) {
 										$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
 										$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
 										$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
-										$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
+										$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel">'.$tmp['dtrid'].'/'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
 
 										$previous[] = $tmp;
 									}
