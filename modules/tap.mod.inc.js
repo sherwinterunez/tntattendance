@@ -105,6 +105,7 @@ srt.etap = function() {
 
 			if(data.return_code&&data.return_message) {
 				showErrorMessage(data.return_message,2000);
+				return false;
 			}
 
 			if(typeof data.db != 'undefined' ) {
