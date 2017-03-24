@@ -298,6 +298,12 @@ jQuery(document).ready(function($) {
 	jQuery("#studentphoto").css({width:studentphotobgHeight,height:studentphotobgHeight});
 	jQuery("#studentphoto img").css({width:studentphotobgHeight,height:studentphotobgHeight});
 
+	var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+	var studentcontentHeight  = jQuery("#studentcontent").height();
+	var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
+
+	jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
+
 	srt.myForm.setItemValue('imagesize',studentphotobgHeight);
 
 	setInterval(function(){

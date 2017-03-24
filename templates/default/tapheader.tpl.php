@@ -199,28 +199,28 @@ do_action('action_header_bottom');
 	#studentname {
 		display: block;
 		font-size: 45px;
-		margin: 0 20px 20px 20px;
+		margin: 0 10px 10px 10px;
 		clear: both;
 		text-align: center;
 		font-weight: bold;
-		line-height: 45px;
+		line-height: 55px;
 		/*border: 1px solid #f00;*/
 	}
 
 	#studentyearsection {
 		display: block;
 		font-size: 35px;
-		margin: 20px;
+		margin: 10px;
 		text-align: center;
-		line-height: 35px;
+		line-height: 45px;
 	}
 
 	#studentremarks {
 		display: block;
 		font-size: 35px;
-		margin: 20px 20px 0 20px;
+		margin: 10px 10px 0 10px;
 		text-align: center;
-		line-height: 35px;
+		line-height: 45px;
 	}
 
 	#contenttopleft {
@@ -377,9 +377,9 @@ do_action('action_header_bottom');
 	<div id="contentmid">
 		<div id="studentcontent">
 			<div id="studentcontentdiv">
-				<div id="studentname">&nbsp;</div>
-				<div id="studentyearsection">&nbsp;</div>
-				<div id="studentremarks">&nbsp;</div>
+				<div id="studentname">TAP N' TEXT</div>
+				<div id="studentyearsection">Student In/Out Monitoring System</div>
+				<div id="studentremarks">by OBIS Technology</div>
 				<br class="br" />
 			</div>
 		</div>
