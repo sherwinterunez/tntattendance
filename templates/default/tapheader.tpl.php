@@ -177,7 +177,7 @@ do_action('action_header_bottom');
 		color: #ffffff;
 	}
 
-	#db,
+	/*#db,
 	#in,
 	#out,
 	#late {
@@ -185,12 +185,11 @@ do_action('action_header_bottom');
 		width: 207px;
 		height: 73px;
 		line-height: 73px;
-		/*border: 1px solid #f00;*/
 		margin: 3px 0 0 23px;
 		font-size: 60px;
 		text-align: center;
 		color: #0b3c4d;
-	}
+	}*/
 
 	#type {
 		display: block;
@@ -262,6 +261,33 @@ do_action('action_header_bottom');
 		margin: 5px;
 	}
 
+	#info {
+		display: block;
+		width: 350px;
+		border: 1px solid #f00;
+		clear:both;
+		margin: 0 auto;
+	}
+
+	#info .label {
+		display: block;
+		float: left;
+		width: auto;
+		font-size: 20px;
+		color: #000;
+	}
+
+	#info #db,
+	#info #in,
+	#info #out,
+	#info #late {
+		display: block;
+		float: left;
+		width: auto;
+		font-size: 20px;
+		color: #000;
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -273,8 +299,18 @@ do_action('action_header_bottom');
 </div>
 <div id="contentmiddle">
 	<div id="contentleft">
-		<div id="info"></div>
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
+		<div id="info">
+			<div class="label">Database:</div>
+			<div id="db">&nbsp;</div>
+			<div class="label">IN:</div>
+			<div id="in">&nbsp;</div>
+			<div class="label">OUT:</div>
+			<div id="out">&nbsp;</div>
+			<div class="label">LATE:</div>
+			<div id="late">&nbsp;</div>
+			<br style="clear:both;" />
+		</div>
 	</div>
 	<div id="contentmid">
 		<div id="contentprevious">
@@ -288,6 +324,7 @@ do_action('action_header_bottom');
 		<div id="studentremarks">#studentremarks&nbsp;</div>
 	</div>
 	<div id="contentright">
+		<?php /*
 		<div id="sidenumber">
 		<div id="title">DB</div>
 		<div id="db">&nbsp;</div>
@@ -303,7 +340,7 @@ do_action('action_header_bottom');
 		<div id="sidenumber">
 		<div id="title">LATE</div>
 		<div id="late">&nbsp;</div>
-		</div>
+		</div>*/ ?>
 		<div id="type">&nbsp;</div>
 	</div>
 	<br style="clear:both;" />
