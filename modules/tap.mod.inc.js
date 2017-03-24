@@ -200,7 +200,7 @@ jQuery(document).ready(function($) {
 	var studentphotobgHeight = 350;
 	var studentphotobgMarginTop = (contentmiddleHeight - studentphotobgHeight) / 2;
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
-	var studentcontentHeight = jQuery("#studentcontent").height() + 20;
+	var studentcontentHeight = jQuery("#studentcontent").height() + 60;
 	var contentpreviousHeight = jQuery("#contentprevious").height() + 20;
 	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 2;
 
