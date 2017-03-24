@@ -182,11 +182,11 @@ srt.init = function(){
 			return false;
 		}
 
-		if(id=='utilities'||id=='management') {
+		if(id=='utilities'||id=='management'||id=='server'||id=='computer') {
 			return false;
 		}
 
-		if(id=='start'||id=='stop'||id=='scan'||id=='restart') {
+		if(id=='start'||id=='stop'||id=='scan'||id=='restart'||id=='restartkiosk'||id=='reboot'||id=='poweroff') {
 			srt.doOnClick(id);
 			return false;
 		}

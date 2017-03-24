@@ -810,6 +810,13 @@ define ("DEVICE_OPENED", 2);
 							$retval['return_message'] = "Can't connect to server";
 							$retval['status'] = 'unknown';
 						}
+					} else
+					if($this->vars['post']['method']=='serverrestartkiosk') {
+						if($curl->get('http://127.0.0.1:8080/restartkiosk')) {
+							$retval['return_message'] = 'Kiosk restarted.';
+						} else {
+							$retval['return_message'] = 'Can\'t connect to server.';
+						}
 					}
 
 					json_encode_return($retval);
