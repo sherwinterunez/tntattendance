@@ -330,7 +330,7 @@ do_action('action_header_bottom');
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
-		<div id="schoolname">ABC Montessori</div>
+		<div id="schoolname">OBIS Montessori</div>
 	</div>
 	<div id="contenttopright">
 		<div id="currentdatetime"></div>
