@@ -267,6 +267,14 @@ if(!class_exists('APP_Tap')) {
 
 				if(!empty($result['rows'][0]['studentprofile_id'])) {
 					$vars['studentinfo'] = $result['rows'][0];
+				} else {
+					$retval = array();
+					$retval['return_code'] = 4594;
+					$retval['return_message'] = 'RFID not found!';
+
+					header_json();
+					json_encode_return($retval);
+					die;
 				}
 
 				//pre(array('$vars'=>$vars));

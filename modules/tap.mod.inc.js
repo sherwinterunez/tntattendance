@@ -90,11 +90,6 @@ srt.etap = function() {
 	    //console.log($(this.base));
 
 		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize,function(data){
-			//if(data.return_code) {
-			//	if(data.return_code=='SUCCESS') {
-			//		showMessage(data.return_message,5000);
-			//	}
-			//}
 
 			//if(data) {
 
@@ -106,6 +101,10 @@ srt.etap = function() {
 
 			if(typeof(data)!='object') {
 				return false;
+			}
+
+			if(data.return_code&&data.return_message) {
+				showErrorMessage(data.return_message,2000);
 			}
 
 			if(typeof data.db != 'undefined' ) {
