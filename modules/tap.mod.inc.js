@@ -189,6 +189,8 @@ srt.etap = function() {
 			var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
 			var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
 
+			console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
+
 			jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
 			/*var studentprevHeight = 0;

@@ -385,35 +385,29 @@ do_action('action_header_bottom');
 		</div>
 		<div id="contentprevious">
 			<div id="contentpreviousdiv">
-				<?php /*<div id="studentprev" class="studentprev">
-					<img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" />
-					<div id="studentprevlabel">Joshua Daniel Padilla Terunez</div>
-					<div id="studentprevlabel">Grade 1 - St. Michael</div>
+				<div id="studentprev" class="studentprev">
+					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
+					<div id="studentprevlabel">&nbsp;</div>
 					<br class="br" />
-				</div>*/ ?>
-				<div id="studentprev" class="studentprev">
-					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
-					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
-					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />*/ ?>
 				</div>
 				<div id="studentprev" class="studentprev">
-					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />*/ ?>
+					<br class="br" />
 				</div>
 				<div id="studentprev" class="studentprev">
-					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />*/ ?>
+					<br class="br" />
 				</div>
 				<div id="studentprev" class="studentprev">
-					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />*/ ?>
+					<br class="br" />
 				</div>
 				<br style="clear:both;" />
 			</div>
