@@ -95,7 +95,7 @@ do_action('action_header_bottom');
 		display: block;
 		width: 100%;
 		height: 100%;
-		border: 1px solid #f00;
+		/*border: 1px solid #f00;*/
 		clear: both;
 		margin: 0 auto;
 	}
@@ -103,8 +103,7 @@ do_action('action_header_bottom');
 	#contentleft {
 		display: block;
 		width: 35%;
-		height: auto;
-		border: 1px solid #0f0;
+		/*border: 1px solid #00f;*/
 		float: left;
 		height: 100%;
 	}
@@ -112,19 +111,19 @@ do_action('action_header_bottom');
 	#contentmid {
 		display: block;
 		width: 35%;
-		height: auto;
-		border: 1px solid #f00;
+		height: 100%;
+		/*border: 1px solid #f00;*/
 		float: left;
-		padding: 30px 0 0 0;
+		/*padding: 30px 0 0 0;*/
 	}
 
 	#contentright {
 		display: block;
-		width: 29%;
-		height: auto;
-		/*border: 1px solid #00f; */
+		width: 30%;
+		height: 100%;
+		/*border: 1px solid #00f;*/
 		float: right;
-		margin-top: 35px;
+		/*margin-top: 35px;*/
 	}
 
 	#studentphotobg {
