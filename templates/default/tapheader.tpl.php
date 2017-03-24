@@ -254,7 +254,7 @@ do_action('action_header_bottom');
 
 	#contentprevious {
 		display: block;
-		/*border: 1px solid #f00;*/
+		border: 1px solid #00f;
 		height: auto;
 		/*margin: 50px 0 0 0;*/
 		text-align: center;
@@ -309,7 +309,7 @@ do_action('action_header_bottom');
 		display: block;
 		width: auto;
 		/*height: 160px;*/
-		/*border: 1px solid #f00;*/
+		border: 1px solid #f00;
 	}
 
 	.br {

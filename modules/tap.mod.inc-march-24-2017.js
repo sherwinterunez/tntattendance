@@ -230,17 +230,17 @@ jQuery(document).ready(function($) {
 	var studentphotobgHeight = parseInt(contentleftWidth * 0.75);
 	var studentphotobgMarginTop = (contentmiddleHeight - studentphotobgHeight) / 2;
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
-	var studentcontentHeight = contentmiddleHeight / 2 ; //jQuery("#studentcontent").height(); // + 100;
+	var studentcontentHeight = jQuery("#studentcontent").height(); // + 100;
 	var contentpreviousHeight = jQuery("#contentprevious").height(); // + 20;
-	//var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 3;
+	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 3;
 	var contentpreviousWidth = jQuery("#contentprevious").width();
 	var studentprevWidth = 0;
 	var studentprevCtr = 0;
 	var studentprevMargin = 0;
 
-	//if(studentcontentMarginTop<0) {
-		//studentcontentMarginTop = 20;
-	//}
+	if(studentcontentMarginTop<0) {
+		studentcontentMarginTop = 20;
+	}
 
 	//console.log('studentcontentMarginTop',studentcontentMarginTop);
 
@@ -267,10 +267,8 @@ jQuery(document).ready(function($) {
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
 	jQuery("#studentphotobg").css({marginTop:studentphotobgMarginTop});
 	jQuery("#info").css({marginTop:infoMarginTop});
-	//jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
-	//jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
-	jQuery("#studentcontent").css({height:studentcontentHeight});
-	jQuery("#contentprevious").css({height:studentcontentHeight});
+	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
+	jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
 	jQuery("#studentphotobg").css({width:studentphotobgHeight,height:studentphotobgHeight});
 	jQuery("#studentphoto").css({width:studentphotobgHeight,height:studentphotobgHeight});
 	jQuery("#studentphoto img").css({width:studentphotobgHeight,height:studentphotobgHeight});
