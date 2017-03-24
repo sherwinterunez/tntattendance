@@ -159,6 +159,26 @@ srt.etap = function() {
 				jQuery('#studentremarks').html(data.remarks);
 			}
 
+			if(typeof data.previous == 'object' &&  data.previous.length>0 ) {
+
+				var obj = [];
+				var max = 0;
+				var ctr = 0;
+
+				jQuery(".studentprev").each(function(idx){
+					obj[max] = this;
+					max++;
+				});
+
+				for(var prop in data.previous) {
+					if(typeof obj[ctr] == 'object') {
+						jQuery(obj[ctr]).html(data.previous[prop].html);
+						console.log(data.previous[prop]);
+						ctr++;
+					}
+				}
+			}
+
 		});
 
 
@@ -223,6 +243,7 @@ jQuery(document).ready(function($) {
 		studentprevCtr++;
 		studentprevWidth = studentprevWidth + jQuery(this).width();
 		//console.log('studentprevWidth',studentprevWidth);
+		//console.log(studentprev,idx);
 	});
 
 	studentprevMargin = ((contentpreviousWidth - studentprevWidth - 10) / studentprevCtr) / 2;

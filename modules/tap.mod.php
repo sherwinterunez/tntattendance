@@ -428,6 +428,60 @@ if(!class_exists('APP_Tap')) {
 							$retval['yearlevel'] = !empty($vars['studentinfo']['studentprofile_yearlevel']) ? getGroupRefName($vars['studentinfo']['studentprofile_yearlevel']) : 'Year Level';
 							$retval['section'] = !empty($vars['studentinfo']['studentprofile_section']) ? getGroupRefName($vars['studentinfo']['studentprofile_section']) : 'Section';
 
+							if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
+								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+								die;
+							}
+
+							//pre(array('$result'=>$result));
+
+							if(!empty($result['rows'][0]['studentdtr_id'])) {
+
+								$previous = array();
+
+								$first = true;
+
+								foreach($result['rows'] as $k=>$student) {
+
+									if($first) {
+										$first = false;
+										continue;
+									}
+
+									$tmp = array();
+
+									if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
+
+										$fullname = '';
+
+										if(!empty($profile['studentprofile_firstname'])) {
+											$fullname .= trim($profile['studentprofile_firstname']).' ';
+										}
+
+										if(!empty($profile['studentprofile_middlename'])) {
+											$fullname .= trim($profile['studentprofile_middlename']).' ';
+										}
+
+										if(!empty($profile['studentprofile_lastname'])) {
+											$fullname .= trim($profile['studentprofile_lastname']).' ';
+										}
+
+										$tmp['dtrid'] = $student['studentdtr_id'];
+										$tmp['studentid'] = $profile['studentprofile_id'];
+										$tmp['fullname'] = strtoupper(trim($fullname));
+										$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
+										$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
+										$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
+										$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
+
+										$previous[] = $tmp;
+									}
+								}
+
+							}
+
+							$retval['previous'] = $previous;
+
 							//pre(array('$retval'=>$retval));
 
 							header_json();

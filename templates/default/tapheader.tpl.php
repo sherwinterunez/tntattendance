@@ -359,15 +359,16 @@ do_action('action_header_bottom');
 			<br style="clear:both;" />
 		</div>
 		<div id="contentprevious">
-			<div id="studentprev" class="studentprev">
+			<?php /*<div id="studentprev" class="studentprev">
 				<img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" />
 				<div id="studentprevlabel">Joshua Daniel Padilla Terunez</div>
 				<div id="studentprevlabel">Grade 1 - St. Michael</div>
 				<br class="br" />
-			</div>
-			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
-			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
-			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
+			</div>*/ ?>
+			<div id="studentprev" class="studentprev"></div>
+			<div id="studentprev" class="studentprev"></div>
+			<div id="studentprev" class="studentprev"></div>
+			<div id="studentprev" class="studentprev"></div>
 			<br style="clear:both;" />
 		</div>
 	</div>
