@@ -208,9 +208,9 @@ jQuery(document).ready(function($) {
 	var studentprevCtr = 0;
 	var studentprevMargin = 0;
 
-	//if(studentcontentMarginTop<0) {
-		//studentcontentMarginTop = 20;
-	//}
+	if(studentcontentMarginTop<0) {
+		studentcontentMarginTop = 20;
+	}
 
 	console.log('studentcontentMarginTop',studentcontentMarginTop);
 
@@ -235,6 +235,7 @@ jQuery(document).ready(function($) {
 	jQuery("#studentphotobg").css({marginTop:studentphotobgMarginTop});
 	jQuery("#info").css({marginTop:infoMarginTop});
 	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
+	jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});

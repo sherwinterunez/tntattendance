@@ -258,6 +258,8 @@ do_action('action_header_bottom');
 		height: auto;
 		/*margin: 50px 0 0 0;*/
 		text-align: center;
+		/*padding: 0;
+		padding-top: 50px;*/
 	}
 
 	#studentprev {
