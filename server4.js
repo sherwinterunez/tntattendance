@@ -1,7 +1,7 @@
 
 
 //const TIMEOUT = 10000;
-const TIMEOUT = 10;
+const TIMEOUT = 100;
 
 const PORT = 8080;
 const ADDRESS = '0.0.0.0';
