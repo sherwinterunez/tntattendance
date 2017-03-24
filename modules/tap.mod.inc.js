@@ -200,13 +200,19 @@ jQuery(document).ready(function($) {
 	var studentphotobgHeight = 350;
 	var studentphotobgMarginTop = (contentmiddleHeight - studentphotobgHeight) / 2;
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
-	var studentcontentHeight = jQuery("#studentcontent").height() + 100;
-	var contentpreviousHeight = jQuery("#contentprevious").height() + 20;
+	var studentcontentHeight = jQuery("#studentcontent").height(); // + 100;
+	var contentpreviousHeight = jQuery("#contentprevious").height(); // + 20;
 	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 2;
 	var contentpreviousWidth = jQuery("#contentprevious").width();
 	var studentprevWidth = 0;
 	var studentprevCtr = 0;
 	var studentprevMargin = 0;
+
+	//if(studentcontentMarginTop<0) {
+		//studentcontentMarginTop = 20;
+	//}
+
+	console.log('studentcontentMarginTop',studentcontentMarginTop);
 
 	jQuery(".studentprev").each(function(idx){
 		studentprevCtr++;

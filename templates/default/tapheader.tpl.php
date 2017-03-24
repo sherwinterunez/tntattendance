@@ -256,7 +256,7 @@ do_action('action_header_bottom');
 		display: block;
 		/*border: 1px solid #f00;*/
 		height: auto;
-		margin: 50px 0 0 0;
+		/*margin: 50px 0 0 0;*/
 		text-align: center;
 	}
 
@@ -265,6 +265,7 @@ do_action('action_header_bottom');
 		width: 150px;
 		height: auto;
 		float: left;
+		overflow: hidden;
 		/*border: 1px solid #f00;
 		margin: 5px;*/
 	}
@@ -316,6 +317,14 @@ do_action('action_header_bottom');
 		clear: both;
 	}
 
+	#studentprevlabel {
+		display: block;
+		width: auto;
+		height: auto;
+		text-align: center;
+		font-size: 14px;
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -350,10 +359,11 @@ do_action('action_header_bottom');
 		<div id="contentprevious">
 			<div id="studentprev" class="studentprev">
 				<img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" />
-				<div>Sherwin Terunez</div>
-				<div>Grade 1 - St. Michael</div>
+				<div id="studentprevlabel">Joshua Daniel Padilla Terunez</div>
+				<div id="studentprevlabel">Grade 1 - St. Michael</div>
 				<br class="br" />
 			</div>
+			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
 			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
 			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
 			<br style="clear:both;" />
