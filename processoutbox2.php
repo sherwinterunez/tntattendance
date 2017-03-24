@@ -238,7 +238,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	if(!empty($result['rows'][0]['smsoutbox_id'])&&!empty($result['rows'][0]['elapsedtime'])) {
 		if(intval($result['rows'][0]['elapsedtime'])>60) {
-			$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1),'smsoutbox_id='.$result['rows'][0]['smsoutbox_id']);
+			$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1,'smsoutbox_simnumber'=>$mobileNo),'smsoutbox_id='.$result['rows'][0]['smsoutbox_id']);
 		}
 	}
 
