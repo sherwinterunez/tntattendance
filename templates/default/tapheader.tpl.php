@@ -254,8 +254,9 @@ do_action('action_header_bottom');
 
 	#contentprevious {
 		display: block;
-		height: auto;
+		/*height: auto;*/
 		text-align: center;
+		/*border-top: 1px solid #00f;*/
 		/*padding: 0;
 		padding-top: 50px;*/
 		/*margin: 50px 0 0 0;*/
@@ -310,6 +311,7 @@ do_action('action_header_bottom');
 		width: auto;
 		/*height: 160px;*/
 		/*border: 1px solid #f00;*/
+		/*border-bottom: 1px solid #f00;*/
 	}
 
 	.br {
@@ -369,7 +371,7 @@ do_action('action_header_bottom');
 			<div id="out">&nbsp;</div>
 			<div class="label">LATE:</div>
 			<div id="late">&nbsp;</div>
-			<br style="clear:both;" />
+			<br class="br" />
 		</div>
 	</div>
 	<div id="contentmid">
@@ -378,7 +380,7 @@ do_action('action_header_bottom');
 				<div id="studentname">&nbsp;</div>
 				<div id="studentyearsection">&nbsp;</div>
 				<div id="studentremarks">&nbsp;</div>
-				<br style="clear:both;" />
+				<br class="br" />
 			</div>
 		</div>
 		<div id="contentprevious">
