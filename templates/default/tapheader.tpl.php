@@ -319,6 +319,10 @@ do_action('action_header_bottom');
 		clear: both;
 	}
 
+	.bold {
+		font-weight: bold;
+	}
+
 	#studentprevlabel {
 		display: block;
 		width: auto;
