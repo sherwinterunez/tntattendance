@@ -254,18 +254,24 @@ do_action('action_header_bottom');
 
 	#contentprevious {
 		display: block;
-		border: 1px solid #f00;
+		/*border: 1px solid #f00;*/
 		height: auto;
-		margin: 80px 0 0 0;
+		margin: 50px 0 0 0;
+		text-align: center;
 	}
 
 	#studentprev {
 		display: block;
-		width: 100px;
-		height: 100px;
+		width: 150px;
+		height: auto;
 		float: left;
-		border: 1px solid #f00;
-		margin: 5px;
+		/*border: 1px solid #f00;
+		margin: 5px;*/
+	}
+
+	#studentprev img {
+		max-width: 150px;
+		max-height: 150px;
 	}
 
 	#info {
@@ -303,6 +309,13 @@ do_action('action_header_bottom');
 		/*border: 1px solid #f00;*/
 	}
 
+	.br {
+		display: block;
+		height: 0;
+		width: 0;
+		clear: both;
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -335,10 +348,14 @@ do_action('action_header_bottom');
 			<br style="clear:both;" />
 		</div>
 		<div id="contentprevious">
-			<div id="studentprev">#studentprev</div>
-			<div id="studentprev">#studentprev</div>
-			<div id="studentprev">#studentprev</div>
-			<div id="studentprev">#studentprev</div>
+			<div id="studentprev" class="studentprev">
+				<img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" />
+				<div>Sherwin Terunez</div>
+				<div>Grade 1 - St. Michael</div>
+				<br class="br" />
+			</div>
+			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
+			<div id="studentprev" class="studentprev"><img src="http://192.168.1.35/studentphoto.php?size=150&pid=1" /></div>
 			<br style="clear:both;" />
 		</div>
 	</div>

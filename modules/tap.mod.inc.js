@@ -203,8 +203,26 @@ jQuery(document).ready(function($) {
 	var studentcontentHeight = jQuery("#studentcontent").height() + 100;
 	var contentpreviousHeight = jQuery("#contentprevious").height() + 20;
 	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 2;
+	var contentpreviousWidth = jQuery("#contentprevious").width();
+	var studentprevWidth = 0;
+	var studentprevCtr = 0;
+	var studentprevMargin = 0;
 
-	//console.log('studentcontent',jQuery("#studentcontent").height());
+	jQuery(".studentprev").each(function(idx){
+		studentprevCtr++;
+		studentprevWidth = studentprevWidth + jQuery(this).width();
+		//console.log('studentprevWidth',studentprevWidth);
+	});
+
+	studentprevMargin = ((contentpreviousWidth - studentprevWidth - 10) / studentprevCtr) / 2;
+
+	jQuery(".studentprev").each(function(idx){
+		jQuery(this).css({marginLeft:studentprevMargin,marginRight:studentprevMargin});
+	});
+
+	//console.log('studentprev',jQuery("#studentprev").width());
+
+	console.log('studentprevWidth',studentprevWidth);
 
 	/*jQuery("#info").html("width: "+width+", height: "+height);*/
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
