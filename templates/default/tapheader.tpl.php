@@ -264,7 +264,7 @@ do_action('action_header_bottom');
 	#info {
 		display: block;
 		width: 400px;
-		border: 1px solid #f00;
+		/*border: 1px solid #f00;*/
 		clear:both;
 		margin: 50px auto 0 auto;
 	}
