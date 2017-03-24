@@ -110,7 +110,7 @@ do_action('action_header_bottom');
 
 	#contentmid {
 		display: block;
-		width: 64%;
+		width: 59%;
 		height: 100%;
 		/*border: 1px solid #f00;*/
 		float: left;
@@ -119,7 +119,7 @@ do_action('action_header_bottom');
 
 	#contentright {
 		display: block;
-		width: 1%;
+		width: 5%;
 		height: 100%;
 		/*border: 1px solid #00f;*/
 		float: right;
@@ -201,6 +201,8 @@ do_action('action_header_bottom');
 		font-size: 45px;
 		margin: 10px;
 		clear: both;
+		text-align: center;
+		font-weight: bold;
 		/*border: 1px solid #f00;*/
 	}
 
@@ -208,12 +210,14 @@ do_action('action_header_bottom');
 		display: block;
 		font-size: 35px;
 		margin: 10px 10px;
+		text-align: center;
 	}
 
 	#studentremarks {
 		display: block;
 		font-size: 35px;
 		margin: 20px 10px 10px 10px;
+		text-align: center;
 	}
 
 	#contenttopleft {
@@ -314,15 +318,15 @@ do_action('action_header_bottom');
 		</div>
 	</div>
 	<div id="contentmid">
+		<div id="studentname">#studentname&nbsp;</div>
+		<div id="studentyearsection">#studentyearsection&nbsp;</div>
+		<div id="studentremarks">#studentremarks&nbsp;</div>
 		<div id="contentprevious">
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
 		</div>
-		<div id="studentname">#studentname&nbsp;</div>
-		<div id="studentyearsection">#studentyearsection&nbsp;</div>
-		<div id="studentremarks">#studentremarks&nbsp;</div>
 	</div>
 	<div id="contentright">
 		<?php /*
