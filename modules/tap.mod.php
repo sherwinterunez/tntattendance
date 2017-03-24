@@ -266,6 +266,17 @@ if(!class_exists('APP_Tap')) {
 					$from = date2timestamp("$month/$day/$year 00:00:00",'m/d/Y H:i:s');
 					$to = date2timestamp("$month/$day/$year 23:59:59",'m/d/Y H:i:s');
 
+					$startTime = getSectionStartTime($vars['studentinfo']['studentprofile_section']);
+					$endTime = getSectionEndTime($vars['studentinfo']['studentprofile_section']);
+
+					if(!empty($startTime)) {
+						$startTimeStamp = date2timestamp("$month/$day/$year $startTime",'m/d/Y H:i:s');
+					}
+
+					if(!empty($endTime)) {
+						$endTimeStamp = date2timestamp("$month/$day/$year $endTime",'m/d/Y H:i:s');
+					}
+
 					if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 1"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
@@ -407,6 +418,10 @@ if(!class_exists('APP_Tap')) {
 							$retval['type'] = $type;
 							$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$vars['studentinfo']['studentprofile_id'];
 							$retval['studentinfo'] = $vars['studentinfo'];
+							$retval['startTimeStamp'] = $startTimeStamp;
+							$retval['startTime'] = pgDateUnix($startTimeStamp);
+							$retval['endTimeStamp'] = $endTimeStamp;
+							$retval['endTime'] = pgDateUnix($endTimeStamp);
 							//$retval['studentdtr'] = $vars['studentdtr'];
 
 							$fullname = '';

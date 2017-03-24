@@ -1043,6 +1043,52 @@ function getGroupRefName($id=false) {
 	return false;
 }
 
+function getSectionStartTime($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_starttime'])) {
+		return $result['rows'][0]['groupref_starttime'];
+	}
+
+	return false;
+}
+
+function getSectionEndTime($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_endtime'])) {
+		return $result['rows'][0]['groupref_endtime'];
+	}
+
+	return false;
+}
+
 function getGuardianMobileNo($studentId) {
 	global $appdb;
 
@@ -1353,6 +1399,20 @@ function pgDate($dt=false,$format=false) {
 	$date = strtotime($dt);
 
 	return date($format,$date);
+}
+
+function pgDateUnix($dt=false,$format=false) {
+	if(!empty($dt)&&is_numeric($dt)) {
+	} else false;
+
+	if(!empty($format)) {
+	} else {
+		$format = getOption('$DISPLAY_DATE_FORMAT','r');
+	}
+
+	//$date = strtotime($dt);
+
+	return date($format,$dt);
 }
 
 function getDbDate($mode=0,$f1='m-d-Y',$f2='H:i') {
