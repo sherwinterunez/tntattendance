@@ -79,8 +79,11 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 			if($width<$height) {
 				$img->crop($width);
 				$img->resizeToWidth($size);
-			} else {
+			} else
+			if($height<$width) {
 				$img->crop($height);
+				$img->resizeToHeight($size);
+			} else {
 				$img->resizeToHeight($size);
 			}
 		}
