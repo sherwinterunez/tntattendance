@@ -110,7 +110,7 @@ do_action('action_header_bottom');
 
 	#contentmid {
 		display: block;
-		width: 35%;
+		width: 64%;
 		height: 100%;
 		/*border: 1px solid #f00;*/
 		float: left;
@@ -119,7 +119,7 @@ do_action('action_header_bottom');
 
 	#contentright {
 		display: block;
-		width: 30%;
+		width: 1%;
 		height: 100%;
 		/*border: 1px solid #00f;*/
 		float: right;
@@ -266,7 +266,8 @@ do_action('action_header_bottom');
 		width: 400px;
 		/*border: 1px solid #f00;*/
 		clear:both;
-		margin: 50px auto 0 auto;
+		margin: 0 auto;
+		margin-top: 0;
 	}
 
 	#info .label {
