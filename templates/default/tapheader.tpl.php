@@ -325,6 +325,7 @@ do_action('action_header_bottom');
 		height: auto;
 		text-align: center;
 		font-size: 14px;
+		padding: 3px;
 	}
 
 </style>
