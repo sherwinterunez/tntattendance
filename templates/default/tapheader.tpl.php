@@ -256,7 +256,7 @@ do_action('action_header_bottom');
 		display: block;
 		border: 1px solid #f00;
 		height: auto;
-		margin: 20px 0;
+		margin: 80px 0 0 0;
 	}
 
 	#studentprev {
