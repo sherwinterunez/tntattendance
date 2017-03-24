@@ -179,6 +179,12 @@ srt.etap = function() {
 				}
 			}
 
+			var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+			var studentcontentHeight  = jQuery("#studentcontent").height();
+			var studentcontentdivMarginTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
+
+			jQuery("#studentcontentdiv").css({marginTop:studentcontentdivMarginTop});
+
 		});
 
 
