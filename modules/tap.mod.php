@@ -314,6 +314,8 @@ if(!class_exists('APP_Tap')) {
 						$vars['studentdtr'] = $result['rows'][0];
 						$vars['$appdb'] = $appdb;
 
+						//pre(array('$vars'=>$vars));
+
 						if($vars['studentdtr']['studentdtr_type']=='IN') {
 							$type = 'OUT';
 						} else {
@@ -326,7 +328,9 @@ if(!class_exists('APP_Tap')) {
 
 						//$interval = $post['unixtime'] - $vars['studentdtr']['studentdtr_tappedstamp'];
 
-						$interval = intval($vars['studentdtr']['studentdtr_tappedstamp']);
+						$interval = intval($vars['studentdtr']['elapsedtime']);
+
+						//pre(array('$interval'=>$interval,'$settings_rfidinterval'=>$settings_rfidinterval));
 
 						if($interval>$settings_rfidinterval) {
 
