@@ -102,6 +102,10 @@ if(!class_exists('APP_SimpleImage')) {
 			return imagesy($this->image);
 		}
 
+		function crop($size) {
+			$this->image = imagecrop($this->image, array('x' => 0, 'y' => 0, 'width' => $size, 'height' => $size));
+		}
+
 		function resizeToHeight($height) {
 			$ratio = $height / $this->getHeight();
 			$width = $this->getWidth() * $ratio;
