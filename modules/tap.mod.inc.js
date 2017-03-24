@@ -235,7 +235,7 @@ jQuery(document).ready(function($) {
 	jQuery("#studentphotobg").css({marginTop:studentphotobgMarginTop});
 	jQuery("#info").css({marginTop:infoMarginTop});
 	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
-	jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
+	jQuery("#contentprevious").css({marginTop:(studentcontentMarginTop/2)});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
