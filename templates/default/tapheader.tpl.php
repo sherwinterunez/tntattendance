@@ -365,7 +365,12 @@ do_action('action_header_bottom');
 				<div id="studentprevlabel">Grade 1 - St. Michael</div>
 				<br class="br" />
 			</div>*/ ?>
-			<div id="studentprev" class="studentprev"></div>
+			<div id="studentprev" class="studentprev">
+				<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+				<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
+				<div id="studentprevlabel">&nbsp;</div>
+				<br class="br" />
+			</div>
 			<div id="studentprev" class="studentprev"></div>
 			<div id="studentprev" class="studentprev"></div>
 			<div id="studentprev" class="studentprev"></div>
