@@ -202,7 +202,7 @@ jQuery(document).ready(function($) {
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
 	var studentcontentHeight = jQuery("#studentcontent").height(); // + 100;
 	var contentpreviousHeight = jQuery("#contentprevious").height(); // + 20;
-	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 2;
+	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 4;
 	var contentpreviousWidth = jQuery("#contentprevious").width();
 	var studentprevWidth = 0;
 	var studentprevCtr = 0;
@@ -235,7 +235,7 @@ jQuery(document).ready(function($) {
 	jQuery("#studentphotobg").css({marginTop:studentphotobgMarginTop});
 	jQuery("#info").css({marginTop:infoMarginTop});
 	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
-	jQuery("#contentprevious").css({marginTop:(studentcontentMarginTop/2)});
+	jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
