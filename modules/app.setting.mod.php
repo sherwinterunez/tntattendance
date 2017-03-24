@@ -83,6 +83,9 @@ if(!class_exists('APP_app_setting')) {
 				$default_bulletin = 'DEMO UNIT... OBIS SOFTWARE TECHNOLOGY... OBIS SOFTWARE TECHNOLOGY... DEMO UNIT...';
 				$default_timeinnotification = '%STUDENTFULLNAME% has timed-in at %DATETIME%';
 				$default_timeoutnotification = '%STUDENTFULLNAME% has timed-out at %DATETIME%';
+				$default_timeinmessage = 'Welcome to School! Have a nice day!';
+				$default_timeoutmessage = 'Goodbye! See you later!';
+				$default_latemessage = 'Welcome to School! Have a nice day! Please be early next time!';
 
 				$settings_electronicbulletin = getOption('$SETTINGS_ELECTRONICBULLETIN',$default_bulletin);
 				$settings_loginnotificationschooladmin = getOption('$SETTINGS_LOGINNOTIFICATIONSCHOOLADMIN','');
@@ -98,6 +101,10 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_timeinnotification = getOption('$SETTINGS_TIMEINNOTIFICATION',$default_timeinnotification);
 				$settings_timeoutnotification = getOption('$SETTINGS_TIMEOUTNOTIFICATION',$default_timeoutnotification);
+
+				$settings_timeinmessage = getOption('$SETTINGS_TIMEINMESSAGE',$default_timeinmessage);
+				$settings_timeoutmessage = getOption('$SETTINGS_TIMEOUTMESSAGE',$default_timeoutmessage);
+				$settings_latemessage = getOption('$SETTINGS_LATEMESSAGE',$default_latemessage);
 
 				if(!empty($post['method'])&&($post['method']=='settingedit')) {
 					$readonly = false;
@@ -130,6 +137,12 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_TIMEINNOTIFICATION',!empty($post['settings_timeinnotification'])?$post['settings_timeinnotification']:$default_timeinnotification);
 
 					setSetting('$SETTINGS_TIMEOUTNOTIFICATION',!empty($post['settings_timeoutnotification'])?$post['settings_timeoutnotification']:$default_timeoutnotification);
+
+					setSetting('$SETTINGS_TIMEINMESSAGE',!empty($post['settings_timeinmessage'])?$post['settings_timeinmessage']:$default_timeinmessage);
+
+					setSetting('$SETTINGS_TIMEOUTMESSAGE',!empty($post['settings_timeoutmessage'])?$post['settings_timeoutmessage']:$default_timeoutmessage);
+
+					setSetting('$SETTINGS_LATEMESSAGE',!empty($post['settings_latemessage'])?$post['settings_latemessage']:$default_latemessage);
 
 					json_encode_return($retval);
 					die;
@@ -291,6 +304,45 @@ if(!class_exists('APP_app_setting')) {
 					'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_rfidinterval) ? $settings_rfidinterval : '5',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'TIME-IN MESSAGE',
+					'inputWidth' => 500,
+					'rows' => 5,
+					'labelWidth' => 200,
+					'name' => 'settings_timeinmessage',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_timeinmessage) ? $settings_timeinmessage : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'TIME-OUT MESSAGE',
+					'inputWidth' => 500,
+					'rows' => 5,
+					'labelWidth' => 200,
+					'name' => 'settings_timeoutmessage',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_timeoutmessage) ? $settings_timeoutmessage : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'LATE MESSAGE',
+					'inputWidth' => 500,
+					'rows' => 5,
+					'labelWidth' => 200,
+					'name' => 'settings_latemessage',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_latemessage) ? $settings_latemessage : '',
 				);
 
 				$params['tbServer'][] = array(

@@ -470,13 +470,13 @@ if(!class_exists('APP_Tap')) {
 							//$retval['studentdtr'] = $vars['studentdtr'];
 
 							if($type=='IN') {
-								$retval['remarks'] = 'Welcome to School! Have a nice day!';
+								$retval['remarks'] = getOption('$SETTINGS_TIMEINMESSAGE');
 
 								if(!empty($late)) {
-									$retval['remarks'] = $retval['remarks'] . ' Please be early next time!';
+									$retval['remarks'] = getOption('$SETTINGS_LATEMESSAGE');
 								}
 							} else {
-								$retval['remarks'] = 'Good bye. See you later.';
+								$retval['remarks'] = getOption('$SETTINGS_TIMEOUTMESSAGE');
 							}
 
 							$fullname = '';
