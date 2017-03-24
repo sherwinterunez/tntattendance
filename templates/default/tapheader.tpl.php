@@ -358,9 +358,9 @@ do_action('action_header_bottom');
 	</div>
 	<div id="contentmid">
 		<div id="studentcontent">
-			<div id="studentname">#studentname&nbsp;</div>
-			<div id="studentyearsection">#studentyearsection&nbsp;</div>
-			<div id="studentremarks">#studentremarks&nbsp;</div>
+			<div id="studentname">&nbsp;</div>
+			<div id="studentyearsection">&nbsp;</div>
+			<div id="studentremarks">&nbsp;</div>
 			<br style="clear:both;" />
 		</div>
 		<div id="contentprevious">

@@ -299,6 +299,12 @@ if(!class_exists('APP_Tap')) {
 						die;
 					}
 
+					$late = false;
+
+					if(!empty($startTimeStamp)&&$post['unixtime']>$startTimeStamp) {
+						$late = true;
+					}
+
 					$type = 'IN';
 
 					$bypass = false;
@@ -338,6 +344,10 @@ if(!class_exists('APP_Tap')) {
 						$content['studentdtr_active'] = 1;
 						$content['studentdtr_type'] = $type;
 
+						if($type=='IN'&&!empty($late)) {
+							$content['studentdtr_late'] = 1;
+						}
+
 						if(!($result = $appdb->insert("tbl_studentdtr",$content,"studentdtr_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
@@ -353,6 +363,10 @@ if(!class_exists('APP_Tap')) {
 							if($type=='IN') {
 								$content['studentprofile_in'] = $vars['studentinfo']['studentprofile_in'] + 1;
 								$studentprofile_out = $vars['studentinfo']['studentprofile_out'];
+
+								if(!empty($late)) {
+									$content['studentprofile_late'] = $vars['studentinfo']['studentprofile_late'] + 1;
+								}
 							} else {
 								$content['studentprofile_out'] = $vars['studentinfo']['studentprofile_out'] + 1;
 								$studentprofile_in = $vars['studentinfo']['studentprofile_in'];
@@ -442,6 +456,16 @@ if(!class_exists('APP_Tap')) {
 							$retval['endTimeStamp'] = $endTimeStamp;
 							$retval['endTime'] = pgDateUnix($endTimeStamp);
 							//$retval['studentdtr'] = $vars['studentdtr'];
+
+							if($type=='IN') {
+								$retval['remarks'] = 'Welcome to School! Have a nice day!';
+
+								if(!empty($late)) {
+									$retval['remarks'] = $retval['remarks'] . ' Please be early next time!';
+								}
+							} else {
+								$retval['remarks'] = 'Good bye. See you later.';
+							}
 
 							$fullname = '';
 
