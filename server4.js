@@ -258,16 +258,16 @@ function doInit() {
 
 function syncToServer() {
 
-  console.log("synctoserver.php running...");
+  //console.log("synctoserver.php running...");
 
   //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
   phpfpm.run('synctoserver.php', function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
 
-      console.log("synctoserver.php done.");
+      //console.log("synctoserver.php done.");
 
-      console.log(output);
+      if(output) console.log(output);
 
       //setTimeout(doInit, (60*1000*2));
 
@@ -285,16 +285,16 @@ function syncToServer() {
 }
 
 function processNotification() {
-  console.log("processnotification.php running...");
+  //console.log("processnotification.php running...");
 
   //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
   phpfpm.run('processnotification.php', function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
 
-      console.log("processnotification.php done.");
+      //console.log("processnotification.php done.");
 
-      console.log(output);
+      if(output) console.log(output);
 
       //setTimeout(doInit, (60*1000*2));
 
@@ -398,15 +398,15 @@ function simInit(dev,sim,ip) {
 
     processCount++;
 
-    console.log("siminit.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("siminit.php "+dev+" "+sim+" "+ip+" running...");
 
     phpfpm.run('siminit.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        console.log("siminit.php "+dev+" "+sim+" "+ip+" done.");
+        //console.log("siminit.php "+dev+" "+sim+" "+ip+" done.");
 
-        console.log(output);
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
@@ -426,16 +426,16 @@ function retrieveSMS(dev,sim,ip) {
     //processCount++;
 
     //console.log("retrieve2.php "+dev+" "+sim+" "+ip+" running...");
-    console.log("retrieve4.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("retrieve4.php "+dev+" "+sim+" "+ip+" running...");
 
     //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     phpfpm.run('retrieve4.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        console.log("retrieve4.php "+dev+" "+sim+" "+ip+" done.");
+        //console.log("retrieve4.php "+dev+" "+sim+" "+ip+" done.");
 
-        console.log(output);
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
@@ -455,15 +455,15 @@ function processCommands(dev,sim,ip) {
 
     //processCount++;
 
-    console.log("process4.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("process4.php "+dev+" "+sim+" "+ip+" running...");
 
     phpfpm.run('process4.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        console.log("process4.php "+dev+" "+sim+" "+ip+" done.");
+        //console.log("process4.php "+dev+" "+sim+" "+ip+" done.");
 
-        console.log(output);
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
@@ -482,15 +482,15 @@ function processOutbox(dev,sim,ip) {
 
     //processCount++;
 
-    console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" running...");
 
     phpfpm.run('processoutbox2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" done.");
+        //console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" done.");
 
-        console.log(output);
+        if(output) console.log(output);
 
         setTimeout(function(){
           checkError(dev,sim,ip)
@@ -553,15 +553,15 @@ function checkError(dev,sim,ip) {
 
     //processCount++;
 
-    console.log("checkerror.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("checkerror.php "+dev+" "+sim+" "+ip+" running...");
 
     phpfpm.run('checkerror.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        console.log("checkerror.php "+dev+" "+sim+" "+ip+" done.");
+        //console.log("checkerror.php "+dev+" "+sim+" "+ip+" done.");
 
-        console.log(output);
+        if(output) console.log(output);
 
         if(output.match(/STATUS_SIMERROR/)) {
           runPortCheck = true;
