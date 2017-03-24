@@ -294,7 +294,7 @@ if(!class_exists('APP_Tap')) {
 						$endTimeStamp = date2timestamp("$month/$day/$year $endTime",'m/d/Y H:i:s');
 					}
 
-					if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 1"))) {
+					if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from studentdtr_tappedstamp)) as elapsedtime from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 1"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
 					}
@@ -310,6 +310,7 @@ if(!class_exists('APP_Tap')) {
 					$bypass = false;
 
 					if(!empty($result['rows'][0]['studentdtr_id'])) {
+						$studentdtr_id = $result['rows'][0]['studentdtr_id'];
 						$vars['studentdtr'] = $result['rows'][0];
 						$vars['$appdb'] = $appdb;
 
@@ -321,12 +322,19 @@ if(!class_exists('APP_Tap')) {
 
 						$settings_rfidinterval = getOption('$SETTINGS_RFIDINTERVAL',0) * 60;
 
-						$interval = $post['unixtime'] - $vars['studentdtr']['studentdtr_unixtime'];
+						//$interval = $post['unixtime'] - $vars['studentdtr']['studentdtr_unixtime'];
+
+						//$interval = $post['unixtime'] - $vars['studentdtr']['studentdtr_tappedstamp'];
+
+						$interval = intval($vars['studentdtr']['studentdtr_tappedstamp']);
 
 						if($interval>$settings_rfidinterval) {
 
 						} else {
 							$bypass = true;
+
+							$appdb->update("tbl_studentdtr",array('studentdtr_tappedstamp'=>'now()'),"studentdtr_id=".$studentdtr_id);
+
 						}
 
 						$vars['interval'] = $interval;
