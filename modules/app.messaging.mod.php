@@ -817,6 +817,20 @@ define ("DEVICE_OPENED", 2);
 						} else {
 							$retval['return_message'] = 'Can\'t connect to server.';
 						}
+					} else
+					if($this->vars['post']['method']=='serverreboot') {
+						if($curl->get('http://127.0.0.1:8080/reboot')) {
+							$retval['return_message'] = 'Server rebooted.';
+						} else {
+							$retval['return_message'] = 'Can\'t connect to server.';
+						}
+					} else
+					if($this->vars['post']['method']=='serverpoweroff') {
+						if($curl->get('http://127.0.0.1:8080/poweroff')) {
+							$retval['return_message'] = 'Server powered off.';
+						} else {
+							$retval['return_message'] = 'Can\'t connect to server.';
+						}
 					}
 
 					json_encode_return($retval);
