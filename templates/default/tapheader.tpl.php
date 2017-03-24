@@ -128,12 +128,12 @@ do_action('action_header_bottom');
 
 	#studentphotobg {
 		display: block;
-		width: 350px;
-		height: 350px;
+		/*width: 350px;
+		height: 350px;*/
 		/*border: 1px solid #f00;*/
 		/*margin: 100px 0 0 50px;*/
 		margin: 0 auto;
-		background: url("/templates/default/tap/studentphoto.png?<?php echo time(); ?>") no-repeat 0px 0px;
+		/*background: url("/templates/default/tap/studentphoto.png?<?php echo time(); ?>") no-repeat 0px 0px;*/
 		/*border: 1px solid #00f;*/
 		overflow: hidden;
 		-moz-box-shadow: 3px 7px 28px -2px #212121;
@@ -143,16 +143,16 @@ do_action('action_header_bottom');
 
 	#studentphoto {
 		display: block;
-		width: 350px; /* 351px by 350px */
-		height: 350px;
+		/*width: 350px;
+		height: 350px;*/
 		/*margin: 25px 0 0 29px;*/
 		overflow: hidden;
 		/*border: 1px solid #f00;*/
 	}
 
 	#studentphoto img {
-		max-width: 350px; /* 351px by 350px */
-		max-height: 350px;
+		/*max-width: 350px;
+		max-height: 350px;*/
 	}
 
 	#sidenumber {

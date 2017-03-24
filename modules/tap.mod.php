@@ -239,7 +239,7 @@ if(!class_exists('APP_Tap')) {
 
 			//pre(array('$vars'=>$vars));
 
-			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])) {
+			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])&&!empty($vars['post']['imagesize'])&&is_numeric($vars['post']['imagesize'])) {
 
 				$post = $vars['post'];
 
@@ -405,7 +405,7 @@ if(!class_exists('APP_Tap')) {
 							$retval['out'] = intval($studentprofile_out);
 							$retval['late'] = intval($studentprofile_late);
 							$retval['type'] = $type;
-							$retval['image'] = '/studentphoto.php?size=350&pid='.$vars['studentinfo']['studentprofile_id'];
+							$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$vars['studentinfo']['studentprofile_id'];
 							$retval['studentinfo'] = $vars['studentinfo'];
 							//$retval['studentdtr'] = $vars['studentdtr'];
 

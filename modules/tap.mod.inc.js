@@ -49,6 +49,7 @@ var loginForm = [
 	{type: "settings", position: "label-left", labelWidth: 90, inputWidth: 220, offsetLeft: 10, offsetTop: 5},
 	{type: "input", label: "rfid", value: "", offsetTop: 20, name:"rfid", required:true},
 	{type: "input", label: "unixtime", value: "", offsetTop: 20, name:"unixtime", required:true},
+	{type: "hidden", value: "350", name:"imagesize"},
 ];
 
 srt.checkFocus = function() {
@@ -81,13 +82,14 @@ srt.etap = function() {
 	myForm.attachEvent("onEnter", function(){
 		var rfid = myForm.getItemValue("rfid");
 		var unixtime = myForm.getItemValue("unixtime");
+		var imagesize = myForm.getItemValue("imagesize");
 	    console.log("Enter key has been pressed!");
 	    console.log("Value: "+rfid);
 	    myForm.setItemValue("rfid","");
 
 	    //console.log($(this.base));
 
-		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime,function(data){
+		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize,function(data){
 			//if(data.return_code) {
 			//	if(data.return_code=='SUCCESS') {
 			//		showMessage(data.return_message,5000);
@@ -194,10 +196,11 @@ jQuery(document).ready(function($) {
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
+	var contentleftWidth = jQuery("#contentleft").width();
 	var contenttopHeight = 100;
 	var contentbottomHeight = 60;
 	var contentmiddleHeight = height - (contenttopHeight+contentbottomHeight);
-	var studentphotobgHeight = 350;
+	var studentphotobgHeight = parseInt(contentleftWidth * 0.75);
 	var studentphotobgMarginTop = (contentmiddleHeight - studentphotobgHeight) / 2;
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
 	var studentcontentHeight = jQuery("#studentcontent").height(); // + 100;
@@ -212,7 +215,9 @@ jQuery(document).ready(function($) {
 		studentcontentMarginTop = 20;
 	}
 
-	console.log('studentcontentMarginTop',studentcontentMarginTop);
+	//console.log('studentcontentMarginTop',studentcontentMarginTop);
+
+	console.log('contentleftWidth',contentleftWidth);
 
 	jQuery(".studentprev").each(function(idx){
 		studentprevCtr++;
@@ -236,6 +241,11 @@ jQuery(document).ready(function($) {
 	jQuery("#info").css({marginTop:infoMarginTop});
 	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
 	jQuery("#contentprevious").css({marginTop:studentcontentMarginTop});
+	jQuery("#studentphotobg").css({width:studentphotobgHeight,height:studentphotobgHeight});
+	jQuery("#studentphoto").css({width:studentphotobgHeight,height:studentphotobgHeight});
+	jQuery("#studentphoto img").css({width:studentphotobgHeight,height:studentphotobgHeight});
+
+	srt.myForm.setItemValue('imagesize',studentphotobgHeight);
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
