@@ -73,6 +73,7 @@ if(!class_exists('APP_Tap')) {
 
 			$approuter->addroute(array('^/'.$this->pathid.'/tapped/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'tapped'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getbulletin/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getBulletin'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/getdatetime/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getDateTime'))));
 
 
 			///$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));
@@ -234,6 +235,21 @@ if(!class_exists('APP_Tap')) {
 			json_encode_return($retval);
 		}
 
+		function getDateTime($vars) {
+			global $appdb, $appaccess;
+
+			//pre(array('$vars'=>$vars));
+
+			$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
+
+			$retval = array();
+			$retval['currentTime'] = intval(getDbUnixDate());
+			$retval['currentTimeString'] = date('l, F d Y g:i A', $retval['currentTime']);
+
+			header_json();
+			json_encode_return($retval);
+		}
+
 		function tapped($vars) {
 			global $appdb, $appaccess;
 
@@ -241,6 +257,7 @@ if(!class_exists('APP_Tap')) {
 
 			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])&&!empty($vars['post']['imagesize'])&&is_numeric($vars['post']['imagesize'])) {
 
+				$vars['post']['unixtime'] = intval(getDbUnixDate());
 				$post = $vars['post'];
 
 				if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_rfid='".$post['rfid']."'"))) {
@@ -418,6 +435,8 @@ if(!class_exists('APP_Tap')) {
 							$retval['type'] = $type;
 							$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$vars['studentinfo']['studentprofile_id'];
 							$retval['studentinfo'] = $vars['studentinfo'];
+							$retval['currentTimeStamp'] = $post['unixtime'];
+							$retval['currentTime'] = pgDateUnix($post['unixtime']);
 							$retval['startTimeStamp'] = $startTimeStamp;
 							$retval['startTime'] = pgDateUnix($startTimeStamp);
 							$retval['endTimeStamp'] = $endTimeStamp;

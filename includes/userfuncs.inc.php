@@ -1436,6 +1436,23 @@ function getDbDate($mode=0,$f1='m-d-Y',$f2='H:i') {
 	return false;
 }
 
+function getDbUnixDate() {
+	global $appdb;
+
+	if(!($result=$appdb->query("select extract(epoch from now()) as unixstamp"))) {
+		return false;
+	}
+
+	// m-d-Y H:i
+
+	if(!empty($result['rows'][0]['unixstamp'])) {
+		return $result['rows'][0]['unixstamp'];
+	}
+
+	//pre(array('$result'=>$result));
+	return false;
+}
+
 function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0) {
 	global $appdb;
 

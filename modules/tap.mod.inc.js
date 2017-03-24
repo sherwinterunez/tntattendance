@@ -63,12 +63,12 @@ srt.checkFocus = function() {
 	},100);
 };
 
-srt.checkTime = function() {
-	setTimeout(function(){
-		srt.myForm.setItemValue('unixtime',moment().format('X'));
-		srt.checkTime();
-	},1000);
-}
+//srt.checkTime = function() {
+//	setTimeout(function(){
+//		srt.myForm.setItemValue('unixtime',moment().format('X'));
+//		srt.checkTime();
+//	},1000);
+//}
 
 srt.etap = function() {
 
@@ -77,7 +77,7 @@ srt.etap = function() {
 	myForm.enableLiveValidation(true);
 
 	srt.checkFocus();
-	srt.checkTime();
+	//srt.checkTime();
 
 	myForm.attachEvent("onEnter", function(){
 		var rfid = myForm.getItemValue("rfid");
@@ -205,14 +205,21 @@ srt.doMarquee = function() {
 }
 
 srt.doShowDateTime = function() {
-	var dt = moment().format('LLLL');
+	//var dt = moment().format('LLLL');
 
-	jQuery('#currentdatetime').html(dt);
+	postData('/'+settings.router_id+'/getdatetime/','test=1',function(data){
+		console.log('doShowDateTime',data);
+
+		jQuery('#currentdatetime').html(data.currentTimeString);
+		srt.myForm.setItemValue('unixtime',data.currentTime);
+
+	});
 }
 
 jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
+	srt.doShowDateTime();
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
@@ -237,7 +244,7 @@ jQuery(document).ready(function($) {
 
 	//console.log('studentcontentMarginTop',studentcontentMarginTop);
 
-	console.log('contentleftWidth',contentleftWidth);
+	//console.log('contentleftWidth',contentleftWidth);
 
 	jQuery(".studentprev").each(function(idx){
 		studentprevCtr++;
@@ -254,7 +261,7 @@ jQuery(document).ready(function($) {
 
 	//console.log('studentprev',jQuery("#studentprev").width());
 
-	console.log('studentprevWidth',studentprevWidth);
+	//console.log('studentprevWidth',studentprevWidth);
 
 	/*jQuery("#info").html("width: "+width+", height: "+height);*/
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
@@ -274,9 +281,9 @@ jQuery(document).ready(function($) {
 
 	setInterval(function(){
 		srt.doMarquee();
-	},60000);
+	},90000);
 
 	setInterval(function(){
 		srt.doShowDateTime();
-	},1000);
+	},60000);
 });
