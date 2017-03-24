@@ -225,7 +225,7 @@ jQuery(document).ready(function($) {
 	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
 	var studentcontentHeight = jQuery("#studentcontent").height(); // + 100;
 	var contentpreviousHeight = jQuery("#contentprevious").height(); // + 20;
-	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 4;
+	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 3;
 	var contentpreviousWidth = jQuery("#contentprevious").width();
 	var studentprevWidth = 0;
 	var studentprevCtr = 0;

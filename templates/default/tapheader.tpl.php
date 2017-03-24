@@ -268,8 +268,8 @@ do_action('action_header_bottom');
 		height: auto;
 		float: left;
 		overflow: hidden;
-		/*border: 1px solid #f00;
-		margin: 5px;*/
+		border: 1px solid #f00;
+		/*margin: 5px;*/
 	}
 
 	#studentprev img {
