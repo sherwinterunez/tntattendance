@@ -1451,6 +1451,7 @@ alter table tbl_smsoutbox add column smsoutbox_pushid bigint NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_pushcreatestamp timestamp with time zone DEFAULT now();
 alter table tbl_smsoutbox add column smsoutbox_pushsentstamp timestamp with time zone DEFAULT now();
 alter table tbl_smsoutbox add column smsoutbox_priority integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_failedstamp timestamp with time zone DEFAULT now();
 
 
 ---
