@@ -185,6 +185,21 @@ srt.etap = function() {
 
 			jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
 
+			var contentpreviousHeight  = jQuery("#contentprevious").height();
+			var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
+			var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
+
+			jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
+
+			/*var studentprevHeight = 0;
+
+			jQuery(".studentprev").each(function(idx){
+				var wheight = jQuery(this).width();
+				if(wheight>studentprevHeight) {
+					studentprevHeight = wheight;
+				}
+			});*/
+
 		});
 
 

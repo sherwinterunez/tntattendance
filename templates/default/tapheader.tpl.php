@@ -269,7 +269,7 @@ do_action('action_header_bottom');
 		height: auto;
 		float: left;
 		overflow: hidden;
-		border: 1px solid #ccc;
+		/*border: 1px solid #ccc;*/
 		/*margin: 5px;*/
 	}
 
@@ -392,28 +392,28 @@ do_action('action_header_bottom');
 					<br class="br" />
 				</div>*/ ?>
 				<div id="studentprev" class="studentprev">
-					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />
+					<br class="br" />*/ ?>
 				</div>
 				<div id="studentprev" class="studentprev">
-					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />
+					<br class="br" />*/ ?>
 				</div>
 				<div id="studentprev" class="studentprev">
-					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />
+					<br class="br" />*/ ?>
 				</div>
 				<div id="studentprev" class="studentprev">
-					<div style="display:block;width:150px;height:150px;">&nbsp;</div>
+					<?php /*<div style="display:block;width:150px;height:150px;">&nbsp;</div>
 					<div id="studentprevlabel">&nbsp;<br />&nbsp;<br /></div>
 					<div id="studentprevlabel">&nbsp;</div>
-					<br class="br" />
+					<br class="br" />*/ ?>
 				</div>
 				<br style="clear:both;" />
 			</div>
