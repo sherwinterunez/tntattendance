@@ -199,25 +199,28 @@ do_action('action_header_bottom');
 	#studentname {
 		display: block;
 		font-size: 45px;
-		margin: 10px;
+		margin: 0 20px 20px 20px;
 		clear: both;
 		text-align: center;
 		font-weight: bold;
+		line-height: 45px;
 		/*border: 1px solid #f00;*/
 	}
 
 	#studentyearsection {
 		display: block;
 		font-size: 35px;
-		margin: 10px 10px;
+		margin: 20px;
 		text-align: center;
+		line-height: 35px;
 	}
 
 	#studentremarks {
 		display: block;
 		font-size: 35px;
-		margin: 20px 10px 10px 10px;
+		margin: 20px 20px 0 20px;
 		text-align: center;
+		line-height: 35px;
 	}
 
 	#contenttopleft {
@@ -252,8 +255,8 @@ do_action('action_header_bottom');
 	#contentprevious {
 		display: block;
 		border: 1px solid #f00;
-		height: 110px;
-		margin: 0 0 10px 0;
+		height: auto;
+		margin: 20px 0;
 	}
 
 	#studentprev {
@@ -293,6 +296,13 @@ do_action('action_header_bottom');
 		color: #000;
 	}
 
+	#studentcontent {
+		display: block;
+		width: auto;
+		/*height: 160px;*/
+		/*border: 1px solid #f00;*/
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -318,35 +328,22 @@ do_action('action_header_bottom');
 		</div>
 	</div>
 	<div id="contentmid">
-		<div id="studentname">#studentname&nbsp;</div>
-		<div id="studentyearsection">#studentyearsection&nbsp;</div>
-		<div id="studentremarks">#studentremarks&nbsp;</div>
+		<div id="studentcontent">
+			<div id="studentname">#studentname&nbsp;</div>
+			<div id="studentyearsection">#studentyearsection&nbsp;</div>
+			<div id="studentremarks">#studentremarks&nbsp;</div>
+			<br style="clear:both;" />
+		</div>
 		<div id="contentprevious">
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
 			<div id="studentprev">#studentprev</div>
+			<br style="clear:both;" />
 		</div>
 	</div>
 	<div id="contentright">
-		<?php /*
-		<div id="sidenumber">
-		<div id="title">DB</div>
-		<div id="db">&nbsp;</div>
-		</div>
-		<div id="sidenumber">
-		<div id="title">IN</div>
-		<div id="in">&nbsp;</div>
-		</div>
-		<div id="sidenumber">
-		<div id="title">OUT</div>
-		<div id="out">&nbsp;</div>
-		</div>
-		<div id="sidenumber">
-		<div id="title">LATE</div>
-		<div id="late">&nbsp;</div>
-		</div>*/ ?>
-		<div id="type">&nbsp;</div>
+		<div id="type" style="display:none;">&nbsp;</div>
 	</div>
 	<br style="clear:both;" />
 </div>

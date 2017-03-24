@@ -198,13 +198,19 @@ jQuery(document).ready(function($) {
 	var contentbottomHeight = 60;
 	var contentmiddleHeight = height - (contenttopHeight+contentbottomHeight);
 	var studentphotobgHeight = 350;
-	var studentphotobgPaddingTop = (contentmiddleHeight - studentphotobgHeight) / 2;
-	var infoMarginTop = (studentphotobgPaddingTop / 2) - 10;
+	var studentphotobgMarginTop = (contentmiddleHeight - studentphotobgHeight) / 2;
+	var infoMarginTop = (studentphotobgMarginTop / 2) - 10;
+	var studentcontentHeight = jQuery("#studentcontent").height() + 20;
+	var contentpreviousHeight = jQuery("#contentprevious").height() + 20;
+	var studentcontentMarginTop = (contentmiddleHeight - (studentcontentHeight+contentpreviousHeight)) / 2;
+
+	//console.log('studentcontent',jQuery("#studentcontent").height());
 
 	/*jQuery("#info").html("width: "+width+", height: "+height);*/
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
-	jQuery("#studentphotobg").css({marginTop:studentphotobgPaddingTop});
+	jQuery("#studentphotobg").css({marginTop:studentphotobgMarginTop});
 	jQuery("#info").css({marginTop:infoMarginTop});
+	jQuery("#studentcontent").css({marginTop:studentcontentMarginTop});
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
