@@ -199,7 +199,7 @@ jQuery(document).ready(function($) {
 	var contentmiddleHeight = height - (contenttopHeight+contentbottomHeight);
 	var studentphotobgHeight = 350;
 	var studentphotobgPaddingTop = (contentmiddleHeight - studentphotobgHeight) / 2;
-	var infoMarginTop = (studentphotobgPaddingTop / 2) - 20;
+	var infoMarginTop = (studentphotobgPaddingTop / 2) - 10;
 
 	/*jQuery("#info").html("width: "+width+", height: "+height);*/
 	jQuery("#contentmiddle").css({height:contentmiddleHeight});
