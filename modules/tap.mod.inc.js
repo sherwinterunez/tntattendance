@@ -271,7 +271,7 @@ srt.getPrevious = function() {
 
 			for(var prop in data.previous) {
 				if(typeof obj[ctr] == 'object') {
-					jQuery(obj[ctr]).html(data.previous[prop].html);
+					//jQuery(obj[ctr]).html(data.previous[prop].html);
 					console.log(data.previous[prop]);
 					ctr++;
 				}
@@ -286,7 +286,7 @@ srt.getPrevious = function() {
 		showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
 		showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
 
-		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
+		//jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
 
 		var contentpreviousHeight  = jQuery("#contentprevious").height();
 		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
@@ -296,7 +296,7 @@ srt.getPrevious = function() {
 		showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
 		showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
 
-		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
+		//jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
 	});
 }
@@ -305,7 +305,7 @@ jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
 	srt.doShowDateTime();
-	//srt.getPrevious();
+	srt.getPrevious();
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
