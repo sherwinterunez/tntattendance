@@ -270,7 +270,7 @@ do_action('action_header_bottom');
 		height: auto;
 		float: left;
 		overflow: hidden;
-		/*border: 1px solid #ccc;*/
+		border: 1px solid #ccc;
 		/*margin: 5px;*/
 	}
 
