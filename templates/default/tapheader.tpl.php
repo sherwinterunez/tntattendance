@@ -240,9 +240,10 @@ do_action('action_header_bottom');
 	#currentdatetime {
 		display: block;
 		font-size: 25px;
-		line-height: 100px;
+		line-height: 80px;
 		float: right;
 		margin-right: 20px;
+		/*border: 1px solid #f00;*/
 	}
 
 	#schoolname {
@@ -350,6 +351,16 @@ do_action('action_header_bottom');
 		/*border: 1px solid #00f;*/
 	}
 
+	#sysinfo {
+		display: block;
+		float: right;
+		/*border: 1px solid #f00;*/
+		clear: both;
+		margin-right: 20px;
+		font-size: 10px;
+		line-height: 15px;
+	}
+
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
@@ -357,6 +368,7 @@ do_action('action_header_bottom');
 	</div>
 	<div id="contenttopright">
 		<div id="currentdatetime"></div>
+		<div id="sysinfo">&nbsp;</div>
 	</div>
 </div>
 <div id="contentmiddle">

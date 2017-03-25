@@ -234,6 +234,7 @@ srt.doShowDateTime = function() {
 		console.log('doShowDateTime',data);
 
 		jQuery('#currentdatetime').html(data.currentTimeString);
+		jQuery('#sysinfo').html(data.localip);
 		srt.myForm.setItemValue('unixtime',data.currentTime);
 
 	});

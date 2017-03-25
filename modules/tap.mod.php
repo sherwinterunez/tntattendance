@@ -245,6 +245,7 @@ if(!class_exists('APP_Tap')) {
 			$retval = array();
 			$retval['currentTime'] = intval(getDbUnixDate());
 			$retval['currentTimeString'] = date('l, F d Y g:i A', $retval['currentTime']);
+			$retval['localip'] = getMyLocalIP();
 
 			header_json();
 			json_encode_return($retval);
