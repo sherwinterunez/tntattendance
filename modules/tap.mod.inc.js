@@ -369,6 +369,8 @@ jQuery(document).ready(function($) {
 
 	srt.myForm.setItemValue('imagesize',studentphotobgHeight);
 
+	jQuery('#studentphoto').html('<img src="/obislogo.php?size='+studentphotobgHeight+'" />');
+
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});
 	},1000);
