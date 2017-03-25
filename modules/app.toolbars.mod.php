@@ -356,7 +356,7 @@ $toolbars['app']['main'] = 	array(
 				),
 		)
 	),
-	array(	"id"=>"computer",
+	/*array(	"id"=>"computer",
 			"type"=>"buttonSelect",
 			"text"=>"Computer",
 			"img"=>"copy.gif",
@@ -391,7 +391,7 @@ $toolbars['app']['main'] = 	array(
 						"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 				),
 		)
-	),
+	),*/
 	array(	"id"=>"logout",
 			"type"=>"button",
 			"text"=>"Logout",
