@@ -305,7 +305,7 @@ jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
 	srt.doShowDateTime();
-	srt.getPrevious();
+	//srt.getPrevious();
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
