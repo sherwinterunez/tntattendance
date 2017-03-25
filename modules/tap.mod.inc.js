@@ -183,13 +183,21 @@ srt.etap = function() {
 			var studentcontentHeight  = jQuery("#studentcontent").height();
 			var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
 
+			showMessage('studentcontentHeight: '+studentcontentHeight,10000);
+			showMessage('studentcontentdivHeight: '+studentcontentdivHeight,10000);
+			showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,10000);
+
 			jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
 
 			var contentpreviousHeight  = jQuery("#contentprevious").height();
 			var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
 			var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
 
-			console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
+			showMessage('contentpreviousHeight: '+contentpreviousHeight,10000);
+			showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,10000);
+			showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,10000);
+
+			//console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
 
 			jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
@@ -274,13 +282,19 @@ srt.getPrevious = function() {
 		var studentcontentHeight  = jQuery("#studentcontent").height();
 		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
 
+		showMessage('studentcontentHeight: '+studentcontentHeight,10000);
+		showMessage('studentcontentdivHeight: '+studentcontentdivHeight,10000);
+		showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,10000);
+
 		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
 
 		var contentpreviousHeight  = jQuery("#contentprevious").height();
 		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
 		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
 
-		console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
+		showMessage('contentpreviousHeight: '+contentpreviousHeight,10000);
+		showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,10000);
+		showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,10000);
 
 		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
