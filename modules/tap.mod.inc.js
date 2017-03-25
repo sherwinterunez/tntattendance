@@ -258,6 +258,26 @@ srt.getPrevious = function() {
 		//jQuery('#sysinfo').html(data.sysinfo);
 		//srt.myForm.setItemValue('unixtime',data.currentTime);
 
+		var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+		var studentcontentHeight  = jQuery("#studentcontent").height();
+		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
+
+		showMessage('studentcontentHeight: '+studentcontentHeight,60000);
+		showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
+		showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
+
+		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
+
+		var contentpreviousHeight  = jQuery("#contentprevious").height();
+		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
+		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
+
+		showMessage('contentpreviousHeight: '+contentpreviousHeight,60000);
+		showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
+		showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
+
+		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
+
 		if(typeof data.previous == 'object' &&  data.previous.length>0 ) {
 
 			var obj = [];
@@ -277,26 +297,6 @@ srt.getPrevious = function() {
 				}
 			}
 		}
-
-		var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
-		var studentcontentHeight  = jQuery("#studentcontent").height();
-		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
-
-		showMessage('studentcontentHeight: '+studentcontentHeight,60000);
-		showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
-		showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
-
-		//jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
-
-		var contentpreviousHeight  = jQuery("#contentprevious").height();
-		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
-		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
-
-		showMessage('contentpreviousHeight: '+contentpreviousHeight,60000);
-		showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
-		showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
-
-		//jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
 	});
 }
