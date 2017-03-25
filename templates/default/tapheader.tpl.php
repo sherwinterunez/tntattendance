@@ -389,9 +389,9 @@ do_action('action_header_bottom');
 	<div id="contentmid">
 		<div id="studentcontent">
 			<div id="studentcontentdiv">
-				<div id="studentname">TAP N' TEXT</div>
-				<div id="studentyearsection">Student In/Out Monitoring System</div>
-				<div id="studentremarks">by OBIS Technology</div>
+				<div id="studentname">TAP N' TXT</div>
+				<div id="studentyearsection">Student Attendance System</div>
+				<div id="studentremarks">by OBIS Technology Inc.</div>
 				<br class="br" />
 			</div>
 		</div>

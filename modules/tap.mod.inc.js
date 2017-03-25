@@ -231,11 +231,58 @@ srt.doShowDateTime = function() {
 	//var dt = moment().format('LLLL');
 
 	postData('/'+settings.router_id+'/getdatetime/','test=1',function(data){
-		console.log('doShowDateTime',data);
+		//console.log('doShowDateTime',data);
 
 		jQuery('#currentdatetime').html(data.currentTimeString);
-		jQuery('#sysinfo').html(data.localip);
+		//jQuery('#sysinfo').html('Server IP: '+data.localip);
+		jQuery('#sysinfo').html(data.sysinfo);
 		srt.myForm.setItemValue('unixtime',data.currentTime);
+
+	});
+}
+
+srt.getPrevious = function() {
+	postData('/'+settings.router_id+'/getprevious/','test=1',function(data){
+		console.log('getPrevious',data);
+
+		//jQuery('#currentdatetime').html(data.currentTimeString);
+		//jQuery('#sysinfo').html('Server IP: '+data.localip);
+		//jQuery('#sysinfo').html(data.sysinfo);
+		//srt.myForm.setItemValue('unixtime',data.currentTime);
+
+		if(typeof data.previous == 'object' &&  data.previous.length>0 ) {
+
+			var obj = [];
+			var max = 0;
+			var ctr = 0;
+
+			jQuery(".studentprev").each(function(idx){
+				obj[max] = this;
+				max++;
+			});
+
+			for(var prop in data.previous) {
+				if(typeof obj[ctr] == 'object') {
+					jQuery(obj[ctr]).html(data.previous[prop].html);
+					console.log(data.previous[prop]);
+					ctr++;
+				}
+			}
+		}
+
+		var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+		var studentcontentHeight  = jQuery("#studentcontent").height();
+		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
+
+		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
+
+		var contentpreviousHeight  = jQuery("#contentprevious").height();
+		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
+		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
+
+		console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
+
+		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
 	});
 }
@@ -244,6 +291,7 @@ jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
 	srt.doShowDateTime();
+	srt.getPrevious();
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();
