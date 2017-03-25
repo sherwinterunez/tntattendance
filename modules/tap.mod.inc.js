@@ -291,7 +291,7 @@ srt.getPrevious = function() {
 
 			for(var prop in data.previous) {
 				if(typeof obj[ctr] == 'object') {
-					//jQuery(obj[ctr]).html(data.previous[prop].html);
+					jQuery(obj[ctr]).html(data.previous[prop].html);
 					console.log(data.previous[prop]);
 					ctr++;
 				}
