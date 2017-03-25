@@ -179,7 +179,7 @@ srt.etap = function() {
 				}
 			}
 
-			var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+			/*var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
 			var studentcontentHeight  = jQuery("#studentcontent").height();
 			var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
 
@@ -199,7 +199,7 @@ srt.etap = function() {
 
 			//console.log('contentpreviousdivPaddingTop',contentpreviousdivPaddingTop);
 
-			jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
+			jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});*/
 
 			/*var studentprevHeight = 0;
 
