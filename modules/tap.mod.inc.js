@@ -262,9 +262,9 @@ srt.getPrevious = function() {
 		var studentcontentHeight  = jQuery("#studentcontent").height();
 		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
 
-		showMessage('studentcontentHeight: '+studentcontentHeight,60000);
-		showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
-		showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
+		//showMessage('studentcontentHeight: '+studentcontentHeight,60000);
+		//showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
+		//showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
 
 		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
 
@@ -272,9 +272,9 @@ srt.getPrevious = function() {
 		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
 		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
 
-		showMessage('contentpreviousHeight: '+contentpreviousHeight,60000);
-		showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
-		showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
+		//showMessage('contentpreviousHeight: '+contentpreviousHeight,60000);
+		//showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
+		//showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
 
 		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
 
