@@ -49,4 +49,4 @@ $ch = new MyCURL;
 
 $content = $ch->get('http://127.0.0.1');
 
-pre(array('$content'=>$content, 'curl_errno'=>curl_errno($ch->ch), 'curl_error'=>curl_error($ch->$ch)));
+pre(array('$content'=>$content, 'curl_errno'=>curl_errno($ch->ch), 'curl_error'=>curl_error($ch->ch)));
