@@ -265,7 +265,10 @@ if(!empty($notifications)) {
 
 		$smsoutbox_message = str_replace('%DATETIME%',$dt,$smsoutbox_message);
 
-		$mobileno = getGuardianMobileNo($profile['studentdtr_studentid']);
+		$mobileno = getGuardianMobileNo($profile['studentprofile_id']);
+
+		if(!empty($mobileno)) {
+		} else continue;
 
 		$content = array();
 		$content['smsoutbox_pushstatus'] = 3;
@@ -279,6 +282,8 @@ if(!empty($notifications)) {
 		$post['topic'] = 'tapntxt'.$mobileno;
 		$post['msg'] = $smsoutbox_message;
 		$post['title'] = 'Tap N Txt';
+
+		pre(array('$post'=>$post,'$profile'=>$profile));
 
 		if(!($retcont = $ch->post(REMOTE_FCMSENDTOTOPIC_URL,$post))) {
 			print_r(array('error'=>$retcont));
