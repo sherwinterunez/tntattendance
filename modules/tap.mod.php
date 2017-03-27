@@ -48,7 +48,7 @@ if(!class_exists('APP_Tap')) {
 			global $apptemplate;
 
 			//$apptemplate->add_css('styles','http://fonts.googleapis.com/css?family=Open+Sans:400,700');
-			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'css/login.css');
+			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'css/fonts.css');
 		}
 
 		function add_script() {

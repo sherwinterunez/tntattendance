@@ -4,7 +4,7 @@
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
-* Date Created: February 23, 2011
+* Date Created: March 26, 2017 12:22AM
 *
 * Description:
 *
@@ -45,21 +45,37 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-$ch = new MyCURL;
+//pre(array('$_GET'=>$_GET));
 
-while(1) {
-
-  $content = $ch->get('http://127.0.0.1');
-
-  $curl_errno = curl_errno($ch->ch);
-
-  if($curl_errno==0) {
-    sleep(10);
-    break;
-  }
-
-  sleep(1);
+if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
+  $size = intval($_GET['size']);
 }
 
+		header("Content-Type: image/jpg");
 
-//pre(array('$content'=>$content, 'curl_errno'=>curl_errno($ch->ch), 'curl_error'=>curl_error($ch->ch)));
+		$img = new APP_SimpleImage;
+
+		$img->load('./templates/default/tap/tntlogo.png');
+
+		if(!empty($size)) {
+			$width = $img->getWidth();
+			$height = $img->getHeight();
+			if($width<$height) {
+				//$img->crop($width);
+				$img->resizeToWidth($size);
+			} else
+			if($height<$width) {
+				//$img->crop($height);
+				$img->resizeToHeight($size);
+			} else {
+				$img->resizeToHeight($size);
+			}
+		}
+
+		$img->output();
+
+	die();
+
+
+
+///

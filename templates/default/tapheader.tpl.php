@@ -53,6 +53,10 @@ do_action('action_header_bottom');
 
 	body {
 		/*background: #ccc url("/templates/default/tap/bg.jpg") no-repeat -100px -113px;*/
+		/*font-family: 'Roboto', sans-serif;*/
+		/*font-family: 'Open Sans', sans-serif;*/
+		/*font-family: 'Josefin Sans', sans-serif;*/
+		font-family: 'Quicksand', sans-serif;
 		background: #f7f7f7;
 	}
 
@@ -63,7 +67,9 @@ do_action('action_header_bottom');
 		/*border: 1px solid #0f0;*/
 		clear: both;
 		margin: 0 auto;
-		background: #14ade3;
+		/*background: #14ade3;*/
+		/*background: #3F51B5;*/
+		background: #0D47A1;
 	}
 
 	#contentbottom {
@@ -75,8 +81,9 @@ do_action('action_header_bottom');
 		/*border: 1px solid #0f0;*/
 		margin: 0;
 		padding: 0;
-		background: #14ade3;
-		opacity: 0.8;
+		/*background: #14ade3;*/
+		background: #0D47A1;
+		opacity: 0.99;
 	}
 
 	#marquee {
@@ -87,8 +94,34 @@ do_action('action_header_bottom');
 		height: auto;
 		font-size: 40px;
 		color: #ffffff;
-		opacity: 1;
+		opacity: 0.99;
 		z-index: 10000;
+		/*border: 1px solid #f00;*/
+		/*border-left: 1px solid #f00;
+		border-right: 1px solid #f00;*/
+		overflow: hidden;
+	}
+
+	#tntlogo {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: auto;
+		color: #ffffff;
+		opacity: 1;
+		z-index: 11000;
+	}
+
+	#obislogo {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		height: auto;
+		color: #ffffff;
+		opacity: 1;
+		z-index: 11000;
 	}
 
 	#contentmiddle {
@@ -198,21 +231,22 @@ do_action('action_header_bottom');
 
 	#studentname {
 		display: block;
-		font-size: 45px;
+		font-size: 40px;
 		margin: 0 10px 10px 10px;
 		clear: both;
 		text-align: center;
 		font-weight: bold;
-		line-height: 55px;
+		line-height: 45px;
+		font-family: 'Bevan', cursive;
 		/*border: 1px solid #f00;*/
 	}
 
 	#studentyearsection {
 		display: block;
-		font-size: 35px;
+		font-size: 25px;
 		margin: 10px;
 		text-align: center;
-		line-height: 45px;
+		line-height: 30px;
 	}
 
 	#studentremarks {
@@ -221,6 +255,7 @@ do_action('action_header_bottom');
 		margin: 10px 10px 0 10px;
 		text-align: center;
 		line-height: 45px;
+		font-family: 'Galada', cursive;
 	}
 
 	#contenttopleft {
@@ -243,6 +278,8 @@ do_action('action_header_bottom');
 		line-height: 80px;
 		float: right;
 		margin-right: 20px;
+		color: #fff;
+		opacity: 0.80;
 		/*border: 1px solid #f00;*/
 	}
 
@@ -251,6 +288,8 @@ do_action('action_header_bottom');
 		font-size: 30px;
 		line-height: 100px;
 		margin-left: 20px;
+		color: #fff;
+		opacity: 0.80;
 	}
 
 	#contentprevious {
@@ -359,6 +398,8 @@ do_action('action_header_bottom');
 		margin-right: 20px;
 		font-size: 10px;
 		line-height: 15px;
+		color: #fff;
+		opacity: 0.70;
 	}
 
 </style>
@@ -391,7 +432,7 @@ do_action('action_header_bottom');
 			<div id="studentcontentdiv">
 				<div id="studentname">TAP N' TXT</div>
 				<div id="studentyearsection">Student Attendance System</div>
-				<div id="studentremarks">by OBIS Technology Inc.</div>
+				<div id="studentremarks">by OBIS Software Technology Inc.</div>
 				<br class="br" />
 			</div>
 		</div>
@@ -430,5 +471,7 @@ do_action('action_header_bottom');
 	</div>
 	<br style="clear:both;" />
 </div>
+<div id="tntlogo"><img src="/tntlogo.php?size=60" /></div>
+<div id="obislogo"><img src="/obislogo.php?size=60" /></div>
 <div id="marquee">&nbsp;</div>
 <div id="contentbottom">&nbsp;</div>
