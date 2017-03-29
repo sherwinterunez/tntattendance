@@ -157,8 +157,13 @@ if(!empty($_POST)&&!empty($_POST['params'])&&!empty($_POST['update'])&&is_numeri
 			$content['content'] = json_encode($userContent);
 
 			if(!($result = $appdb->update("tbl_users",$content,"user_id=".$userId))) {
-				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-				die;
+
+				if(!empty($appdb->lasterror)&&preg_match('/duplicate key value violates unique constraint/si',$appdb->lasterror)) {
+				} else {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+
 			}
 
 			$ret = array();

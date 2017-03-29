@@ -43,7 +43,8 @@ require_once(INCLUDE_PATH.'utf8.inc.php');
 require_once(INCLUDE_PATH.'sms.inc.php');
 require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
-define('REMOTE_DB_URL','http://obis101.terunez.com/syncuser.php');
+//define('REMOTE_DB_URL','http://obis101.terunez.com/syncuser.php');
+define('REMOTE_DB_URL','http://tntserver.obisph.com/syncuser.php');
 
 date_default_timezone_set('Asia/Manila');
 
