@@ -106,6 +106,8 @@ if(!class_exists('APP_app_setting')) {
 				$settings_timeoutmessage = getOption('$SETTINGS_TIMEOUTMESSAGE',$default_timeoutmessage);
 				$settings_latemessage = getOption('$SETTINGS_LATEMESSAGE',$default_latemessage);
 
+				$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
+
 				if(!empty($post['method'])&&($post['method']=='settingedit')) {
 					$readonly = false;
 				}
@@ -144,6 +146,8 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_LATEMESSAGE',!empty($post['settings_latemessage'])?$post['settings_latemessage']:$default_latemessage);
 
+					setSetting('$SETTINGS_LICENSEKEY',!empty($post['settings_licensekey'])?$post['settings_licensekey']:'');
+
 					json_encode_return($retval);
 					die;
 				}
@@ -158,6 +162,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbLoginNotification'] = array();
 				$params['tbNotifications'] = array();
 				$params['tbGeneral'] = array();
+				$params['tbServer'] = array();
+				$params['tbLicense'] = array();
 
 				$params['tbElectronicBulletin'][] = array(
 					'type' => 'input',
@@ -353,6 +359,19 @@ if(!class_exists('APP_app_setting')) {
 					'readonly' => $readonly,
 					'checked' => !empty($settings_synctoserver) ? true : false,
 					'position' => 'label-right',
+				);
+
+				$params['tbLicense'][] = array(
+					'type' => 'input',
+					'label' => 'LICENSE KEY',
+					'inputWidth' => 500,
+					'rows' => 5,
+					'labelWidth' => 100,
+					'name' => 'settings_licensekey',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_licensekey) ? $settings_licensekey : '',
 				);
 
 				$templatefile = $this->templatefile($routerid,$formid);
