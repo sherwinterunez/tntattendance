@@ -441,6 +441,16 @@ if(!class_exists('APP_app_contact')) {
 
 				$params['tbStudentProfile'][] = array(
 					'type' => 'input',
+					'label' => 'SCHOOL YEAR',
+					'labelWidth' => 120,
+					'name' => 'studentprofile_schoolyear',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['studentinfo']['studentprofile_schoolyear']) ? $params['studentinfo']['studentprofile_schoolyear'] : '',
+				);
+
+				$params['tbStudentProfile'][] = array(
+					'type' => 'input',
 					'label' => 'LAST NAME',
 					'labelWidth' => 120,
 					'name' => 'studentprofile_lastname',
