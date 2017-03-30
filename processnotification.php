@@ -48,7 +48,7 @@ http://obis101.terunez.com/fcmsendtotopic.php?topic=tapntxt09493621618&msg=Hello
 */
 
 //define('REMOTE_FCMSENDTOTOPIC_URL','http://obis101.terunez.com/fcmsendtotopic.php');
-define('REMOTE_FCMSENDTOTOPIC_URL','http://tntmobile.obisph.com/fcmsendtotopic.php');
+define('REMOTE_FCMSENDTOTOPIC_URL','http://tntserver.obisph.com/fcmsendtotopic.php');
 
 date_default_timezone_set('Asia/Manila');
 
