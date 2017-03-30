@@ -4,3 +4,5 @@ includes.1
 includes.min
 less/test/
 sql
+license.inc
+genlicense.php

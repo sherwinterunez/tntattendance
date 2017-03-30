@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -22,6 +22,8 @@ if(defined('ANNOUNCE')) {
 define('INCLUDE_PATH', ABS_PATH . 'includes/');
 
 require_once(INCLUDE_PATH.'config.inc.php');
+require_once(INCLUDE_PATH.'phpseclib/Math/BigInteger.php');
+require_once(INCLUDE_PATH.'phpseclib/Crypt/RSA.php');
 require_once(INCLUDE_PATH.'array2xml.inc.php');
 require_once(INCLUDE_PATH.'framework.inc.php');
 require_once(INCLUDE_PATH.'useragents.inc.php');

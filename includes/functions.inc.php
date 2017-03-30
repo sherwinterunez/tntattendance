@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -74,7 +74,7 @@ function gentime() {
 
 function timer_start() {
 	global $app_time_start;
-	
+
 	$mtime      = explode( ' ', microtime() );
 	$app_time_start = $mtime[1] + $mtime[0];
 	return true;
@@ -113,7 +113,7 @@ function setOption($name=false,$val=false,$type='SETTING',$hidden=false) {
 	$content = array('options_name'=>$name,'options_value'=>$val,'options_type'=>$type);
 
 	if($hidden) {
-		$content['options_hidden'] = 1;	
+		$content['options_hidden'] = 1;
 	}
 
 	if(!empty($ret['rows'][0]['options_name'])) {
@@ -135,7 +135,7 @@ function setOption($name=false,$val=false,$type='SETTING',$hidden=false) {
 
 function getOption($option_name=false,$default_val=false,$force=false) {
 	global $appdb, $optionsArr;
-	
+
 	if(empty($option_name)) {
 		return false;
 	}
@@ -160,13 +160,13 @@ function getOption($option_name=false,$default_val=false,$force=false) {
 	if(!empty($optionsArr[$option_name]['options_id'])) {
 		return $optionsArr[$option_name]['options_value'];
 	}
-	
+
 	/*$ret = $appdb->query("select * from tbl_options where options_name='$option_name'");
-	
+
 	if(!empty($ret['rows'][0]['options_name'])) {
 		return $ret['rows'][0]['options_value'];
 	}*/
-	
+
 	return $default_val;
 }
 
@@ -272,9 +272,9 @@ function update_option($option_name=false,$option_val=false) {
 	if(empty($option_name)) {
 		return false;
 	}
-	
+
 	$ret = $appdb->query("select id from tbl_options where option_name='$option_name'");
-	
+
 	if(empty($ret['affected'])) {
 		$sql = sprintf("insert into tbl_options (option_name,option_value,datestamp) values ('%s','%s','now()')",pg_escape_string($option_name),pg_escape_string($option_val));
 		$appdb->query($sql);
@@ -290,24 +290,24 @@ function update_option($option_name=false,$option_val=false) {
 
 function log_event($event=false) {
 	global $appdb;
-	
+
 	$save = array();
-	
+
 	if(!empty($_SESSION['login_user']['userid'])&&!empty($_SESSION['login_user']['username'])) {
 		$save['user_id'] = $_SESSION['login_user']['userid'];
 		$save['user_name'] = $_SESSION['login_user']['username'];
 	}
-	
+
 	if(empty($event)) {
 		$event = 'UNKNOWN EVENT';
 	}
-	
+
 	$save['event'] = $event;
-	
+
 	if(!($ret=$appdb->insert('tbl_events', $save, 'id'))) {
 		return false;
-	}	
-	
+	}
+
 	return true;
 }
 
@@ -326,21 +326,21 @@ function getTimeFromServer() {
 	json_error_return(1); // 1 => 'Error in SQL execution.'
 }
 
-function debug_string_backtrace() { 
-	ob_start(); 
-	debug_print_backtrace(); 
-	$trace = ob_get_contents(); 
-	ob_end_clean(); 
+function debug_string_backtrace() {
+	ob_start();
+	debug_print_backtrace();
+	$trace = ob_get_contents();
+	ob_end_clean();
 
-	// Remove first item from backtrace as it's this function which 
-	// is redundant. 
-	$trace = preg_replace ('/^#0\s+' . __FUNCTION__ . "[^\n]*\n/", '', $trace, 1); 
+	// Remove first item from backtrace as it's this function which
+	// is redundant.
+	$trace = preg_replace ('/^#0\s+' . __FUNCTION__ . "[^\n]*\n/", '', $trace, 1);
 
-	// Renumber backtrace items. 
-	//$trace = preg_replace ('/^#(\d+)/me', '\'#\' . ($1 - 1)', $trace); 
+	// Renumber backtrace items.
+	//$trace = preg_replace ('/^#(\d+)/me', '\'#\' . ($1 - 1)', $trace);
 
-	return $trace; 
-} 
+	return $trace;
+}
 
 function json_error_return($vars=false,$msg=false) {
 	global $error_codes, $appdb;
@@ -369,11 +369,11 @@ function json_error_return($vars=false,$msg=false) {
 
 function json_return($vars=array(),$noerrorcode=false) {
 	header('Content-type: application/json');
-	
+
 	if(!$noerrorcode&&!isset($vars['error_code'])) {
 		$vars['error_code']=0;
 	}
-	
+
 	die(json_encode($vars));
 }
 
@@ -383,42 +383,42 @@ function json_encode_return($vars,$opt=0) {
 
 function json_return_error($code=254,$vars=array()) {
 	global $error_codes, $appdb;
-	
+
 	$appdb->rollback();
-	
+
 	$vars['db'] = $appdb->queries;
-	
+
 	$ret = array_merge($vars,array('error_code'=>$code,'error_message'=>$error_codes[$code]));
-	
+
 	if(!empty($line)) {
 		$ret['error_line'] = $line;
 	}
-	
+
 	if(!empty($file)) {
 		$ret['error_file'] = $file;
 	}
-	
+
 	if(BACKTRACE) {
 		$dback = debug_backtrace();
 		$ret['backtrace'] = $dback[0];
 	}
-	
+
 	json_return($ret);
 }
 
 function Array2XML($arr=array()) {
 	if(!empty($arr)&&is_array($arr)) {
 	} else return false;
-	
+
 	if(sizeof($arr)>1) {
 		$arr = array('root'=>array('@value'=>$arr));
 	}
-		
+
 	$output = '';
 
 	foreach($arr as $k=>$v) {
 		$output .= '<'.$k;
-		
+
 		if(!empty($v)&&is_array($v)) {
 			if(!empty($v['@attribute'])&&is_array($v['@attribute'])) {
 				foreach($v['@attribute'] as $h=>$j) {
@@ -426,9 +426,9 @@ function Array2XML($arr=array()) {
 				}
 			}
 		}
-		
+
 		$output .= '>';
-		
+
 		if(!empty($v)&&is_array($v)) {
 			if(!empty($v['@value'])&&is_array($v['@value'])) {
 				foreach($v['@value'] as $h=>$j) {
@@ -441,24 +441,24 @@ function Array2XML($arr=array()) {
 				$output .= $v['@value'];
 			}
 		}
-		
+
 		$output .= '</'.$k.'>';
 	}
-	
-	return !empty($output) ? $output : false;	
+
+	return !empty($output) ? $output : false;
 }
 
 function array2xml_return($arr) {
 	header('Content-type: text/xml');
-	
+
 	$output = Array2XML($arr);
-	
+
 	die($output);
 }
 
 function _t($data='') {
 	global $applanguage;
-	
+
 	return $applanguage->translate($data);
 }
 
@@ -467,13 +467,13 @@ function is_blank($value) {
 }
 
 function xmlobj2array($obj, $level=0) {
-	
+
 	$items = array();
-	
+
 	if(!is_object($obj)) return $items;
-		
+
 	$child = (array)$obj;
-	
+
 	if(sizeof($child)>1) {
 		foreach($child as $aa=>$bb) {
 			if(is_array($bb)) {
@@ -515,7 +515,7 @@ function xmlobj2array($obj, $level=0) {
 	}
 
 	return $items;
-	
+
 } // xmlobj2array
 
 function header_json() {
@@ -571,11 +571,11 @@ function calculateAge($birthday) {
 
 function check_utf8($string) {
 	//return iconv("UTF-8", "ISO-8859-1//IGNORE", $string);
-	
+
 	if(function_exists('iconv')) {
 		return iconv("UTF-8", "ISO-8859-1//TRANSLIT", $string);
 	}
-	
+
 	return $string;
 }
 
@@ -601,7 +601,7 @@ function date2timestamp($date, $format='m/d/Y', $timezone='Asia/Manila') {
 	//$day_end=$day_start+(60*60*24);
 	date_default_timezone_set($old_timezone);
 	//return array('day_start'=>$day_start, 'day_end'=>$day_end);
-	
+
 	return $day_start;
 }
 
@@ -614,7 +614,7 @@ function date2timestamp($date, $format='m/d/Y', $timezone='Asia/Manila') {
 	//$day_end=$day_start+(60*60*24);
 	date_default_timezone_set($old_timezone);
 	//return array('day_start'=>$day_start, 'day_end'=>$day_end);
-	
+
 	return $day_start;
 }*/
 
@@ -627,24 +627,24 @@ function date2timestamp($date, $format='%m/%d/%Y', $timezone='America/Los_Angele
 	//$day_end=$day_start+(60*60*24);
 	date_default_timezone_set($old_timezone);
 	//return array('day_start'=>$day_start, 'day_end'=>$day_end);
-	
+
 	return $day_start;
 }*/
 
 function alphanumonly($str) {
 	if(empty($str)) return false;
-	
+
 	return preg_replace("/[^a-zA-Z0-9]/", "", $str);
 }
 
 function clearcrlf($str) {
 	$t = explode("\n", $str);
 	$tstr = '';
-	
+
 	foreach($t as $k) {
 		$tstr .= trim($k)." ";
 	}
-	
+
 	return trim($tstr);
 }
 
@@ -691,10 +691,10 @@ function createRandomFile($path='/tmp',$prefix='',$postfix='.tmp') {
 		if(createFile($file)) {
 			return $file;
 		}
-		
+
 		if(++$ctr>100) break;
 	}
-			
+
 	return false;
 }
 
@@ -702,12 +702,12 @@ function createFile($file=false, $delete=false) {
 
 	if(!empty($file)) {
 	} else return false;
-	
+
 	if($delete) {
 		@unlink($file);
 	}
-	
-	if(!file_exists($file)) {	
+
+	if(!file_exists($file)) {
 		if($hf=@fopen($file,'x')) {
 			/*pre(array('createFile'=>$hf,'$file'=>$file));
 
@@ -736,7 +736,7 @@ function saveToFile($file=false, $content=false) {
 	if($hf=fopen($file,'w')) {
 
 		$ret=fwrite($hf,$content."\n");
-		
+
 		fclose($hf);
 
 		//pre(array('readFromFile'=>readFromFile($file)));
@@ -766,6 +766,35 @@ function readFromFile($file=false) {
 function computeHash($user,$pass) {
 
 	return sha1(base64_encode($user) . base64_encode($pass));
+}
+
+function checkLicense() {
+	global $publicKey;
+
+	$licenseFile = ABS_PATH . 'license.inc';
+
+	pre(array('$licenseFile'=>$licenseFile));
+
+	if(file_exists($licenseFile)&&($hf=fopen($licenseFile,'r'))) {
+
+		$fcontent = fread($hf,filesize($licenseFile));
+		fclose($hf);
+
+		pre(array('$fcontent'=>$fcontent, 'length'=>strlen($fcontent)));
+
+		$rsa2 = new Crypt_RSA();
+
+		$rsa2->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+
+		$rsa2->loadKey($publicKey);
+
+		$decrypted = $rsa2->decrypt(base64_decode($fcontent));
+
+		print_r(array('$decrypted'=>$decrypted));
+
+	}
+
+	return false;
 }
 
 
