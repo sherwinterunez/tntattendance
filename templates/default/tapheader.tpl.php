@@ -411,7 +411,7 @@ if(!empty(($license=checkLicense()))) {
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
-		<div id="schoolname"><?php echo !empty($license['sc']) ? $license['sc'] : 'UNLICENSED VERSION. UNAUTHORIZED USE IS PROHIBITED.'; ?></div>
+		<div id="schoolname"><?php echo !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)'; ?></div>
 	</div>
 	<div id="contenttopright">
 		<div id="currentdatetime"></div>
