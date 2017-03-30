@@ -45,7 +45,11 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-checkLicense();
+myExec('ifconfigx',$out);
+
+pre(array('$out'=>$out));
+
+//checkLicense();
 
 /*$rsa = new Crypt_RSA();
 

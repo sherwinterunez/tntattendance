@@ -768,6 +768,29 @@ function computeHash($user,$pass) {
 	return sha1(base64_encode($user) . base64_encode($pass));
 }
 
+function myExec($cmd, &$out = null) {
+	$desc = array(
+			0 => array("pipe", "r"),
+			1 => array("pipe", "w"),
+			2 => array("pipe", "w")
+	);
+
+	$proc = proc_open($cmd, $desc, $pipes);
+
+	$ret = stream_get_contents($pipes[1]);
+	$err = stream_get_contents($pipes[2]);
+
+	//print_r(array('$ret'=>$ret,'$err'=>$err));
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$retVal = proc_close($proc);
+
+	if (func_num_args() == 2) $out = array($ret, $err);
+	return $retVal;
+}
+
 function checkLicense() {
 	global $publicKey;
 
