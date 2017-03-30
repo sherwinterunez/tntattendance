@@ -791,6 +791,46 @@ function myExec($cmd, &$out = null) {
 	return $retVal;
 }
 
+function getMacAddress() {
+	$out = false;
+	$mac = array();
+
+	myExec('ifconfig',$out);
+
+	//pre(array('$out'=>$out));
+
+	if(!empty($out[0])) {
+		$output = $out[0];
+
+		/*$output = str_replace("\n",'\n',$output);
+		$output = str_replace("\r",'\r',$output);
+
+		pre(array('$output'=>$output));*/
+
+		$output = str_replace("\r","\n",$output);
+
+		$exploded = explode("\n",$output);
+
+		//pre(array('$exploded'=>$exploded));
+
+		if(!empty($exploded)&&is_array($exploded)) {
+			foreach($exploded as $k=>$v) {
+				if(preg_match('/ether\s+(..\:..\:..\:..\:..\:..)/si',$v,$match)&&!empty($match[1])) {
+					//pre(array('$match'=>$match));
+					$m = strtoupper($match[1]);
+					$mac[$m] = $m;
+				}
+			}
+		}
+	}
+
+	if(!empty($mac)&&is_array($mac)) {
+		return $mac;
+	}
+
+	return false;
+}
+
 function checkLicense() {
 	global $publicKey;
 
@@ -799,6 +839,13 @@ function checkLicense() {
 	pre(array('$licenseFile'=>$licenseFile));
 
 	if(file_exists($licenseFile)&&($hf=fopen($licenseFile,'r'))) {
+
+		if(!empty(($mac = getMacAddress()))) {
+		} else {
+			return false;
+		}
+
+		pre(array('$mac'=>$mac));
 
 		$fcontent = fread($hf,filesize($licenseFile));
 		fclose($hf);
