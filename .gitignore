@@ -6,3 +6,5 @@ less/test/
 sql
 license.inc
 genlicense.php
+genkeytest.php
+decodekey.php
