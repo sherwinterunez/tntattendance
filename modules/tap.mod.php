@@ -230,6 +230,12 @@ if(!class_exists('APP_Tap')) {
 
 			$retval = array();
 			$retval['vars'] = $vars;
+
+			if(!empty(($license=checkLicense()))) {
+			} else {
+				$bulletin .= ' THIS IS AN UNLICENSED VERSION OF TAP N TXT. FOR DEMO ONLY.'
+			}
+
 			$retval['bulletin'] = $bulletin;
 
 			header_json();
