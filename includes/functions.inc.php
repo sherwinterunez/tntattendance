@@ -843,6 +843,67 @@ function getMacAddress() {
 function checkLicense() {
 	global $publicKey;
 
+	//$licenseFile = ABS_PATH . 'license.inc';
+
+	//pre(array('$licenseFile'=>$licenseFile));
+
+	$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
+
+	if(!empty($settings_licensekey)) {
+
+		if(!empty(($mac = getMacAddress()))) {
+		} else {
+			return false;
+		}
+
+		//pre(array('$mac'=>$mac));
+
+		//$fcontent = fread($hf,filesize($licenseFile));
+		//fclose($hf);
+
+		//pre(array('$fcontent'=>$fcontent, 'length'=>strlen($fcontent)));
+
+		$rsa2 = new Crypt_RSA();
+
+		$rsa2->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+
+		$rsa2->loadKey($publicKey);
+
+		$decrypted = $rsa2->decrypt(base64_decode($settings_licensekey));
+
+		//print_r(array('$decrypted'=>$decrypted));
+
+		if(!empty($decrypted)) {
+			$json = json_decode($decrypted,true);
+
+			//pre(array('$json'=>$json));
+
+			if(!empty($json)&&!empty($json['mc'][0])&&!empty($json['sc'])&&!empty($json['ux'])&&!empty($json['dt'])) {
+
+				if(count($mac)!=count($json['mc'])) {
+					return false;
+				}
+
+				foreach($mac as $v) {
+					if(in_array($v,$json['mc'])) {
+					} else {
+						return false;
+					}
+				}
+
+				return $json;
+			}
+		}
+
+	}
+
+	return false;
+}
+
+/*
+function checkLicense() {
+	global $publicKey;
+
 	$licenseFile = ABS_PATH . 'license.inc';
 
 	//pre(array('$licenseFile'=>$licenseFile));
@@ -854,7 +915,7 @@ function checkLicense() {
 			return false;
 		}
 
-		pre(array('$mac'=>$mac));
+		//pre(array('$mac'=>$mac));
 
 		$fcontent = fread($hf,filesize($licenseFile));
 		fclose($hf);
@@ -897,7 +958,7 @@ function checkLicense() {
 
 	return false;
 }
-
+*/
 
 timer_start();
 

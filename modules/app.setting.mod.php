@@ -374,6 +374,34 @@ if(!class_exists('APP_app_setting')) {
 					'value' => !empty($settings_licensekey) ? $settings_licensekey : '',
 				);
 
+				if(!empty(($license=checkLicense()))) {
+					//pre(array('$license'=>$license));
+					$settings_licenseinfo = ''; //prebuf($license);
+
+					if(!empty($license['sc'])) {
+						$settings_licenseinfo .= 'LICENSED TO '.$license['sc']."\n";
+						$settings_licenseinfo .= 'DATE: '.$license['dt']."\n";
+						$settings_licenseinfo .= 'EXPIRATION: '.$license['de']."\n";
+						$settings_licenseinfo .= 'TOTAL DAYS: '.$license['dd']."\n";
+						$settings_licenseinfo .= 'TOTAL STUDENTS: '.$license['ns']."\n";
+					}
+				} else {
+					$settings_licenseinfo = 'UNLICENSED VERSION. UNAUTHORIZED USE IS PROHIBITED.';
+				}
+
+				$params['tbLicense'][] = array(
+					'type' => 'input',
+					'label' => 'LICENSE INFO',
+					'inputWidth' => 500,
+					'rows' => 5,
+					'labelWidth' => 100,
+					'name' => 'settings_licenseinfo',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_licenseinfo) ? $settings_licenseinfo : '',
+				);
+
 				$templatefile = $this->templatefile($routerid,$formid);
 
 				//pre(array($routerid,$formid,$params,$templatefile));

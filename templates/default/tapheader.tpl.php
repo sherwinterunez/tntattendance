@@ -46,6 +46,12 @@ do_action('action_header_bottom');
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 */ ?>
+<?php
+if(!empty(($license=checkLicense()))) {
+} else {
+	$license = array();
+}
+?>
 </head>
 <body id="body" style="opacity:0">
 <div id="myForm" style="margin-top:-10000px;margin-left:-10000px;height:100;"></div>
@@ -405,7 +411,7 @@ do_action('action_header_bottom');
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
-		<div id="schoolname">OBIS Montessori</div>
+		<div id="schoolname"><?php echo !empty($license['sc']) ? $license['sc'] : 'UNLICENSED VERSION. UNAUTHORIZED USE IS PROHIBITED.'; ?></div>
 	</div>
 	<div id="contenttopright">
 		<div id="currentdatetime"></div>
