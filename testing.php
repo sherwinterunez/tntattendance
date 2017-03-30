@@ -45,7 +45,9 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-checkLicense();
+if(!empty(($license=checkLicense()))) {
+	pre(array('$license'=>$license));
+}
 
 /*$rsa = new Crypt_RSA();
 

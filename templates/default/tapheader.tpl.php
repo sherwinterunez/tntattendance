@@ -471,7 +471,7 @@ do_action('action_header_bottom');
 	</div>
 	<br style="clear:both;" />
 </div>
-<div id="tntlogo"><img src="/tntlogo.php?size=60" /></div>
-<div id="obislogo"><img src="/obislogo.php?size=60" /></div>
+<?php /*<div id="tntlogo"><img src="/tntlogo.php?size=60" /></div>
+<div id="obislogo"><img src="/obislogo.php?size=60" /></div>*/ ?>
 <div id="marquee">&nbsp;</div>
 <div id="contentbottom">&nbsp;</div>

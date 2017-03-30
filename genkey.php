@@ -75,7 +75,8 @@ $ciphertext = base64_encode($rsa->encrypt($plaintext));
 //print_r(array('$plaintext'=>$plaintext,'plength'=>strlen($plaintext),'$ciphertext'=>$ciphertext,'clength'=>strlen($ciphertext)));
 
 if(!empty($ciphertext)) {
-  echo '<textarea style="width:100%;height:500px;">'.htmlentities($ciphertext).'</textarea>';
+  echo '<label>Generated Key:</label><br />';
+  echo '<textarea style="width:1000px;height:100px;">'.htmlentities($ciphertext).'</textarea>';
 } else {
   die("An error has occured while generating key for license generation. Please contact support.\n");
 }

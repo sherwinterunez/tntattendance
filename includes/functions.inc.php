@@ -845,7 +845,7 @@ function checkLicense() {
 
 	$licenseFile = ABS_PATH . 'license.inc';
 
-	pre(array('$licenseFile'=>$licenseFile));
+	//pre(array('$licenseFile'=>$licenseFile));
 
 	if(file_exists($licenseFile)&&($hf=fopen($licenseFile,'r'))) {
 
@@ -859,7 +859,7 @@ function checkLicense() {
 		$fcontent = fread($hf,filesize($licenseFile));
 		fclose($hf);
 
-		pre(array('$fcontent'=>$fcontent, 'length'=>strlen($fcontent)));
+		//pre(array('$fcontent'=>$fcontent, 'length'=>strlen($fcontent)));
 
 		$rsa2 = new Crypt_RSA();
 
@@ -869,7 +869,29 @@ function checkLicense() {
 
 		$decrypted = $rsa2->decrypt(base64_decode($fcontent));
 
-		print_r(array('$decrypted'=>$decrypted));
+		//print_r(array('$decrypted'=>$decrypted));
+
+		if(!empty($decrypted)) {
+			$json = json_decode($decrypted,true);
+
+			//pre(array('$json'=>$json));
+
+			if(!empty($json)&&!empty($json['mc'][0])&&!empty($json['sc'])&&!empty($json['ux'])&&!empty($json['dt'])) {
+
+				if(count($mac)!=count($json['mc'])) {
+					return false;
+				}
+
+				foreach($mac as $v) {
+					if(in_array($v,$json['mc'])) {
+					} else {
+						return false;
+					}
+				}
+
+				return $json;
+			}
+		}
 
 	}
 
