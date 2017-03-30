@@ -47,13 +47,19 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 http://obis101.terunez.com/fcmsendtotopic.php?topic=tapntxt09493621618&msg=Hello&title=Tap%20N%20Txt
 */
 
-define('REMOTE_FCMSENDTOTOPIC_URL','http://obis101.terunez.com/fcmsendtotopic.php');
+//define('REMOTE_FCMSENDTOTOPIC_URL','http://obis101.terunez.com/fcmsendtotopic.php');
+define('REMOTE_FCMSENDTOTOPIC_URL','http://tntmobile.obisph.com/fcmsendtotopic.php');
 
 date_default_timezone_set('Asia/Manila');
 
 //if(!getOption('$SETTINGS_SENDPUSHNOTIFICATION',false)) {
 //	die;
 //}
+
+if(!empty(($license=checkLicense()))) {
+} else {
+	return false;
+}
 
 global $appdb;
 

@@ -277,6 +277,11 @@ if(getOption('$MAINTENANCE',false)) {
 
 if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled($_GET['sim'])) {
 
+	if(!empty(($license=checkLicense()))) {
+	} else {
+		return false;
+	}
+
 	setSetting('STATUS_PROCESSOUTBOX_'.$_GET['sim'],'1');
 
 	if(processOutbox($_GET['dev'],$_GET['sim'],$_GET['ip'])) {
