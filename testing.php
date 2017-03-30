@@ -45,7 +45,7 @@ require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 date_default_timezone_set('Asia/Manila');
 
-myExec('ifconfigx',$out);
+myExec('ifconfig',$out);
 
 pre(array('$out'=>$out));
 
