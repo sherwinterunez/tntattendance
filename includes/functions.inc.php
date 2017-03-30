@@ -795,11 +795,20 @@ function getMacAddress() {
 	$out = false;
 	$mac = array();
 
-	myExec('ifconfig',$out);
+	//myExec('which ifconfig',$out);
 
 	//pre(array('$out'=>$out));
 
-	if(!empty($out[0])) {
+	myExec('/sbin/ifconfig',$out);
+
+	if(!empty($out[0])&&preg_match('/ether/si',$out[0])) {
+	} else {
+		myExec('/usr/sbin/ifconfig',$out);
+	}
+
+	//pre(array('$out'=>$out));
+
+	if(!empty($out[0])&&preg_match('/ether/si',$out[0])) {
 		$output = $out[0];
 
 		/*$output = str_replace("\n",'\n',$output);
