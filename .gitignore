@@ -8,3 +8,4 @@ license.inc
 genlicense.php
 genkeytest.php
 decodekey.php
+curltest.php

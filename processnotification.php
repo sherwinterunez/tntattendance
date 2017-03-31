@@ -80,6 +80,10 @@ if(!empty($notifications)) {
 
 		$ch = new MyCURL;
 
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+
 		$msgin = getOption('$SETTINGS_TIMEINNOTIFICATION');
 		$msgout = getOption('$SETTINGS_TIMEOUTNOTIFICATION');
 
@@ -235,6 +239,10 @@ if(!empty($notifications)) {
 	foreach($notifications as $k=>$v) {
 
 		$ch = new MyCURL;
+
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
 
 		$smsoutbox_message = $v['smsoutbox_message'];
 

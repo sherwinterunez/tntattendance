@@ -878,7 +878,7 @@ function checkLicense() {
 
 			//pre(array('$json'=>$json));
 
-			if(!empty($json)&&!empty($json['mc'][0])&&!empty($json['sc'])&&!empty($json['ux'])&&!empty($json['dt'])) {
+			if(!empty($json)&&!empty($json['mc'][0])&&!empty($json['sc'])&&!empty($json['ux'])&&!empty($json['dt'])&&!empty($json['dd'])&&!empty($json['ex'])&&!empty($json['de'])&&!empty($json['ns'])) {
 
 				if(count($mac)!=count($json['mc'])) {
 					return false;
@@ -889,6 +889,13 @@ function checkLicense() {
 					} else {
 						return false;
 					}
+				}
+
+				$currentDate = intval(getDbUnixDate());
+				$expireDate = intval($json['ex']);
+
+				if($currentDate>$expireDate) {
+					return false;
 				}
 
 				return $json;
