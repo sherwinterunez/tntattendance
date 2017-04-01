@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,22 +24,22 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_Login')) {
 
 	class APP_Login extends APP_Base {
-	
+
 		var $pathid = 'login';
 		var $desc = 'Login';
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
-	
+
 		function __construct() {
 			parent::__construct();
 		}
-		
+
 		function __destruct() {
 			parent::__destruct();
 		}
-		
+
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
@@ -71,6 +71,7 @@ if(!class_exists('APP_Login')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/verify/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'verify'))));
 			$approuter->addroute(array('^/logout/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'logout'))));
+			$approuter->addroute(array('^/'.$this->pathid.'$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 		}
 
 		function is_loggedin() {
@@ -159,7 +160,7 @@ if(!class_exists('APP_Login')) {
 					}
 
 					json_error_return(3); // 3 => 'Username has been disabled.'
-				} 
+				}
 
 				if(!($result = $appdb->update('tbl_users',array('loginfailed'=>'#loginfailed + 1#','loginfailedstamp'=>'now()'),"user_login='".pgFixString($this->post['username'])."'"))) {
 					json_error_return(1); // 1 => 'Error in SQL execution.'
@@ -201,7 +202,7 @@ if(!class_exists('APP_Login')) {
 				$_SESSION['ROLE'] = $roleinfo;
 /////
 			}
-		
+
 			if(!($result = $appdb->update('tbl_users',array('lastloginstamp'=>'now()','loginfailed'=>0),'user_id='.$userinfo['user_id']))) {
 				json_error_return(1); // 1 => 'Error in SQL execution.'
 			}
@@ -222,15 +223,17 @@ if(!class_exists('APP_Login')) {
 
 		function render($vars) {
 			global $apptemplate, $appform, $current_page;
-			
+
+			//pre(debug_backtrace());
+
 			$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'loginheader');
 
 			//$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topnav');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -238,9 +241,9 @@ if(!class_exists('APP_Login')) {
 			//$apptemplate->page('login');
 
 			$apptemplate->footer();
-			
+
 		} // render
-								
+
 	} // class APP_Login
 
 	$applogin = new APP_Login;

@@ -75,6 +75,7 @@ if(!class_exists('APP_Tap')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/getbulletin/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getBulletin'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getdatetime/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getDateTime'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getprevious/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getPrevious'))));
+			$approuter->addroute(array('^/'.$this->pathid.'$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 
 
 			///$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));

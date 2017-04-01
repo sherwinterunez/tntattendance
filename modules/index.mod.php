@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,29 +24,29 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_Index')) {
 
 	class APP_Index extends APP_Base {
-	
+
 		var $pathid = 'index';
 		var $desc = 'Index';
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
-	
+
 		function __construct() {
 			parent::__construct();
 		}
-		
+
 		function __destruct() {
 			parent::__destruct();
 		}
-		
+
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
 
 		function action() {
 			global $approuter;
-	
+
 			if($approuter->id==$this->pathid) {
 				remove_action('default_css', 'action_default_css');
 				remove_action('default_script', 'action_default_script');
@@ -144,14 +144,14 @@ if(!class_exists('APP_Index')) {
 			//$approuter->addroute(array('^/$' => array('id'=>'index','param'=>'action=index', 'callback'=>array($this,'render'))));
 
 			$approuter->addroute(array('^/$' => array('id'=>'index','param'=>'action=index', 'callback'=>array($this,'render'))));
-			$approuter->addroute(array('^/p/(.+?)\/$' => array('id'=>'index','param'=>'action=index&param=$1', 'callback'=>array($this,'render'))));
+			//$approuter->addroute(array('^/p/(.+?)\/$' => array('id'=>'index','param'=>'action=index&param=$1', 'callback'=>array($this,'render'))));
 		}
 
 		function check_url() {
 			if($_SERVER['REQUEST_URI']=='/'.$this->pathid.'/') {
 				header("Location: /",TRUE,301);
 				die;
-			}			
+			}
 		} // check_url()
 
 		function redis() {
@@ -169,12 +169,16 @@ if(!class_exists('APP_Index')) {
 		}
 
 		function render($vars) {
+			redirect301('/tap/');
+		}
+
+		function render2($vars) {
 			global $apptemplate, $appform, $current_page, $redis, $redisprefix, $default_keyword;
 
 			/*if(!empty($default_keyword)) {
 				$newurl = makeurl($default_keyword);
 				if(!empty($newurl['url'])) {
-					redirect301($newurl['url']);	
+					redirect301($newurl['url']);
 				}
 			}*/
 
@@ -200,9 +204,9 @@ if(!class_exists('APP_Index')) {
 			$apptemplate->header(ucfirst(strtolower($page)).' | '.getOption('$APP_NAME',APP_NAME), 'frontendheader');
 
 			$apptemplate->page($page);
-	
+
 			//$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -210,18 +214,18 @@ if(!class_exists('APP_Index')) {
 			//$apptemplate->page('index',array('vars'=>$vars,'recents'=>$recents));
 
 			$apptemplate->footer();
-			
+
 		} // render()
 
 		function render_result($vars,$results,$recents) {
 			global $apptemplate, $appform, $current_page;
-			
+
 			//$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.APP_NAME);
-	
+
 			$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -231,7 +235,7 @@ if(!class_exists('APP_Index')) {
 			//pre(array($vars,$results));
 
 			$apptemplate->footer();
-			
+
 		} // render()
 
 		function params($vars) {
@@ -239,12 +243,12 @@ if(!class_exists('APP_Index')) {
 				$newurl = makeurl($vars['get']['q']);
 
 				$url = '/';
-				
+
 				if(!empty($newurl['url'])) {
 					$url = $newurl['url'];
-				}	
-				
-				redirect301($url);		
+				}
+
+				redirect301($url);
 			}
 
 			if(!empty($vars['category'])) {
@@ -258,7 +262,7 @@ if(!class_exists('APP_Index')) {
 				if($newurl['url']!=$_SERVER['REQUEST_URI']) {
 					redirect301($newurl['url']);
 				}
-			}	
+			}
 
 			if(!empty($vars['category'])&&!empty($vars['q'])) {
 			} else {
@@ -268,16 +272,16 @@ if(!class_exists('APP_Index')) {
 					$newurl = makeurl($q);
 
 					$url = '/';
-					
+
 					if(!empty($newurl['url'])) {
 						$url = $newurl['url'];
-					}	
-					
-					redirect301($url);		
+					}
+
+					redirect301($url);
 				}
 			}
 
-			return $vars;		
+			return $vars;
 		} // params()
 
 		function notfound($vars) {
@@ -298,7 +302,7 @@ if(!class_exists('APP_Index')) {
 					}
 
 					if($redis) {
-						if(!empty($vars['q'])&&strlen($vars['q'])<60) {	
+						if(!empty($vars['q'])&&strlen($vars['q'])<60) {
 							$redis->lRem($redisprefix.':recent', $vars['q'], 0);
 							$redis->lPush($redisprefix.':recent', $vars['q']);
 							$redis->lTrim($redisprefix.':recent', 0, 9);
@@ -310,13 +314,13 @@ if(!class_exists('APP_Index')) {
 					}
 
 					$this->render_result($vars,$results,$recents);
-					
+
 				} else {
 
 					if(!empty($default_keyword)) {
 						$newurl = makeurl($default_keyword);
 						if(!empty($newurl['url'])) {
-							redirect301($newurl['url']);	
+							redirect301($newurl['url']);
 						}
 					}
 
@@ -324,7 +328,7 @@ if(!class_exists('APP_Index')) {
 			}
 
 		} // notfound()
-								
+
 	} // class APP_Index
 
 	$appindex = new APP_Index;
