@@ -44,7 +44,7 @@ require_once(INCLUDE_PATH.'sms.inc.php');
 require_once(INCLUDE_PATH.'userfuncs.inc.php');*/
 
 //define('REMOTE_DB_URL','http://obis101.terunez.com/syncuser.php');
-define('REMOTE_DB_URL','http://tntserver.obisph.com/syncuser.php');
+define('REMOTE_DB_URL','https://tntserver.obisph.com/syncuser.php');
 
 date_default_timezone_set('Asia/Manila');
 
@@ -73,6 +73,10 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 		print_r(array('$studentprofiles['.$k.']'=>$v));
 
 		$ch = new MyCURL;
+
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
 
 		$v['defaultpass'] = 'TAPNTXT143';
 
@@ -129,6 +133,10 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 		}
 
 		$ch = new MyCURL;
+
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
 
 		$v['defaultpass'] = 'TAPNTXT143';
 
