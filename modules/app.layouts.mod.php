@@ -332,3 +332,47 @@ $layouts['app']['groups'] = array(
 		),
 	)
 );
+
+$layouts['app']['report'] = array(
+	'pattern'=>'4H',
+	'module'=>'report',
+	'toolbar'=>'b',
+	'cells'=>array(
+		array(
+			'id'=>'a',
+			'text'=>'&nbsp;',
+			'width'=>150,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportcontrol',
+			),
+		),
+		array(
+			'id'=>'b',
+			'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportmain',
+			),
+		),
+		array(
+			'id'=>'c',
+			//'text'=>'&nbsp;',
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportdetails',
+			),
+		),
+		array(
+			'id'=>'d',
+			'text'=>'Details',
+			'width'=>250,
+			'html'=>array(
+				//'module'=>'user',
+				'formid'=>'reportmisc',
+			),
+		),
+	)
+);
+
+//

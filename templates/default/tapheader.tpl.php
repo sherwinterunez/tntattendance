@@ -266,21 +266,22 @@ if(!empty(($license=checkLicense()))) {
 
 	#contenttopleft {
 		display: block;
-		width: 50%;
+		width: 70%;
 		height: auto;
 		float: left;
+		/*border-right: 1px solid #f00;*/
 	}
 
 	#contenttopright {
 		display: block;
-		width: 50%;
+		width: 29%;
 		height: auto;
 		float: right;
 	}
 
 	#currentdatetime {
 		display: block;
-		font-size: 25px;
+		font-size: 18px;
 		line-height: 80px;
 		float: right;
 		margin-right: 20px;
@@ -289,13 +290,34 @@ if(!empty(($license=checkLicense()))) {
 		/*border: 1px solid #f00;*/
 	}
 
+	#licenselogo {
+		display: block;
+		width: 100px;
+		height: 100px;
+		color: #fff;
+		opacity: 0.80;
+		float: left;
+		/*background: url("/templates/default/tap/license.png") no-repeat 0px 0px;*/
+		/*border: 1px solid #f00;
+		padding: 0;
+		margin: 0;*/
+		vertical-align: middle;
+	}
+
+	#licenselogo img {
+		max-width: 80px;
+		max-height: 80px;
+		margin: 10px;
+	}
+
 	#schoolname {
 		display: block;
 		font-size: 30px;
 		line-height: 100px;
-		margin-left: 20px;
+		/*margin-left: 20px;*/
 		color: #fff;
 		opacity: 0.80;
+		float: left;
 	}
 
 	#contentprevious {
@@ -411,6 +433,7 @@ if(!empty(($license=checkLicense()))) {
 </style>
 <div id="contenttop">
 	<div id="contenttopleft">
+		<div id="licenselogo"><img src="/templates/default/tap/license.png" /></div>
 		<div id="schoolname"><?php echo !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)'; ?></div>
 	</div>
 	<div id="contenttopright">

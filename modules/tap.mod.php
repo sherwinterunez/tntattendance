@@ -227,7 +227,48 @@ if(!class_exists('APP_Tap')) {
 
 			//pre(array('$vars'=>$vars));
 
-			$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
+			$settings_electronicbulletindaily = getOption('$SETTINGS_ELECTRONICBULLETINDAILY',base64_encode(serialize(array())));
+
+			if(!empty($settings_electronicbulletindaily)) {
+				$settings_electronicbulletindaily = unserialize(base64_decode($settings_electronicbulletindaily));
+			}
+
+			$dtfrom = intval(getDbUnixDate());
+
+			$month = intval(date('m', $dtfrom));
+			$day = intval(date('d', $dtfrom));
+			$year = intval(date('Y', $dtfrom));
+			$hour = intval(date('H', $dtfrom));
+			$minute = intval(date('i', $dtfrom));
+			$second = intval(date('s', $dtfrom));
+
+			$from = date2timestamp("$month/$day/$year 00:00:00",'m/d/Y H:i:s');
+
+			$dtto = $dtfrom + 604800; // current up to 7 days
+
+			$month = intval(date('m', $dtto));
+			$day = intval(date('d', $dtto));
+			$year = intval(date('Y', $dtto));
+			$hour = intval(date('H', $dtto));
+			$minute = intval(date('i', $dtto));
+			$second = intval(date('s', $dtto));
+
+			$to = date2timestamp("$month/$day/$year 23:59:59",'m/d/Y H:i:s');
+
+			$bulletin = '';
+
+			if(!empty($settings_electronicbulletindaily)&&is_array($settings_electronicbulletindaily)) {
+				foreach($settings_electronicbulletindaily as $k=>$v) {
+					if(intval($v['unixdate'])>=$from&&intval($v['unixdate'])<=$to) {
+						$bulletin .= $v['msg'].' ';
+					}
+				}
+			}
+
+			if(!empty($bulletin)) {
+			} else {
+				$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','DEMO UNIT... OBIS SOFTWARE TECHNOLOGY... OBIS SOFTWARE TECHNOLOGY... DEMO UNIT...');
+			}
 
 			$retval = array();
 			$retval['vars'] = $vars;
@@ -237,7 +278,7 @@ if(!class_exists('APP_Tap')) {
 				$bulletin .= ' THIS IS AN UNLICENSED VERSION OF TAP N TXT. FOR DEMO ONLY.';
 			}
 
-			$retval['bulletin'] = $bulletin;
+			$retval['bulletin'] = trim($bulletin);
 
 			header_json();
 			json_encode_return($retval);

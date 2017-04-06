@@ -907,7 +907,7 @@ function checkLicense() {
 
 		$rsa2->loadKey($publicKey);
 
-		$decrypted = $rsa2->decrypt(base64_decode($settings_licensekey));
+		$decrypted = @$rsa2->decrypt(base64_decode($settings_licensekey));
 
 		//print_r(array('$decrypted'=>$decrypted));
 
@@ -941,6 +941,44 @@ function checkLicense() {
 		}
 
 	}
+
+	return false;
+}
+
+function readLicense() {
+	global $publicKey;
+
+	//$licenseFile = ABS_PATH . 'license.inc';
+
+	//pre(array('readLicense()'=>'reading license'));
+
+	$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
+
+	if(!empty($settings_licensekey)) {
+
+		$rsa2 = new Crypt_RSA();
+
+		$rsa2->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+
+		$rsa2->loadKey($publicKey);
+
+		$decrypted = @$rsa2->decrypt(base64_decode($settings_licensekey));
+
+		//print_r(array('$decrypted'=>$decrypted));
+
+		if(!empty($decrypted)) {
+			$json = json_decode($decrypted,true);
+
+			//pre(array('$json'=>$json));
+
+			if(!empty($json)&&!empty($json['mc'][0])&&!empty($json['sc'])&&!empty($json['ux'])&&!empty($json['dt'])&&!empty($json['dd'])&&!empty($json['ex'])&&!empty($json['de'])&&!empty($json['ns'])) {
+				return $json;
+			}
+		}
+
+	}
+
+	//pre(array('readLicense()'=>'done. reading license'));
 
 	return false;
 }

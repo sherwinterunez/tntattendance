@@ -108,6 +108,25 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
 
+				$settings_electronicbulletindaily = getOption('$SETTINGS_ELECTRONICBULLETINDAILY',base64_encode(serialize(array())));
+
+				if(!empty($settings_electronicbulletindaily)) {
+					$settings_electronicbulletindaily = unserialize(base64_decode($settings_electronicbulletindaily));
+				}
+
+				//pre(array('$settings_electronicbulletindaily'=>$settings_electronicbulletindaily));
+
+				/*$settings_electronicbulletindailydate = getOption('$SETTINGS_ELECTRONICBULLETINDAILYDATE',base64_encode(serialize(array())));
+				$settings_electronicbulletindailymsg = getOption('$SETTINGS_ELECTRONICBULLETINDAILYMSG',base64_encode(serialize(array())));
+
+				if(!empty($settings_electronicbulletindailydate)) {
+					$settings_electronicbulletindailydate = unserialize(base64_decode($settings_electronicbulletindailydate));
+				}
+
+				if(!empty($settings_electronicbulletindailymsg)) {
+					$settings_electronicbulletindailymsg = unserialize(base64_decode($settings_electronicbulletindailymsg));
+				}*/
+
 				if(!empty($post['method'])&&($post['method']=='settingedit')) {
 					$readonly = false;
 				}
@@ -148,6 +167,55 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_LICENSEKEY',!empty($post['settings_licensekey'])?$post['settings_licensekey']:'');
 
+					$settings_electronicbulletindaily = array();
+
+					if(!empty($post['settings_electronicbulletindailymsg'])&&is_array($post['settings_electronicbulletindailymsg'])) {
+						foreach($post['settings_electronicbulletindailymsg'] as $k=>$v) {
+
+							//pre(array('settings_electronicbulletindailymsg'=>$post['settings_electronicbulletindailymsg']));
+
+							if(!empty($post['settings_electronicbulletindailymsg'][$k])&&!empty($post['settings_electronicbulletindailydate'][$k])) {
+								$dt = date2timestamp($post['settings_electronicbulletindailydate'][$k]);
+								$settings_electronicbulletindaily[$dt] = array(
+									'unixdate'=>$dt,
+									'date'=>$post['settings_electronicbulletindailydate'][$k],
+									'msg'=>$post['settings_electronicbulletindailymsg'][$k]
+								);
+							}
+						}
+					}
+
+					if(!empty($settings_electronicbulletindaily)) {
+
+						ksort($settings_electronicbulletindaily);
+
+						$tsettings_electronicbulletindaily = array();
+
+						foreach($settings_electronicbulletindaily as $k=>$v) {
+							$tsettings_electronicbulletindaily[] = $v;
+						}
+
+						//pre(array('$tsettings_electronicbulletindaily'=>$tsettings_electronicbulletindaily));
+
+						$settings_electronicbulletindaily = base64_encode(serialize($tsettings_electronicbulletindaily));
+
+						//pre(array('$settings_electronicbulletindaily'=>$settings_electronicbulletindaily));
+					} else {
+						$settings_electronicbulletindaily = base64_encode(serialize(array()));
+					}
+
+					/*$settings_electronicbulletindailydate = array();
+
+					$tsettings_electronicbulletindailydate = !empty($post['settings_electronicbulletindailydate'])&&is_array($post['settings_electronicbulletindailydate'])?base64_encode(serialize($post['settings_electronicbulletindailydate'])):base64_encode(serialize(array()));
+
+					setSetting('$SETTINGS_ELECTRONICBULLETINDAILYDATE',$tsettings_electronicbulletindailydate);
+
+					$tsettings_electronicbulletindailymsg = !empty($post['settings_electronicbulletindailymsg'])&&is_array($post['settings_electronicbulletindailymsg'])?base64_encode(serialize($post['settings_electronicbulletindailymsg'])):base64_encode(serialize(array()));
+
+					setSetting('$SETTINGS_ELECTRONICBULLETINDAILYMSG',$tsettings_electronicbulletindailymsg);*/
+
+					setSetting('$SETTINGS_ELECTRONICBULLETINDAILY',$settings_electronicbulletindaily);
+
 					json_encode_return($retval);
 					die;
 				}
@@ -167,15 +235,70 @@ if(!class_exists('APP_app_setting')) {
 
 				$params['tbElectronicBulletin'][] = array(
 					'type' => 'input',
-					'label' => 'BULLETIN',
-					'inputWidth' => 500,
-					'rows' => 5,
-					//'labelWidth' => 250,
+					'label' => 'DEFAULT BULLETIN',
+					'inputWidth' => 950,
+					//'rows' => 1,
+					'labelWidth' => 150,
 					'name' => 'settings_electronicbulletin',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
 					'value' => !empty($settings_electronicbulletin) ? $settings_electronicbulletin : '',
 				);
+
+				for($i=0;$i<31;$i++) {
+					$block = array();
+
+					if($readonly) {
+						$block[] = array(
+							'type' => 'input',
+							'label' => 'DAILY BULLETIN #'.($i+1),
+							'inputWidth' => 100,
+							'labelWidth' => 150,
+							'name' => 'settings_electronicbulletindailydate['.$i.']',
+							'readonly' => $readonly,
+							'value' => !empty($settings_electronicbulletindaily[$i]['date']) ? $settings_electronicbulletindaily[$i]['date'] : '',
+						);
+					} else {
+						$block[] = array(
+							'type' => 'calendar',
+							'label' => 'DAILY BULLETIN #'.($i+1),
+							'inputWidth' => 100,
+							'labelWidth' => 150,
+							'name' => 'settings_electronicbulletindailydate['.$i.']',
+							'readonly' => $readonly,
+							'calendarPosition' => 'right',
+							'dateFormat' => '%m-%d-%Y',
+							//'inputMask' => array('alias'=>'mm/dd/yyyy','prefix'=>'','autoUnmask'=>true),
+							//'inputMask' => array('mask'=>'99-99-9999','prefix'=>'','autoUnmask'=>true),
+							'value' => !empty($settings_electronicbulletindaily[$i]['date']) ? $settings_electronicbulletindaily[$i]['date'] : '',
+						);
+					}
+
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 5,
+					);
+
+					$block[] = array(
+						'type' => 'input',
+						//'label' => 'DAILY BULLETIN',
+						'inputWidth' => 840,
+						//'rows' => 5,
+						//'labelWidth' => 250,
+						'name' => 'settings_electronicbulletindailymsg['.$i.']',
+						'readonly' => $readonly,
+						//'required' => !$readonly,
+						'value' => !empty($settings_electronicbulletindaily[$i]['msg']) ? $settings_electronicbulletindaily[$i]['msg'] : '',
+					);
+
+					$params['tbElectronicBulletin'][] = array(
+						'type' => 'block',
+						'width' => 1150,
+						'blockOffset' => 0,
+						'offsetTop' => 5,
+						'list' => $block,
+					);
+				}
 
 				$params['tbLoginNotification'][] = array(
 					'type' => 'input',
@@ -199,6 +322,8 @@ if(!class_exists('APP_app_setting')) {
 					'labelWidth' => 200,
 					'name' => 'settings_loginnotificationschooladmin',
 					'readonly' => $readonly,
+					'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
+					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_loginnotificationschooladmin) ? $settings_loginnotificationschooladmin : '',
 				);
@@ -236,6 +361,8 @@ if(!class_exists('APP_app_setting')) {
 					'labelWidth' => 200,
 					'name' => 'settings_loginnotificationostrelationshipmanager',
 					'readonly' => $readonly,
+					'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
+					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_loginnotificationostrelationshipmanager) ? $settings_loginnotificationostrelationshipmanager : '',
 				);
@@ -364,8 +491,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbLicense'][] = array(
 					'type' => 'input',
 					'label' => 'LICENSE KEY',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 800,
+					'rows' => 9,
 					'labelWidth' => 100,
 					'name' => 'settings_licensekey',
 					'readonly' => $readonly,
@@ -374,7 +501,7 @@ if(!class_exists('APP_app_setting')) {
 					'value' => !empty($settings_licensekey) ? $settings_licensekey : '',
 				);
 
-				if(!empty(($license=checkLicense()))) {
+				if(!empty(($license=readLicense()))) {
 					//pre(array('$license'=>$license));
 					$settings_licenseinfo = ''; //prebuf($license);
 
@@ -385,6 +512,11 @@ if(!class_exists('APP_app_setting')) {
 						$settings_licenseinfo .= 'TOTAL DAYS: '.$license['dd']."\n";
 						$settings_licenseinfo .= 'TOTAL STUDENTS: '.$license['ns']."\n";
 					}
+
+					/*if(!checkLicense()) {
+						$settings_licenseinfo .= 'LICENSED EXPIRED. LICENSED EXPIRED. LICENSED EXPIRED.'."\n";
+						$settings_licenseinfo .= 'PLEASE CONTACT SUPPORT.'."\n";
+					}*/
 				} else {
 					$settings_licenseinfo = 'UNLICENSED VERSION. UNAUTHORIZED USE IS PROHIBITED.';
 				}
@@ -392,8 +524,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbLicense'][] = array(
 					'type' => 'input',
 					'label' => 'LICENSE INFO',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 800,
+					'rows' => 9,
 					'labelWidth' => 100,
 					'name' => 'settings_licenseinfo',
 					'readonly' => $readonly,

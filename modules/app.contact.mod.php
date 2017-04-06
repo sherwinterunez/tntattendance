@@ -495,18 +495,31 @@ if(!class_exists('APP_app_contact')) {
 					'value' => !empty($params['studentinfo']['studentprofile_birthdate']) ? $params['studentinfo']['studentprofile_birthdate'] : '',
 				);*/
 
-				$params['tbStudentProfile'][] = array(
-					'type' => 'calendar',
-					'label' => 'BIRTH DATE',
-					'labelWidth' => 150,
-					'name' => 'studentprofile_birthdate',
-					'readonly' => true,
-					'calendarPosition' => 'right',
-					'dateFormat' => '%m-%d-%Y',
-					'inputMask' => array('alias'=>'mm/dd/yyyy','prefix'=>'','autoUnmask'=>true),
-					//'required' => !$readonly,
-					'value' => !empty($params['studentinfo']['studentprofile_birthdate']) ? $params['studentinfo']['studentprofile_birthdate'] : '',
-				);
+				if($readonly) {
+					$params['tbStudentProfile'][] = array(
+						'type' => 'input',
+						'label' => 'BIRTH DATE',
+						'labelWidth' => 150,
+						'name' => 'studentprofile_birthdate',
+						'readonly' => $readonly,
+						//'required' => !$readonly,
+						//'inputMask' => array('alias'=>'mm/dd/yyyy','prefix'=>'','autoUnmask'=>true),
+						'value' => !empty($params['studentinfo']['studentprofile_birthdate']) ? $params['studentinfo']['studentprofile_birthdate'] : '',
+					);
+				} else {
+					$params['tbStudentProfile'][] = array(
+						'type' => 'calendar',
+						'label' => 'BIRTH DATE',
+						'labelWidth' => 150,
+						'name' => 'studentprofile_birthdate',
+						'readonly' => $readonly,
+						'calendarPosition' => 'right',
+						'dateFormat' => '%m-%d-%Y',
+						'inputMask' => array('alias'=>'mm/dd/yyyy','prefix'=>'','autoUnmask'=>true),
+						//'required' => !$readonly,
+						'value' => !empty($params['studentinfo']['studentprofile_birthdate']) ? $params['studentinfo']['studentprofile_birthdate'] : '',
+					);
+				}
 
 				/*$opt = array();
 

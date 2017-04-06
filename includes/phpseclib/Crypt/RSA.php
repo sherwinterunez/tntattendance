@@ -3092,7 +3092,7 @@ class Crypt_RSA
         foreach ($ciphertext as $c) {
             $temp = $this->$decrypt($c);
             if ($temp === false) {
-                print_r(array('error'=>$plaintext));
+                //print_r(array('error'=>$plaintext));
                 return false;
             }
             $plaintext.= $temp;
