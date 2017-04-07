@@ -10,3 +10,4 @@ genkeytest.php
 decodekey.php
 curltest.php
 ntptest.php
+readlicense.php
