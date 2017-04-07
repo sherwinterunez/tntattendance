@@ -297,6 +297,8 @@ if(!class_exists('APP_Tap')) {
 			$retval['localip'] = getMyLocalIP();
 			$retval['load'] = sys_getloadavg();
 			$retval['sysinfo'] = 'Server IP: '.$retval['localip'].' | Load: '.round($retval['load'][0],2).', '.round($retval['load'][1],2).', '.round($retval['load'][2],2);
+			$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
+			$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
 
 			//$load = sys_getloadavg();
 
@@ -587,6 +589,8 @@ if(!class_exists('APP_Tap')) {
 							$retval['startTime'] = pgDateUnix($startTimeStamp);
 							$retval['endTimeStamp'] = $endTimeStamp;
 							$retval['endTime'] = pgDateUnix($endTimeStamp);
+							$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
+							$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
 							//$retval['studentdtr'] = $vars['studentdtr'];
 
 							if($type=='IN') {

@@ -95,6 +95,10 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_rfidinterval = getOption('$SETTINGS_RFIDINTERVAL',false);
 
+				$settings_showadsinterval = getOption('$SETTINGS_SHOWADSINTERVAL',false);
+
+				$settings_showadsintervalenable = getOption('$SETTINGS_SHOWADSINTERVALENABLE',false);
+
 				$settings_synctoserver = getOption('$SETTINGS_SYNCTOSERVER',false);
 
 				$settings_sendpushnotification  = getOption('$SETTINGS_SENDPUSHNOTIFICATION',false);
@@ -149,7 +153,11 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_LOGINNOTIFICATIONOSTRELATIONSHIPMANAGERSENDSMS',!empty($post['settings_loginnotificationostrelationshipmanagersendsms'])?true:false);
 
-					setSetting('$SETTINGS_RFIDINTERVAL',!empty($post['settings_rfidinterval'])?intval($post['settings_rfidinterval']):0);
+					setSetting('$SETTINGS_RFIDINTERVAL',!empty($post['settings_rfidinterval'])?intval($post['settings_rfidinterval']):5);
+
+					setSetting('$SETTINGS_SHOWADSINTERVAL',!empty($post['settings_showadsinterval'])?intval($post['settings_showadsinterval']):30);
+
+					setSetting('$SETTINGS_SHOWADSINTERVALENABLE',!empty($post['settings_showadsintervalenable'])?true:false);
 
 					setSetting('$SETTINGS_SYNCTOSERVER',!empty($post['settings_synctoserver'])?true:false);
 
@@ -439,11 +447,49 @@ if(!class_exists('APP_app_setting')) {
 					'value' => !empty($settings_rfidinterval) ? $settings_rfidinterval : '5',
 				);
 
+				$block = array();
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'SHOW ADS AFTER IDLE (minutes)',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 200,
+					'name' => 'settings_showadsinterval',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_showadsinterval) ? $settings_showadsinterval : '30',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'ENABLE',
+					'labelWidth' => 360,
+					'name' => 'settings_showadsintervalenable',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_showadsintervalenable) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
 				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'TIME-IN MESSAGE',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 900,
+					'rows' => 2,
 					'labelWidth' => 200,
 					'name' => 'settings_timeinmessage',
 					'readonly' => $readonly,
@@ -455,8 +501,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'TIME-OUT MESSAGE',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 900,
+					'rows' => 2,
 					'labelWidth' => 200,
 					'name' => 'settings_timeoutmessage',
 					'readonly' => $readonly,
@@ -468,8 +514,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'LATE MESSAGE',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 900,
+					'rows' => 2,
 					'labelWidth' => 200,
 					'name' => 'settings_latemessage',
 					'readonly' => $readonly,

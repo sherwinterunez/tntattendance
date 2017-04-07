@@ -31,6 +31,12 @@ global $apptemplate;
 //pre($vars);
 //echo "\n\n*/\n\n";
 
+$settings_showadsinterval = getOption('$SETTINGS_SHOWADSINTERVAL',30);
+
+$settings_showadsinterval = intval($settings_showadsinterval) * 60 * 1000;
+
+$settings_showadsintervalenable = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
+
 ?>
 /*
 *
@@ -50,6 +56,8 @@ var loginForm = [
 	{type: "input", label: "rfid", value: "", offsetTop: 20, name:"rfid", required:true},
 	{type: "input", label: "unixtime", value: "", offsetTop: 20, name:"unixtime", required:true},
 	{type: "hidden", value: "350", name:"imagesize"},
+	{type: "hidden", value: "<?php echo $settings_showadsinterval; ?>", name:"showadsinterval"},
+	{type: "hidden", value: "<?php echo $settings_showadsintervalenable; ?>", name:"showadsintervalenable"},
 ];
 
 srt.checkFocus = function() {
@@ -81,11 +89,14 @@ srt.etap = function() {
 
 	myForm.attachEvent("onEnter", function(){
 		var rfid = myForm.getItemValue("rfid");
+		var showadsinterval = parseInt(myForm.getItemValue("showadsinterval"));
 		var unixtime = myForm.getItemValue("unixtime");
 		var imagesize = myForm.getItemValue("imagesize");
 	    console.log("Enter key has been pressed!");
 	    console.log("Value: "+rfid);
 	    myForm.setItemValue("rfid","");
+
+			srt.doHideAds();
 
 	    //console.log($(this.base));
 
@@ -106,6 +117,15 @@ srt.etap = function() {
 			if(data.return_code&&data.return_message) {
 				showErrorMessage(data.return_message,2000);
 				return false;
+			}
+
+			if(typeof data.showadsinterval != 'undefined' ) {
+				//jQuery('#showadsinterval').html(data.showadsinterval);
+				myForm.setItemValue("showadsinterval",data.showadsinterval);
+			}
+
+			if(typeof data.showadsintervalenable != 'undefined' ) {
+				myForm.setItemValue("showadsintervalenable",data.showadsintervalenable);
 			}
 
 			if(typeof data.db != 'undefined' ) {
@@ -246,7 +266,51 @@ srt.doShowDateTime = function() {
 		jQuery('#sysinfo').html(data.sysinfo);
 		srt.myForm.setItemValue('unixtime',data.currentTime);
 
+		if(typeof data.showadsinterval != 'undefined' ) {
+			myForm.setItemValue("showadsinterval",data.showadsinterval);
+		}
+
+		if(typeof data.showadsintervalenable != 'undefined' ) {
+
+			var showadsintervalenable = parseInt(myForm.getItemValue("showadsintervalenable"));
+
+			if(showadsintervalenable==parseInt(data.showadsintervalenable)) {
+			} else {
+				myForm.setItemValue("showadsintervalenable",parseInt(data.showadsintervalenable));
+				srt.doHideAds();
+			}
+		}
+
 	});
+}
+
+srt.doShowAds = function() {
+
+	var showadsintervalenable = parseInt(myForm.getItemValue("showadsintervalenable"));
+
+	clearInterval(srt.adsInterval);
+
+	srt.adsInterval = null;
+
+	if(showadsintervalenable) {
+		jQuery("#advertisement").css({opacity:1});
+	}
+}
+
+srt.doHideAds = function() {
+
+	var showadsinterval = parseInt(myForm.getItemValue("showadsinterval"));
+
+	if(srt.adsInterval) {
+		clearInterval(srt.adsInterval);
+		srt.adsInterval = null;
+	}
+
+	srt.adsInterval = setInterval(function(){
+		srt.doShowAds();
+	},showadsinterval);
+
+	jQuery("#advertisement").css({opacity:0});
 }
 
 srt.getPrevious = function() {
@@ -324,6 +388,10 @@ jQuery(document).ready(function($) {
 	var studentprevCtr = 0;
 	var studentprevMargin = 0;
 
+	var showadsinterval = parseInt(myForm.getItemValue("showadsinterval"));
+
+	console.log('showadsinterval',showadsinterval);
+
 	//if(studentcontentMarginTop<0) {
 		//studentcontentMarginTop = 20;
 	//}
@@ -382,4 +450,9 @@ jQuery(document).ready(function($) {
 	setInterval(function(){
 		srt.doShowDateTime();
 	},60000);
+
+	srt.adsInterval = setInterval(function(){
+		srt.doShowAds();
+	},showadsinterval);
+
 });

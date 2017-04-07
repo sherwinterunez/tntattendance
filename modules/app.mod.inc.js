@@ -54,7 +54,7 @@ srt.init = function(){
 	    //pattern:    "3W",           // string, layout's pattern
 	    //pattern:    "2U",           // string, layout's pattern
 	    pattern:    "1C",           // string, layout's pattern
-	    skin:       "dhx_skyblue",  // string, optional,"dhx_skyblue","dhx_web","dhx_terrace"
+	    //skin:       "dhx_skyblue",  // string, optional,"dhx_skyblue","dhx_web","dhx_terrace"
 
 	    offsets: {          // optional, offsets for fullscreen init
 	        top:    0,     // you can specify all four sides

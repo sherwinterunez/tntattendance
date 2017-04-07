@@ -430,7 +430,20 @@ if(!empty(($license=checkLicense()))) {
 		opacity: 0.70;
 	}
 
+	#advertisement {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 60px;
+		background: #f1f1f1;
+		opacity: 0;
+		z-index: 10000;
+	}
+
 </style>
+<div id="advertisement">this is an advertisement</div>
 <div id="contenttop">
 	<div id="contenttopleft">
 		<div id="licenselogo"><img src="/templates/default/tap/license.png" /></div>

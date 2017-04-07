@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -94,7 +94,7 @@ if(!class_exists('APP_Base_Ajax')) {
 			//} else {
 			//	pre(array('_xml()'=>array('$routerid'=>$routerid,'$xmlid'=>$xmlid)));
 			//}
-			
+
 			if(!empty($routerid)&&!empty($xmlid)) {
 
 				//if($xmlid=='messaging') {
@@ -138,7 +138,7 @@ if(!class_exists('APP_Base_Ajax')) {
 				//$output = str_replace("\n\n", "\n", $output);
 				//$output = str_replace("\n", "", $output);
 
-			
+
 				return $output;
 			}
 			return false;
@@ -146,8 +146,8 @@ if(!class_exists('APP_Base_Ajax')) {
 
 		function _form_validate() {
 			if(empty($this->vars['post']['formval'])) {
-				//json_encode_return(array('error_code'=>123,'error_message'=>'Invalid form.'));				
-				json_error_return(253); // 253 => 'Invalid form.',				
+				//json_encode_return(array('error_code'=>123,'error_message'=>'Invalid form.'));
+				json_error_return(253); // 253 => 'Invalid form.',
 			}
 			if(!empty($_SESSION['FORMS'][$this->vars['post']['formval']])) {
 				/*if(time()>($_SESSION['FORMS'][$this->vars['post']['formval']]['since']+1800)) {
@@ -157,7 +157,7 @@ if(!class_exists('APP_Base_Ajax')) {
 				}*/
 			} else {
 				//json_encode_return(array('error_code'=>123,'error_message'=>'Invalid form.'));
-				json_error_return(253); // 253 => 'Invalid form.',				
+				json_error_return(253); // 253 => 'Invalid form.',
 			}
 
 			return true;
@@ -179,20 +179,20 @@ if(!class_exists('APP_Base_Ajax')) {
 if(!class_exists('APP_Base')) {
 
 	class APP_Base {
-	
+
 		var $pathid = false;
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
-	
+
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
-		
+
 		function init() {
 			$this->rules();
 
@@ -202,7 +202,7 @@ if(!class_exists('APP_Base')) {
 
 		function route() {
 			global $approuter;
-			
+
 			$approuter->addroute(array('^/'.$this->pathid.'/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/\?(.*)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));
@@ -228,12 +228,12 @@ if(!class_exists('APP_Base')) {
 
 		function add_route() {
 			global $approuter;
-			
+
 		}
-		
+
 		function action() {
 			global $approuter;
-	
+
 			if($approuter->id==$this->pathid) {
 				remove_action('default_css', 'action_default_css');
 				remove_action('default_script', 'action_default_script');
@@ -244,11 +244,12 @@ if(!class_exists('APP_Base')) {
 
 			}
 		}
-		
+
 		function css() {
 			global $apptemplate;
 
-			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/skyblue/dhtmlx.css');
+			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/skyblue/dhtmlx.css');
+			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/web/dhtmlx.css');
 			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'css/styles.min.css');
 			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/skyblue/dhtmlx.css');
 			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'css/test.css');
@@ -261,7 +262,7 @@ if(!class_exists('APP_Base')) {
 		function add_css() {
 
 		}
-		
+
 		function script() {
 			global $apptemplate;
 
@@ -272,8 +273,8 @@ if(!class_exists('APP_Base')) {
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery-ui.min.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.form.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.numeric.js');
-			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.scrollTo.min.js');			
-			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.inputmask.js');			
+			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.scrollTo.min.js');
+			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.inputmask.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/php.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/utils.js');
 
@@ -294,7 +295,7 @@ if(!class_exists('APP_Base')) {
 		function add_script() {
 
 		}
-		
+
 		function setting() {
 			global $apptemplate, $applogin;
 
@@ -306,22 +307,22 @@ if(!class_exists('APP_Base')) {
 			if($applogin->isSystemAdministrator()) {
 				$apptemplate->add_settings(array('isSystemAdministrator'=>true));
 			} else {
-				$apptemplate->add_settings(array('isSystemAdministrator'=>false));				
+				$apptemplate->add_settings(array('isSystemAdministrator'=>false));
 			}
 		}
-		
+
 		function check_url() {
 			if($_SERVER['REQUEST_URI']!='/'.$this->pathid.'/') {
 				header("Location: /".$this->pathid."/",TRUE,301);
 				die;
-			}			
+			}
 		}
-		
+
 		function rules() {
 			global $appaccess;
 
 			$this->add_rules();
-			
+
 			//$appaccess->rules($this->pathid,'Create and setup system users');
 			//$appaccess->showrules();
 		}
@@ -335,41 +336,41 @@ if(!class_exists('APP_Base')) {
 
 			$appaccess->showrules();
 		}
-						
+
 		/*function api($vars) {
 			//global $appaccess;
 
 			//if(!$this->ajax_valid_params($vars)) {
 			//	json_return_error(1);
 			//}
-						
+
 			$this->vars = $vars;
 			$this->post = $vars['post'];
 
 			$modpath = $this->modulespath();
 			$parentid = $this->post['parentid'];
 			$id = $this->post['id'];
-			
+
 			if(empty($this->post['routerid'])) {
 				json_return_error(32,array('vars'=>$vars));
 			}
 
 			$routerid = $this->post['routerid'];
-			
+
 			//if(!$appaccess->isAllowed($routerid,$this->vars)) {
 			//	json_return_error(32,array('vars'=>$vars));
 			//}
-			
+
 			$classfile = $modpath."$parentid.$id.mod.inc.php";
 
 			if(!file_exists($classfile)) {
 				//json_return_error(8);
 				$this->cls_ajax = new APP_Base_Ajax;
 			} else {
-				require_once($classfile);	
+				require_once($classfile);
 				$this->cls_ajax = new APP_Ajax;
 			}
-			
+
 			$this->cls_ajax->vars = $this->vars;
 			$this->cls_ajax->post = $this->post;
 			$this->cls_ajax->pathid = $this->pathid;
@@ -379,16 +380,16 @@ if(!class_exists('APP_Base')) {
 				call_user_func(array($this->cls_ajax, $this->post['action']));
 				return;
 			}
-			
+
 			json_return_error(4,array('vars'=>$vars));
-			
+
 		} // ajax*/
 
 		function dojs($vars) {
 			header('Content-type: application/javascript');
 
 			//echo '/*'."\n";
-			//echo '*'."\n"; 
+			//echo '*'."\n";
 			//echo '* Author: Sherwin R. Terunez'."\n";
 			//echo '* Contact: sherwinterunez@yahoo.com'."\n";
 			//echo '*'."\n";
@@ -454,7 +455,7 @@ if(!class_exists('APP_Base')) {
 			}
 
 			if(!empty($vars['post'])) {
-				$this->post = $vars['post'];				
+				$this->post = $vars['post'];
 			}
 
 		} // postapi
@@ -476,7 +477,7 @@ if(!class_exists('APP_Base')) {
 
 			if(!empty($vars)&&!empty($vars['post'])) {
 				$this->vars = $vars;
-				$this->post = $vars['post'];				
+				$this->post = $vars['post'];
 			}
 
 			if(empty($this->post['routerid'])) {
@@ -552,7 +553,7 @@ if(!class_exists('APP_Base')) {
 			//pre(array('$vars'=>$vars));
 
 			//if(!empty($vars['params'])) {
-			//	$_SESSION['EXPORT'][$vars['params']] = time() . ': the quick brown fox jump over the lazy dog';				
+			//	$_SESSION['EXPORT'][$vars['params']] = time() . ': the quick brown fox jump over the lazy dog';
 			//}
 
 			if(!empty($vars['params'])&&!empty($_SESSION['EXPORT'][$vars['params']])) {
@@ -593,20 +594,20 @@ if(!class_exists('APP_Base')) {
 
 		function logout($vars) {
 			global $applogin, $appsession;
-			
+
 			$appsession->destroy();
-			
+
 			//header('Location: /');
 			redirect301('/login/');
 			//die;
 		}
-		
+
 		function session($vars) {
 			global $appaccess, $applogin;
 
 			pre(array('isSystemAdministrator'=>$applogin->isSystemAdministrator(),'getTimeFromServer'=>getTimeFromServer(),'$_SESSION'=>$_SESSION,'$vars'=>$vars,'$_SERVER'=>$_SERVER,'$appaccess'=>$appaccess->getAllRules()));
 		} // session
-		
+
 		function ajax_valid_params($vars) {
 			if(isset($vars['post'])&&is_array($vars['post'])&&!empty($vars['post'])) {
 				$post = $vars['post'];
@@ -622,25 +623,25 @@ if(!class_exists('APP_Base')) {
 
 		function render($vars) {
 			global $apptemplate, $appform, $current_page;
-			
+
 			$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.APP_NAME);
-	
+
 			$apptemplate->page('topnav');
-	
+
 			$apptemplate->page('topmenu');
 
 			$apptemplate->page('workarea');
 
 			$apptemplate->footer();
-			
+
 		} // render
 
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
-				
+
 	} // class APP_Base
 
 }
