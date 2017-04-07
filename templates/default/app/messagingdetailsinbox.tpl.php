@@ -80,7 +80,7 @@ if($savecancel) {
 <div id="messagingdetails">
 	<div id="messagingdetailsinbox">
 		<div id="messagingdetailsinboxdetails" class="navbar-default-bg">
-			<div id="messagingdetailsinboxdetailsform_%formval%" class="dhxform_obj_dhx_skyblue">
+			<div id="messagingdetailsinboxdetailsform_%formval%" class="dhxform_obj_dhx_web">
 				<div style="display:block;margin:10px 0 0 0;">
 					<strong>Encoding:</strong>&nbsp;
 					<span>GSM 7-bit</span>
@@ -93,7 +93,7 @@ if($savecancel) {
 				</div>
 			</div>
 		</div>
-		<div id="messagingdetailsinboxeditor" class="dhxform_obj_dhx_skyblue">
+		<div id="messagingdetailsinboxeditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsinboxinfo']['smsinbox_message']) ? str_replace("\n",'<br />',$vars['params']['smsinboxinfo']['smsinbox_message']) : ''; ?>
 		</div>
 		<?php //pre(array('$vars'=>$vars)); ?>

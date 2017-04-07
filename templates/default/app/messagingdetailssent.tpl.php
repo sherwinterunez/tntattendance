@@ -71,7 +71,7 @@ if($savecancel) {
 <div id="messagingdetails">
 	<div id="messagingdetailssent">
 		<div id="messagingdetailssentdetails" class="navbar-default-bg">
-			<div id="messagingdetailssentdetailsform_%formval%" class="dhxform_obj_dhx_skyblue">
+			<div id="messagingdetailssentdetailsform_%formval%" class="dhxform_obj_dhx_web">
 				<div style="display:block;margin:10px 0 0 0;">
 					<strong>Encoding:</strong>&nbsp;
 					<span>GSM 7-bit</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -80,7 +80,7 @@ if($savecancel) {
 				</div>
 			</div>
 		</div>
-		<div id="messagingdetailssenteditor" class="dhxform_obj_dhx_skyblue">
+		<div id="messagingdetailssenteditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsoutboxinfo']['smsoutbox_message']) ? str_replace("\n",'<br>',$vars['params']['smsoutboxinfo']['smsoutbox_message']) : ''; ?>
 		</div>
 		<?php //pre(array('$vars'=>$vars)); ?>
@@ -108,7 +108,7 @@ if($savecancel) {
 		myTab.toolbar.enableOnly(['messagingrefresh']);
 		<?php } ?>
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		myTab.toolbar.getToolbarData('messagingresend').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);

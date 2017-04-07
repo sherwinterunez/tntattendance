@@ -43,7 +43,7 @@ if(!empty($vars['post']['method'])) {
 <div id="messagingdetails">
 	<div id="messagingdetailsoutbox">
 		<div id="messagingdetailsoutboxdetails" class="navbar-default-bg">
-			<div id="messagingdetailsoutboxdetailsform_%formval%" class="dhxform_obj_dhx_skyblue">
+			<div id="messagingdetailsoutboxdetailsform_%formval%" class="dhxform_obj_dhx_web">
 				<div style="display:block;margin:10px 0 0 0;">
 					<strong>Encoding:</strong>&nbsp;
 					<span>GSM 7-bit</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -52,7 +52,7 @@ if(!empty($vars['post']['method'])) {
 				</div>
 			</div>
 		</div>
-		<div id="messagingdetailsoutboxeditor" class="dhxform_obj_dhx_skyblue">
+		<div id="messagingdetailsoutboxeditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsoutboxinfo']['smsoutbox_message']) ? str_replace("\n",'<br>',$vars['params']['smsoutboxinfo']['smsoutbox_message']) : ''; ?>
 		</div>
 		<?php //pre(array('$vars'=>$vars)); ?>

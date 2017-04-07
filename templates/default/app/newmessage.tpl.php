@@ -52,14 +52,15 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 		/*border: 1px solid #f00;*/
 		overflow: auto;
 		/*overflow-y: scroll;*/
+		margin-top: 3px;
 	}
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .newmessage_blockcontacts_%formval% {
 		/*border: 1px solid #f00;*/
 	}
-	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_web div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
 		display: none;
 	}
-	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhxtabbar_tabs {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_web div.dhxtabbar_tabs {
 		border-top: none;
 		border-left: none;
 		border-right: none;

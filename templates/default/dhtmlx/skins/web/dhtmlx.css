@@ -5261,7 +5261,8 @@ div.dhxlayout_sep_sw_dhx_web {
     border-right: 1px solid #c7c7c7;
     border-bottom: 1px solid #c7c7c7;
     border-top: 0 solid white;
-    padding: 8px;
+    /*padding: 0 16px 16px 0;*/
+    padding: 0;
     overflow: hidden;
     z-index: 0;
 }
@@ -7452,7 +7453,7 @@ div.dhx_popup_dhx_web div.dhx_popup_area tr.dhxnode td.dhx_popup_td div.dhxcarou
     position: relative;
     overflow: hidden;
     /*padding: 9px 9px 0 9px;*/
-    padding: 2px 2px 0 2px;
+    padding: 2px 0 0 0;
     border-width: 0;
 }
 

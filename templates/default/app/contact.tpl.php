@@ -52,6 +52,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 		/*border: 1px solid #f00;*/
 		overflow: auto;
 		/*overflow-y: scroll;*/
+		margin-top: 3px;
 	}
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval%,
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval% .dhxform_control {
@@ -60,10 +61,10 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval% .dhxform_control .gridbox {
 		border: none;
 	}
-	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_web div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
 		display: none;
 	}
-	#<?php echo $wid; ?> .dhxtabbar_base_dhx_skyblue div.dhxtabbar_tabs {
+	#<?php echo $wid; ?> .dhxtabbar_base_dhx_web div.dhxtabbar_tabs {
 		border-top: none;
 		border-left: none;
 		border-right: none;
@@ -93,7 +94,10 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval%").width(dim[0]-16);
 
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval% .dhxform_container").height(dim[1]-103);
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval% .dhxform_container").width(dim[0]-16);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .contact_grid_%formval% .dhxform_container").width(dim[0]-24);
+
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% div.dhxform_block").height(dim[1]-103);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% div.dhxform_block").width(dim[0]-24);
 
 		/*$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .group_studentyearlevel_%formval% .dhxform_container").height(dim[1]-150);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .group_studentyearlevel_%formval% .dhxform_container").width(dim[0]-54);
