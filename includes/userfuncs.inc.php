@@ -842,6 +842,8 @@ function parseMobileNo($mno=false,$regx = '^(\d+)(\d{3})(\d{7})$') {
 	if(!empty($mno)) {
 	} else return false;
 
+	//pre(array('parseMobileNo'=>$mno));
+
 	if(preg_match('#'.$regx.'#',$mno,$matches)) {
 		//print_r(array('$mno'=>$mno,'$matches'=>$matches));
 

@@ -145,7 +145,7 @@ if(!empty($notifications)) {
 
 		$mobileno = getGuardianMobileNo($v['studentdtr_studentid']);
 
-		if(getOption('$SETTINGS_SENDPUSHNOTIFICATION',false)) {
+		/*if(getOption('$SETTINGS_SENDPUSHNOTIFICATION',false)) {
 
 			$post = array();
 			$post['topic'] = 'tapntxt'.$mobileno;
@@ -192,6 +192,23 @@ if(!empty($notifications)) {
 
 			}
 
+		}*/
+
+		$push = 0;
+
+		if(getOption('$SETTINGS_SENDPUSHNOTIFICATION',false)) {
+			$push = 1;
+		}
+
+		$studentdtr_notified = time();
+
+		$content = array();
+		$content['studentdtr_notified'] = $studentdtr_notified;
+		$content['studentdtr_notifystamp'] = 'now()';
+
+		if(!($result = $appdb->update("tbl_studentdtr",$content,"studentdtr_id=".$v['studentdtr_id']))) {
+			json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+			die;
 		}
 
 		$asim = getAllSims(3);
@@ -205,11 +222,17 @@ if(!empty($notifications)) {
 			foreach($asim as $m=>$n) {
 
 				if($v['studentdtr_type']=='IN') {
-					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin));
-					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin);
+					if(!empty($license['sc'])) {
+						$msgin .= ' '.$license['sc'];
+					}
+					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin,$push);
 				} else {
-					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout));
-					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout);
+					if(!empty($license['sc'])) {
+						$msgout .= ' '.$license['sc'];
+					}
+					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout,$push);
 				}
 
 				break;
@@ -295,7 +318,7 @@ if(!empty($notifications)) {
 		$post = array();
 		$post['topic'] = 'tapntxt'.$mobileno;
 		$post['msg'] = $smsoutbox_message;
-		$post['title'] = 'Tap N Txt';
+		$post['title'] = 'TAP N TXT';
 
 		pre(array('$post'=>$post,'$profile'=>$profile));
 

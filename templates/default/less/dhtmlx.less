@@ -13,7 +13,7 @@ html, body {
 
 .dhxtabbar_base_dhx_web div.dhx_cell_tabbar div.dhx_cell_cont_tabbar,
 .dhxtabbar_base_dhx_skyblue div.dhx_cell_tabbar div.dhx_cell_cont_tabbar,
-.dhxtabbar_base_dhx_terrace div.dhx_cell_tabbar div.dhx_cell_cont_tabbar 
+.dhxtabbar_base_dhx_terrace div.dhx_cell_tabbar div.dhx_cell_cont_tabbar
 {
 	overflow: auto;
 }
@@ -48,16 +48,30 @@ div.dhx_cell_tabbar div.srt_cell_cont_tabbar {
 #gradient > .vertical( @navbar-gradient-start-color,@navbar-gradient-stop-color);
 }
 
-.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label, 
-.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label div.dhxform_label_nav_link, 
-.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label span.dhxform_item_required {
+.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label,
+.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_skyblue div.disabled div.dhxform_label span.dhxform_item_required,
+.dhxform_obj_dhx_web div.disabled div.dhxform_label,
+.dhxform_obj_dhx_web div.disabled div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_web div.disabled div.dhxform_label span.dhxform_item_required,
+.dhxform_obj_dhx_terrace div.disabled div.dhxform_label,
+.dhxform_obj_dhx_terrace div.disabled div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_terrace div.disabled div.dhxform_label span.dhxform_item_required {
     color: #b2b2b2;
 }
 
-.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link, 
-.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:visited, 
-.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:active, 
-.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:hover {
+.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:visited,
+.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:active,
+.dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:hover,
+.dhxform_obj_dhx_web div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_web div.dhxform_label div.dhxform_label_nav_link:visited,
+.dhxform_obj_dhx_web div.dhxform_label div.dhxform_label_nav_link:active,
+.dhxform_obj_dhx_web div.dhxform_label div.dhxform_label_nav_link:hover,
+.dhxform_obj_dhx_terrace div.dhxform_label div.dhxform_label_nav_link,
+.dhxform_obj_dhx_terrace div.dhxform_label div.dhxform_label_nav_link:visited,
+.dhxform_obj_dhx_terrace div.dhxform_label div.dhxform_label_nav_link:active,
+.dhxform_obj_dhx_terrace div.dhxform_label div.dhxform_label_nav_link:hover {
     color: inherit;
     cursor: default;
     outline: medium none;
@@ -66,7 +80,9 @@ div.dhx_cell_tabbar div.srt_cell_cont_tabbar {
     white-space: normal;
 }
 
-.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble,
+.dhxform_obj_dhx_web div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble,
+.dhxform_obj_dhx_terrace div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
     position: absolute;
     width: auto;
     height: 15px;
@@ -90,4 +106,10 @@ div.dhx_cell_tabbar div.srt_cell_cont_tabbar {
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+
+.dhxsidebar_base_dhx_skyblue div.disabled div.dhxform_image img.dhxform_image_img,
+.dhxform_obj_dhx_web div.disabled div.dhxform_image img.dhxform_image_img,
+.dhxform_obj_dhx_terrace div.disabled div.dhxform_image img.dhxform_image_img {
+    opacity: 1;
 }

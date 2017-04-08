@@ -1,5 +1,5 @@
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -89,7 +89,7 @@ dhtmlXToolbarObject.prototype.getTbData = function(id) {
 			if(this.tbdata[i].type=='buttonSelect'&&typeof(this.tbdata[i].opts)!='undefined'&&this.tbdata[i].opts.length>0) {
 				if(this.tbdata[i].id==id) {
 					return this.tbdata[i];
-				}				
+				}
 				for(var j=0;j<this.tbdata[i].opts.length;j++) {
 					if(this.tbdata[i].opts[j].id==id) {
 						return this.tbdata[i].opts[j];
@@ -108,7 +108,7 @@ dhtmlXToolbarObject.prototype.tbRender = function(data) {
 			this.addButton(data[i].id, i, data[i].text, data[i].img, data[i].imgdis);
 		} else
 		if(data[i].type=="buttonSelect") {
-			this.addButtonSelect(data[i].id, i, data[i].text, data[i].opts, data[i].img, null, 0);				
+			this.addButtonSelect(data[i].id, i, data[i].text, data[i].opts, data[i].img, null, 0);
 		} else
 		if(data[i].type=="separator") {
 			this.addSeparator(data[i].id,i);
@@ -397,7 +397,7 @@ dhtmlXCellObject.prototype.attachFORMFromPostURL = function(turl,param) {
 			obj.layout = obj.attachLayout(d.layout.pattern);
 
 			if(typeof(d.formval)=='string') {
-				$(obj.layout.base).attr({id:'formdiv_'+d.formval});				
+				$(obj.layout.base).attr({id:'formdiv_'+d.formval});
 			}
 
 			obj.layout.layoutdata = d.layout;
@@ -460,7 +460,7 @@ dhtmlXCellObject.prototype.attachFORMFromPostURL = function(turl,param) {
 				} else {
 					obj.toolbar = obj.attachToolbar({
 						icons_path: settings.template_assets+"toolbar/",
-					});					
+					});
 				}
 
 				obj.toolbar.parentobj = obj;
@@ -519,7 +519,7 @@ dhtmlXCellObject.prototype.attachFORMFromPostURL = function(turl,param) {
 		    obj._attachObject(null, null, d.html);
 
 			if(typeof(d.formval)=='string') {
-				$(obj.cell.childNodes[obj.conf.idx.cont]).attr({id:'formdiv_'+d.formval});				
+				$(obj.cell.childNodes[obj.conf.idx.cont]).attr({id:'formdiv_'+d.formval});
 			}
 
 		    //obj.cell.childNodes[obj.conf.idx.cont]
@@ -608,7 +608,7 @@ dhtmlXCellObject.prototype.attachFORMFromPostURLa = function(turl,param,tbobj,cb
 			    	eval('srt.obj_'+data.formval+'.init.apply(tbobj,[data,tbobj,data.formval])');
 			    } catch(e) {
 			    	alert(e);
-			    }		    	
+			    }
 		    }*/
 		}
 	});
@@ -632,7 +632,7 @@ dhtmlXCellObject.prototype._executeScript = function(data) {
 
 };
 
-dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {	
+dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {
 
 	var mdata;
 	var odata = this;
@@ -689,7 +689,7 @@ dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {
 					},2000);
 				}
 			} else {
-				psuccess(data,odata); 
+				psuccess(data,odata);
 				hideLoader();
 			}
 
@@ -704,7 +704,7 @@ dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {
 				hideLoader();
 				showErrorMessage('ERROR ('+data.error_code+'): '+data.error_message,5000);
 			} else {
-				psuccess(data,odata); 
+				psuccess(data,odata);
 				hideLoader();
 			}*/
 		},
@@ -811,7 +811,7 @@ function openWindow(obj,cb) {
 
 		if(typeof cb != "undefined" && typeof cb == "function") {
 			cb(srt.windows[wid],obj);
-		}		
+		}
 	} else {
 		srt.window.window(wid).bringToTop();
 	}
@@ -820,9 +820,9 @@ function openWindow(obj,cb) {
 
 function initWindow() {
 	srt.window = new dhtmlXWindows();
-	
+
 	var w = srt.window;
-	
+
 	//w.enableAutoViewport(false);
 	//w.attachViewportTo(body);
 	//w.setImagePath(settings.template_path+'dhtmlx/imgs/');
@@ -860,7 +860,7 @@ function _executeScript(data) {
 
 function getData(purl,pdata,psuccess) {
 	//var $ = settings.$;
-	
+
 	$.ajax({
 		type: "GET",
 		url: purl,
@@ -877,7 +877,7 @@ function getData(purl,pdata,psuccess) {
 				alert('ERROR ('+data.error_code+'): '+data.error_message);
 			} else {
 				if(psuccess != null) {
-					psuccess(data); 					
+					psuccess(data);
 				}
 			}
 		},
@@ -902,7 +902,7 @@ function postData(purl,pdata,psuccess,noloader) {
 
 	if(noloader) {
 	} else {
-		showLoader();	
+		showLoader();
 	}
 
 	$.ajax({
@@ -923,7 +923,7 @@ function postData(purl,pdata,psuccess,noloader) {
 				showAlertError('ERROR('+data.error_code+') '+data.error_message);
 				//alert('ERROR ('+data.error_code+'): '+data.error_message);
 			} else {
-				psuccess(data); 
+				psuccess(data);
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -951,7 +951,7 @@ function formToArray(form) {
 	if (!els) {
 		return a;
 	}
-	
+
 	var i,j,n,v,el,max,jmax;
 	for(i=0, max=els.length; i < max; i++) {
 		el = els[i];
@@ -975,7 +975,7 @@ function formToArray(form) {
 			a.push({name: n, value: v, id:id, class:cls, el:el});
 		}
 	}
-	
+
 	return a;
 }
 
@@ -1017,7 +1017,7 @@ function _showAlert(type,text,title,ok) {
 		text: text,
 		title: title,
 		ok: ok
-	});	
+	});
 }
 
 
@@ -1041,7 +1041,7 @@ function _showConfirm(type,text,c,d,e,f) {
 		ok: ok,
 		cancel: cancel,
 		callback: cb,
-	});	
+	});
 }
 
 function showAlert(text,title,ok) {
@@ -1099,8 +1099,8 @@ dhtmlXForm.prototype.items.image = {
         l._url = m.url;
         l._imageurl =  m.url;
         if(m.image_url) {
-	        l._imageurl = m.image_url;    
-	        console.log('image_url',m.image_url);	
+	        l._imageurl = m.image_url;
+	        console.log('image_url',m.image_url);
         }
         if (m.inputWidth == "auto") {
             m.inputWidth = 120
@@ -1154,6 +1154,7 @@ dhtmlXForm.prototype.items.image = {
         return this
     },
     destruct: function(c) {
+      try {
         var a = c.childNodes[c._ll ? 1 : 0].childNodes[0];
         a.childNodes[2].firstChild.lastChild.onchange = null;
         a.childNodes[1].onreadystatechange = null;
@@ -1161,6 +1162,9 @@ dhtmlXForm.prototype.items.image = {
         this._moreClear();
         this.d2(c);
         c = null
+      } catch(e) {
+        console.log(e);
+      }
     },
     doAttachEvents: function() {},
     setValue: function(e, h) {

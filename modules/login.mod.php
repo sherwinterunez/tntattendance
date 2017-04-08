@@ -209,6 +209,52 @@ if(!class_exists('APP_Login')) {
 
 			//pre(array('$this->post'=>$this->post,'$result'=>$result,'$_SESSION'=>$_SESSION));
 
+			if(!empty(($license=checkLicense()))) {
+			} else {
+				$license = array('sc'=>'TAP N TEXT UNLICENSED VERSION');
+			}
+
+			$settings_loginnotificationschooladmin = ''.getOption('$SETTINGS_LOGINNOTIFICATIONSCHOOLADMIN','');
+			$settings_loginnotificationschooladminsendsms = getOption('$SETTINGS_LOGINNOTIFICATIONSCHOOLADMINSENDSMS',false);
+			$settings_loginnotificationostrelationshipmanager = ''.getOption('$SETTINGS_LOGINNOTIFICATIONOSTRELATIONSHIPMANAGER','');
+			$settings_loginnotificationostrelationshipmanagersendsms = getOption('$SETTINGS_LOGINNOTIFICATIONOSTRELATIONSHIPMANAGERSENDSMS',false);
+
+			/*$tr = array();
+			$tr['$settings_loginnotificationschooladmin'] = $settings_loginnotificationschooladmin;
+			$tr['$settings_loginnotificationschooladminsendsms'] = $settings_loginnotificationschooladminsendsms;
+			$tr['$settings_loginnotificationostrelationshipmanager'] = $settings_loginnotificationostrelationshipmanager;
+			$tr['$settings_loginnotificationostrelationshipmanagersendsms'] = $settings_loginnotificationostrelationshipmanagersendsms;
+
+			pre($tr);*/
+
+			//pre(array('$_SESSION'=>$_SESSION));
+
+			$push = 1;
+
+			$msg = 'SUCCESSFUL LOGIN ('.$_SESSION['USER']['user_login'].') '.pgDateUnix(intval(getDbUnixDate())).' - '.$license['sc'];
+
+			if(!empty($settings_loginnotificationschooladminsendsms)&&!empty($settings_loginnotificationschooladmin)) {
+				if(($res=parseMobileNo($settings_loginnotificationschooladmin))&&!empty($res[2])&&!empty($res[3])) {
+					$mobileno = '0'.$res[2].$res[3];
+					$asims = getAllSims(5);
+					if(!empty($asims)&&is_array($asims)) {
+						shuffle($asims);
+						sendToOutBoxPriority($mobileno,$asims[0]['sim_number'],$msg,$push);
+					}
+				}
+			}
+
+			if(!empty($settings_loginnotificationostrelationshipmanagersendsms)&&!empty($settings_loginnotificationostrelationshipmanager)) {
+				if(($res=parseMobileNo($settings_loginnotificationostrelationshipmanager))&&!empty($res[2])&&!empty($res[3])) {
+					$mobileno = '0'.$res[2].$res[3];
+					$asims = getAllSims(5);
+					if(!empty($asims)&&is_array($asims)) {
+						shuffle($asims);
+						sendToOutBoxPriority($mobileno,$asims[0]['sim_number'],$msg,$push);
+					}
+				}
+			}
+
 			json_error_return(0,'User successfully logged in.');
 
 		}
