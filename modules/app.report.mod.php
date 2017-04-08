@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_report')) {
 
 	class APP_app_report extends APP_Base_Ajax {
-	
+
 		var $desc = 'report';
 
 		var $pathid = 'report';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_report')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -121,12 +121,876 @@ if(!class_exists('APP_app_report')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_group
+
+		function _form_reportmaindailyabsent($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				//pre(array($routerid,$formid));
+
+				$post = $this->vars['post'];
+
+				$params = array();
+
+				$readonly = true;
+
+				if(!empty($post['method'])&&($post['method']=='reportedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&$post['method']=='reportsave') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Report successfully saved!';
+					$retval['post'] = $post;
+
+					//pre(array('$post',$post));
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+				$params['tbDetails'] = array();
+				//$params['tbLoginNotification'] = array();
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'OBIS MONTESSORI',
+					'labelWidth' => 250,
+					'className' => 'schoolName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'Period: 07 April 2017',
+					'labelWidth' => 250,
+					'className' => 'period_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'DAILY ABSENT REPORT',
+					'labelWidth' => 250,
+					'className' => 'dailyabsentreport_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'NURSERY',
+					'labelWidth' => 250,
+					'className' => 'yearlevel_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. JOHN',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. RODRIGO DUTERTE',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. MICHAEL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'name' => 'setting_tardinessgraceperiod',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['settinginfo']['setting_tardinessgraceperiod']) ? $params['settinginfo']['group_tardinessgraceperiod'] : '',
+				);*/
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				//pre(array($routerid,$formid,$params,$templatefile));
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_reportmaindailyabsent
+
+		function _form_reportmaindailytardy($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				//pre(array($routerid,$formid));
+
+				$post = $this->vars['post'];
+
+				$params = array();
+
+				$readonly = true;
+
+				if(!empty($post['method'])&&($post['method']=='reportedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&$post['method']=='reportsave') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Report successfully saved!';
+					$retval['post'] = $post;
+
+					//pre(array('$post',$post));
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+				$params['tbDetails'] = array();
+				//$params['tbLoginNotification'] = array();
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'OBIS MONTESSORI',
+					'labelWidth' => 250,
+					'className' => 'schoolName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'Period: 07 April 2017',
+					'labelWidth' => 250,
+					'className' => 'period_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'DAILY TARDY REPORT',
+					'labelWidth' => 250,
+					'className' => 'dailytardyreport_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'NURSERY',
+					'labelWidth' => 250,
+					'className' => 'yearlevel_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. JOHN',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. RODRIGO DUTERTE',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. MICHAEL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. PAUL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'name' => 'setting_tardinessgraceperiod',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['settinginfo']['setting_tardinessgraceperiod']) ? $params['settinginfo']['group_tardinessgraceperiod'] : '',
+				);*/
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				//pre(array($routerid,$formid,$params,$templatefile));
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_reportmaindailytardy
+
+		function _form_reportmainindividualattendance($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				//pre(array($routerid,$formid));
+
+				$post = $this->vars['post'];
+
+				$params = array();
+
+				$readonly = true;
+
+				if(!empty($post['method'])&&($post['method']=='reportedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&$post['method']=='reportsave') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Report successfully saved!';
+					$retval['post'] = $post;
+
+					//pre(array('$post',$post));
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+				$params['tbDetails'] = array();
+				//$params['tbLoginNotification'] = array();
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'OBIS MONTESSORI',
+					'labelWidth' => 250,
+					'className' => 'schoolName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'Period: 07 April 2017',
+					'labelWidth' => 250,
+					'className' => 'period_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'DAILY TARDY REPORT',
+					'labelWidth' => 250,
+					'className' => 'dailytardyreport_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'NURSERY',
+					'labelWidth' => 250,
+					'className' => 'yearlevel_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. JOHN',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. RODRIGO DUTERTE',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. MICHAEL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. PAUL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'name' => 'setting_tardinessgraceperiod',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['settinginfo']['setting_tardinessgraceperiod']) ? $params['settinginfo']['group_tardinessgraceperiod'] : '',
+				);*/
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				//pre(array($routerid,$formid,$params,$templatefile));
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_reportmainindividualattendance
+
+		function _form_reportmainmonthlyattendance($routerid=false,$formid=false) {
+			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($routerid)&&!empty($formid)) {
+
+				//pre(array($routerid,$formid));
+
+				$post = $this->vars['post'];
+
+				$params = array();
+
+				$readonly = true;
+
+				if(!empty($post['method'])&&($post['method']=='reportedit')) {
+					$readonly = false;
+				}
+
+				if(!empty($post['method'])&&$post['method']=='reportsave') {
+					$retval = array();
+					$retval['return_code'] = 'SUCCESS';
+					$retval['return_message'] = 'Report successfully saved!';
+					$retval['post'] = $post;
+
+					//pre(array('$post',$post));
+
+					json_encode_return($retval);
+					die;
+				}
+
+				$params['hello'] = 'Hello, Sherwin!';
+
+				$newcolumnoffset = 50;
+
+				$position = 'right';
+
+				$params['tbDetails'] = array();
+				//$params['tbLoginNotification'] = array();
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'OBIS MONTESSORI',
+					'labelWidth' => 250,
+					'className' => 'schoolName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'Period: 07 April 2017 '.time(),
+					'labelWidth' => 250,
+					'className' => 'period_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'MONTHLY ATTENDANCE REPORT',
+					'labelWidth' => 300,
+					'className' => 'monthlyattendancereport_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'NURSERY - ST. JOHN',
+					'labelWidth' => 250,
+					'className' => 'yearlevel_'.$post['formval'],
+				);
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '&nbsp;',
+					'labelWidth' => 250,
+					'className' => 'present_'.$post['formval'],
+				);*/
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. JOHN',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);*/
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '1<br />MO',
+					'labelWidth' => 32,
+					'offsetLeft' => 200,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '2<br />TU',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '3<br />WE',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '4<br />TH',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '5<br />FR',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '6<br />SA',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '7<br />SU',
+					'labelWidth' => 32,
+					'offsetLeft' => 0,
+					'className' => 'ddmm_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 1500,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block,
+					'className' => 'block_'.$post['formval'],
+				);
+
+/////////////////////////////////
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '1. RODRIGO DUTERTE',
+					'labelWidth' => 200,
+					'offsetLeft' => 0,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="present_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="absent_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="present_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="absent_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 1500,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block,
+					'className' => 'block_'.$post['formval'],
+				);
+
+/////////////////////////////////
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '2. GLORIA ARROYO',
+					'labelWidth' => 200,
+					'offsetLeft' => 0,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="present_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="present_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="present_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'label',
+					'label' => '<span class="absent_'.$post['formval'].'"></span>',
+					'labelWidth' => 32,
+					//'className' => 'present_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 1500,
+					'blockOffset' => 0,
+					'offsetTop' => 0,
+					'list' => $block,
+					'className' => 'block_'.$post['formval'],
+				);
+
+/////////////////////////////////
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. MICHAEL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. PAUL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				/*$params['tbDetails'][] = array(
+					'type' => 'input',
+					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'name' => 'setting_tardinessgraceperiod',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($params['settinginfo']['setting_tardinessgraceperiod']) ? $params['settinginfo']['group_tardinessgraceperiod'] : '',
+				);*/
+
+				$templatefile = $this->templatefile($routerid,$formid);
+
+				//pre(array($routerid,$formid,$params,$templatefile));
+
+				if(file_exists($templatefile)) {
+					return $this->_form_load_template($templatefile,$params);
+				}
+			}
+
+			return false;
+
+		} // _form_reportmainmonthlyattendance
 
 		function router() {
 			global $applogin, $toolbars, $forms, $apptemplate, $appdb;
@@ -193,7 +1057,7 @@ if(!class_exists('APP_app_report')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -316,7 +1180,7 @@ if(!class_exists('APP_app_report')) {
 					if($this->post['table']=='modemcommands') {
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -349,7 +1213,7 @@ if(!class_exists('APP_app_report')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappreport = new APP_app_report;

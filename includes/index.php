@@ -37,6 +37,7 @@ require_once(INCLUDE_PATH.'language.inc.php');
 //require_once(INCLUDE_PATH.'session/index.php');
 require_once(INCLUDE_PATH.'session.pgsql.inc.php');
 require_once(INCLUDE_PATH.'functions.inc.php');
+require_once(INCLUDE_PATH.'fpdf.inc.php');
 require_once(INCLUDE_PATH.'errors.inc.php');
 require_once(INCLUDE_PATH.'error.inc.php');
 require_once(INCLUDE_PATH.'db.inc.php');

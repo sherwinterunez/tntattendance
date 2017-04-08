@@ -41,9 +41,9 @@ $forms['app']['schedulermain'] = '<div id="schedulermain">#schedulermain</div>';
 $forms['app']['schedulerdetail'] = '<div id="schedulerdetail">#schedulerdetail</div>';
 
 //$forms['app']['reportcontrol'] = '<div id="schedulermain">#schedulermain</div>';
-//$forms['app']['reportmain'] = '<div id="schedulerdetail">#schedulerdetail</div>';
-$forms['app']['reportdetails'] = '<div id="schedulerdetail">#schedulerdetail</div>';
-$forms['app']['reportmisc'] = '<div id="schedulerdetail">#schedulerdetail</div>';
+$forms['app']['reportmain'] = '<div id="reportmain">#reportmain</div>';
+//$forms['app']['reportdetails'] = '<div id="schedulerdetail">#schedulerdetail</div>';
+//$forms['app']['reportmisc'] = '<div id="schedulerdetail">#schedulerdetail</div>';
 
 
 

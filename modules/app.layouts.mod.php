@@ -334,14 +334,15 @@ $layouts['app']['groups'] = array(
 );
 
 $layouts['app']['report'] = array(
-	'pattern'=>'4H',
+	//'pattern'=>'4H',
+  'pattern'=>'2U',
 	'module'=>'report',
 	'toolbar'=>'b',
 	'cells'=>array(
 		array(
 			'id'=>'a',
 			'text'=>'&nbsp;',
-			'width'=>150,
+			'width'=>200,
 			'html'=>array(
 				//'module'=>'user',
 				'formid'=>'reportcontrol',
@@ -355,7 +356,7 @@ $layouts['app']['report'] = array(
 				'formid'=>'reportmain',
 			),
 		),
-		array(
+		/*array(
 			'id'=>'c',
 			//'text'=>'&nbsp;',
 			'html'=>array(
@@ -371,7 +372,7 @@ $layouts['app']['report'] = array(
 				//'module'=>'user',
 				'formid'=>'reportmisc',
 			),
-		),
+		),*/
 	)
 );
 
