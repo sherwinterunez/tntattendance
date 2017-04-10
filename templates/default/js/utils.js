@@ -412,9 +412,12 @@ dhtmlXCellObject.prototype.attachFORMFromPostURL = function(turl,param) {
 								obj.layout.cells(d.layout.cells[i].id).attachHTMLString(d.layout.cells[i].html);
 							} else {
 								if(typeof(d.layout.cells[i].html.formid)=='string') {
+                  //console.log('d',d);
+                  //console.log('turl',turl);
+                  //console.log('param',param);
 									obj.postData('/'+settings.router_id+'/json/', {
 										odata: obj.layout.cells(d.layout.cells[i].id),
-										pdata: "routerid="+settings.router_id+"&action=formonly&module="+d.layout.module+"&formid="+d.layout.cells[i].html.formid+"&formval="+d.formval,
+										pdata: "routerid="+settings.router_id+"&action=formonly&module="+d.layout.module+"&formid="+d.layout.cells[i].html.formid+"&formval="+d.formval+(d.wid?"&wid="+d.wid:""),
 									}, function(ddata,odata){
 										odata.ddata = ddata;
 										if(typeof(ddata.html)=='string') {

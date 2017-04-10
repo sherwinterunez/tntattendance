@@ -3,6 +3,12 @@ $moduleid = 'report';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 
+if(!empty($vars['post']['wid'])) {
+	$wid = $vars['post']['wid'];
+} else {
+	die('Invalid Window ID');
+}
+
 $sidebar = array();
 
 $sidebar[] = array(
@@ -92,7 +98,7 @@ pre(array('$_SESSION'=>$_SESSION));
 
 <?php foreach($sidebar as $k=>$v) { ?>
 
-		<?php if($v['id']=='dailyabsent'||$v['id']=='dailytardy') { ?>
+		<?php if($v['id']=='dailyabsent'||$v['id']=='dailytardy'||$v['id']=='individualattendance'||$v['id']=='monthlyattendance') { ?>
 
 			if($("#formdiv_%formval% #<?php echo $templatemainid; ?><?php echo $v['id']; ?>mainform_%formval%").length) {
 
@@ -322,7 +328,7 @@ pre(array('$_SESSION'=>$_SESSION));
 
 		myTab.postData('/'+settings.router_id+'/json/', {
 			odata: {},
-			pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid; ?>"+id+"&module=<?php echo $moduleid; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto),
+			pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid; ?>"+id+"&module=<?php echo $moduleid; ?>&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto)+"&wid=<?php echo $wid; ?>",
 		}, function(ddata,odata){
 			if(ddata.html) {
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);

@@ -648,27 +648,12 @@ if(!class_exists('APP_app_report')) {
 					$from = date2timestamp($post['datefrom']." 00:00:00",'m/d/Y H:i:s');
 					$to = date2timestamp($post['dateto']." 23:59:59",'m/d/Y H:i:s');
 
-					$fromstr = date("d F Y",$from);
-					$tostr = date("d F Y",$to);
-
-					$where = '';
-
-					if(!empty($post['yearlevel'])) {
-						$where = "B.studentprofile_yearlevel in (".$post['yearlevel'].") and ";
-					}
-
-					if(!empty($post['section'])) {
-						$where = "B.studentprofile_section in (".$post['section'].") and ";
-					}
-
-					if(!($result = $appdb->query("select A.*,B.studentprofile_firstname,B.studentprofile_lastname,B.studentprofile_middlename,B.studentprofile_yearlevel,B.studentprofile_section,B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where $where A.studentdtr_type='IN' and A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to order by A.studentdtr_unixtime asc"))) {
+					if(!($result = $appdb->query("select A.*,B.studentprofile_firstname,B.studentprofile_lastname,B.studentprofile_middlename,B.studentprofile_yearlevel,B.studentprofile_section,B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where A.studentdtr_type='IN' and A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
 					}
 
 					$students = array();
-					$ddmm = array();
-					$fullnames = array();
 
 					if(!empty($result['rows'][0]['studentdtr_id'])) {
 						foreach($result['rows'] as $k=>$v) {
@@ -676,39 +661,17 @@ if(!class_exists('APP_app_report')) {
 							$section = getGroupRefName($v['studentprofile_section']);
 							$dt = pgDateUnix($v['studentdtr_unixtime'],'m-d-Y');
 
-
 							if(!empty($students[$yearlevel][$section][$v['studentprofile_id']][$dt])) {
 							} else {
 								//pre(array('$dt'=>$dt));
-								$fn = '';
-
-								$fn .= !empty($v['studentprofile_lastname']) ? $v['studentprofile_lastname'] . ', ' : '' ;
-								$fn .= !empty($v['studentprofile_firstname']) ? $v['studentprofile_firstname'] . ' ' : '' ;
-								$fn .= !empty($v['studentprofile_middlename']) ? $v['studentprofile_middlename'] : '' ;
-
-								$ddmm[$dt] = $v['studentdtr_unixtime'];
-								$fullnames[$v['studentprofile_id']] = trim($fn);
 								$students[$yearlevel][$section][$v['studentprofile_id']][$dt][] = $v;
 							}
 						}
-					} else {
-
-						$params['tbReports'][] = array(
-							'type' => 'label',
-							'label' => 'No record(s) found. Please check parameter and date filter.',
-							'labelWidth' => 500,
-						);
-
-						json_encode_return($params);
-						die;
-
 					}
 
-					//pre(array('$ddmm'=>$ddmm));
-					//pre(array('$fullnames'=>$fullnames));
-					//pre(array('$students'=>$students));
+					pre(array('$students'=>$students));
 
-					/*$params['tbReports'][] = array(
+					$params['tbReports'][] = array(
 						'type' => 'label',
 						'label' => 'OBIS MONTESSORI',
 						'labelWidth' => 250,
@@ -717,8 +680,8 @@ if(!class_exists('APP_app_report')) {
 
 					$params['tbReports'][] = array(
 						'type' => 'label',
-						'label' => "Period: $fromstr - $tostr",
-						'labelWidth' => 500,
+						'label' => 'Period: 07 April 2017 '.time(),
+						'labelWidth' => 250,
 						'className' => 'period_'.$post['formval'],
 					);
 
@@ -727,62 +690,31 @@ if(!class_exists('APP_app_report')) {
 						'label' => 'MONTHLY ATTENDANCE REPORT',
 						'labelWidth' => 300,
 						'className' => 'monthlyattendancereport_'.$post['formval'],
-					);*/
+					);
 
-					/*$params['tbReports'][] = array(
+					$params['tbReports'][] = array(
 						'type' => 'label',
 						'label' => 'NURSERY - ST. JOHN',
 						'labelWidth' => 250,
 						'className' => 'yearlevel_'.$post['formval'],
+					);
+
+					/*$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '&nbsp;',
+						'labelWidth' => 250,
+						'className' => 'present_'.$post['formval'],
 					);*/
 
-////////////////////////////////////////
-
-					/*$block = array();
-
-					$first = true;
-
-					foreach($ddmm as $k=>$v) {
-
-						$dd = date("d",$v);
-						$ds = strtoupper(substr(date("l",$v),0,2));
-
-						if($first) {
-							$block[] = array(
-								'type' => 'label',
-								'label' => $dd.'<br />'.$ds,
-								'labelWidth' => 32,
-								'offsetLeft' => 200,
-								'className' => 'ddmm_'.$post['formval'],
-							);
-							$first = false;
-						} else {
-							$block[] = array(
-								'type' => 'label',
-								'label' => $dd.'<br />'.$ds,
-								'labelWidth' => 32,
-								'offsetLeft' => 0,
-								'className' => 'ddmm_'.$post['formval'],
-							);
-						}
-
-						$block[] = array(
-							'type' => 'newcolumn',
-							'offset' => 0,
-						);
-
-					}
-
-					$params['tbReports'][] = array(
-						'type' => 'block',
-						'width' => 1500,
-						'blockOffset' => 0,
-						'offsetTop' => 0,
-						'list' => $block,
-						'className' => 'block_'.$post['formval'],
+					/*$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => 'ST. JOHN',
+						'labelWidth' => 250,
+						'offsetLeft' => 25,
+						'className' => 'section_'.$post['formval'],
 					);*/
 
-					/*$block = array();
+					$block = array();
 
 					$block[] = array(
 						'type' => 'label',
@@ -877,169 +809,211 @@ if(!class_exists('APP_app_report')) {
 						'offsetTop' => 0,
 						'list' => $block,
 						'className' => 'block_'.$post['formval'],
-					);*/
+					);
 
-////////////////////////////////////////
+	/////////////////////////////////
 
-					foreach($students as $yl=>$ylv) {
-						//pre(array('$yl'=>$yl));
+					$block = array();
 
-						foreach($ylv as $sc=>$scv) {
-							//pre(array('$yl'=>$yl,'$sc'=>$sc));
+					$block[] = array(
+						'type' => 'label',
+						'label' => '1. RODRIGO DUTERTE',
+						'labelWidth' => 200,
+						'offsetLeft' => 0,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-							$params['tbReports'][] = array(
-								'type' => 'label',
-								'label' => 'OBIS MONTESSORI',
-								'labelWidth' => 250,
-								'className' => 'schoolName_'.$post['formval'],
-							);
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-							$params['tbReports'][] = array(
-								'type' => 'label',
-								'label' => "Period: $fromstr - $tostr",
-								'labelWidth' => 500,
-								'className' => 'period_'.$post['formval'],
-							);
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="present_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-							$params['tbReports'][] = array(
-								'type' => 'label',
-								'label' => 'MONTHLY ATTENDANCE REPORT',
-								'labelWidth' => 300,
-								'className' => 'monthlyattendancereport_'.$post['formval'],
-							);
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-							$params['tbReports'][] = array(
-								'type' => 'label',
-								'label' => $yl.' - '.$sc,
-								'labelWidth' => 250,
-								'className' => 'yearlevel_'.$post['formval'],
-							);
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="absent_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-/////
-							$block = array();
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-							$first = true;
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="present_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-							foreach($ddmm as $k=>$v) {
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-								$dd = date("d",$v);
-								$ds = strtoupper(substr(date("l",$v),0,2));
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="absent_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-								if($first) {
-									$block[] = array(
-										'type' => 'label',
-										'label' => $dd.'<br />'.$ds,
-										'labelWidth' => 32,
-										'offsetLeft' => 200,
-										'className' => 'ddmm_'.$post['formval'],
-									);
-									$first = false;
-								} else {
-									$block[] = array(
-										'type' => 'label',
-										'label' => $dd.'<br />'.$ds,
-										'labelWidth' => 32,
-										'offsetLeft' => 0,
-										'className' => 'ddmm_'.$post['formval'],
-									);
-								}
+					$params['tbReports'][] = array(
+						'type' => 'block',
+						'width' => 1500,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
 
-								$block[] = array(
-									'type' => 'newcolumn',
-									'offset' => 0,
-								);
+	/////////////////////////////////
 
-							}
+					$block = array();
 
-							$params['tbReports'][] = array(
-								'type' => 'block',
-								'width' => 1500,
-								'blockOffset' => 0,
-								'offsetTop' => 0,
-								'list' => $block,
-								'className' => 'block_'.$post['formval'],
-							);
-/////
-							$ctr = 1;
+					$block[] = array(
+						'type' => 'label',
+						'label' => '2. GLORIA ARROYO',
+						'labelWidth' => 200,
+						'offsetLeft' => 0,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-							foreach($scv as $fid=>$fidv) {
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-								//pre(array('$fid'=>$fid,'$fullnames'=>$fullnames[$fid]));
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="present_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-								$block = array();
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-								$block[] = array(
-									'type' => 'label',
-									'label' => $ctr.'. '.$fullnames[$fid],
-									'labelWidth' => 200,
-									'offsetLeft' => 0,
-									'className' => 'studentName_'.$post['formval'],
-								);
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="present_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-								$ctr++;
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-								foreach($ddmm as $dk=>$dv) {
-									if(!empty($fidv[$dk])) {
-										//pre(array('$dk'=>$dk,'$fidv'=>$fidv[$dk]));
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="present_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-										$block[] = array(
-											'type' => 'newcolumn',
-											'offset' => 0,
-										);
+					$block[] = array(
+						'type' => 'newcolumn',
+						'offset' => 0,
+					);
 
-										$block[] = array(
-											'type' => 'label',
-											'label' => '<span class="present_'.$post['formval'].'"></span>',
-											'labelWidth' => 32,
-											//'className' => 'present_'.$post['formval'],
-										);
+					$block[] = array(
+						'type' => 'label',
+						'label' => '<span class="absent_'.$post['formval'].'"></span>',
+						'labelWidth' => 32,
+						//'className' => 'present_'.$post['formval'],
+					);
 
-									} else {
-										//pre(array('$dk'=>$dk,'absent'=>'absent'));
+					$params['tbReports'][] = array(
+						'type' => 'block',
+						'width' => 1500,
+						'blockOffset' => 0,
+						'offsetTop' => 0,
+						'list' => $block,
+						'className' => 'block_'.$post['formval'],
+					);
 
-										$block[] = array(
-											'type' => 'newcolumn',
-											'offset' => 0,
-										);
+	/////////////////////////////////
 
-										$block[] = array(
-											'type' => 'label',
-											'label' => '<span class="absent_'.$post['formval'].'"></span>',
-											'labelWidth' => 32,
-											//'className' => 'present_'.$post['formval'],
-										);
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => 'ST. MICHAEL',
+						'labelWidth' => 250,
+						'offsetLeft' => 25,
+						'className' => 'section_'.$post['formval'],
+					);
 
-									}
-								}
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '1. SHERWIN TERUNEZ',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-								/*foreach($fidv as $k=>$v) {
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '2. CELESTE TERUNEZ',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-									pre(array('$k'=>$k,'$v'=>$v));
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '3. JOSHUA DANIEL TERUNEZ',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-								}*/
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => 'ST. PAUL',
+						'labelWidth' => 250,
+						'offsetLeft' => 25,
+						'className' => 'section_'.$post['formval'],
+					);
 
-								$params['tbReports'][] = array(
-									'type' => 'block',
-									'width' => 1500,
-									'blockOffset' => 0,
-									'offsetTop' => 0,
-									'list' => $block,
-									'className' => 'block_'.$post['formval'],
-								);
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '1. SHERWIN PADILLA',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-							}
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '2. CELESTE PADILLA',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
-							$params['tbReports'][] = array(
-								'type' => 'label',
-								'labelWidth' => 1500,
-								'label' => '<hr/>',
-							);
-
-						}
-
-					}
-
-////////////////////////////////////////
+					$params['tbReports'][] = array(
+						'type' => 'label',
+						'label' => '3. JOSHUA DANIEL PADILLA',
+						'labelWidth' => 250,
+						'offsetLeft' => 50,
+						'className' => 'studentName_'.$post['formval'],
+					);
 
 					json_encode_return($params);
 					die;

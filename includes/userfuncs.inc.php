@@ -1022,7 +1022,7 @@ function getGroupRef($id=false,$mode=1) {
 	return false;
 }
 
-function getGroupRefName($id=false) {
+function getGroupRefName2($id=false) {
 	global $appdb;
 
 	if(!empty($id)&&is_numeric($id)&&$id>0) {
@@ -1040,6 +1040,48 @@ function getGroupRefName($id=false) {
 
 	if(!empty($result['rows'][0]['groupref_id'])) {
 		return $result['rows'][0]['groupref_name'];
+	}
+
+	return false;
+}
+
+function getGroupRefName($id=false) {
+	global $appdb, $arrGroupRefName;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	if(!empty($arrGroupRefName)&&is_array($arrGroupRefName)) {
+	} else {
+		$sql = "select * from tbl_groupref";
+
+		if(!($result=$appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['groupref_id'])) {
+			foreach($result['rows'] as $k=>$v) {
+				$arrGroupRefName[$v['groupref_id']] = $v;
+			}
+		}
+	}
+
+	/*$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_id'])) {
+		return $result['rows'][0]['groupref_name'];
+	}*/
+
+	if(!empty($arrGroupRefName[$id]['groupref_name'])) {
+		return $arrGroupRefName[$id]['groupref_name'];
 	}
 
 	return false;

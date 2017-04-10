@@ -34666,6 +34666,16 @@ dhtmlXGridObject.prototype = {
     isTreeGrid: function() {
         return (this.cellType._dhx_find("tree") != -1)
     },
+    isRowHidden: function(l) {
+        var h = this.getRowById(l);
+        if (!h) {
+            return true;
+        }
+        if(!h.parentNode) {
+            return true;
+        }
+        return false;
+    },
     setRowHidden: function(l, e) {
         var c = dhx4.s2b(e);
         var h = this.getRowById(l);
@@ -51773,7 +51783,7 @@ dhtmlXForm.prototype.items.input = {
             this.setInputMask(l, m.inputMask, m.inputMaskParam);
         }
         if(m.inputMask) {
-            this.setInputMask(l, m.inputMask);        
+            this.setInputMask(l, m.inputMask);
         }
         if(m.numeric) {
             this.setNumeric(l);
@@ -51865,7 +51875,7 @@ dhtmlXForm.prototype.items.input = {
             jQuery(a).inputmask(e._inputMask,e._inputMaskParam);
         } else
         if(e._inputMask) {
-            jQuery(a).inputmask(e._inputMask);        
+            jQuery(a).inputmask(e._inputMask);
         }
     },
     setNumeric: function(e) {

@@ -17,6 +17,12 @@ if($method==$moduleid.'new'||$method==$moduleid.'edit') {
 	$readonly = false;
 }
 
+if(!empty($vars['post']['wid'])) {
+	$wid = $vars['post']['wid'];
+} else {
+	die('Invalid Window ID');
+}
+
 $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
 
 ?>
@@ -102,6 +108,10 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		var myTab = srt.getTabUsingFormVal('%formval%');
 
+		var myWinObj = srt.windows['<?php echo $wid; ?>'];
+
+		var myWinToolbar = myWinObj.toolbar;
+
 		myChanged_%formval% = false;
 
 		myFormStatus_%formval% = '';
@@ -114,7 +124,16 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		myTab.toolbar.showOnly(myToolbar);
 
-		var myTabbar = new dhtmlXTabBar("<?php echo $templatemainid.$submod; ?>tabform_%formval%");
+		if(typeof(myWinObj.myTabbar)!='null'&&typeof(myWinObj.myTabbar)!='undefined'&&myWinObj.myTabbar!=null) {
+			try {
+				myWinObj.myTabbar.unload();
+				myWinObj.myTabbar = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+
+		var myTabbar = myWinObj.myTabbar = new dhtmlXTabBar("<?php echo $templatemainid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
 
@@ -143,11 +162,60 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 			} catch(e) {}
 		}
 
-		var myForm = myForm2_%formval% = new dhtmlXForm("<?php echo $templatemainid.$submod; ?>mainform_%formval%",formData2_%formval%);
+		var myForm = myForm2_%formval% = myWinObj.form = new dhtmlXForm("<?php echo $templatemainid.$submod; ?>mainform_%formval%",formData2_%formval%);
 
 		myChanged_%formval% = false;
 
 		myFormStatus_%formval% = '<?php echo $method; ?>';
+
+///////////////////////////////////
+
+///////////////////////////////////
+
+		if(typeof myWinObj.onCloseId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onCloseId);
+			} catch(e) {}
+		}
+
+		myWinObj.onCloseId = myWinObj.attachEvent("onClose", function(win){
+			console.log('onClose');
+			win.form.unload();
+			return true;
+		});
+
+		if(typeof myWinObj.onResizeFinishId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onResizeFinishId);
+			} catch(e) {}
+		}
+
+		myWinObj.onResizeFinishId = myWinObj.attachEvent("onResizeFinish", function(win){
+			myTabbar.setSizes();
+			return true;
+		});
+
+		if(typeof myWinObj.onMaximizeId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onMaximizeId);
+			} catch(e) {}
+		}
+
+		myWinObj.onMaximizeId = myWinObj.attachEvent("onMaximize", function(win){
+			myTabbar.setSizes();
+			return true;
+		});
+
+		if(typeof myWinObj.onMinimizeId != 'undefined') {
+			try {
+				myWinObj.detachEvent(myWinObj.onMinimizeId);
+			} catch(e) {}
+		}
+
+		myWinObj.onMinimizeId = myWinObj.attachEvent("onMinimize", function(win){
+			myTabbar.setSizes();
+			return true;
+		});
 
 ///////////////////////////////////
 
