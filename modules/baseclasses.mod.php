@@ -213,6 +213,7 @@ if(!class_exists('APP_Base')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/api/(.+?)\/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'doapi2'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/api/(.+?)\/\?(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1&params2=$2', 'callback'=>array($this,'doapi2'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/export/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'export'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/print/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'doprint'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/(.+?)\/(.+?)\/(.+?)$' => array('id'=>$this->pathid,'param'=>'routerid='.$this->pathid.'&module=$1&action=$2&params=$3', 'callback'=>array($this,'doapi'))));
 
 			//$approuter->addroute(array('^/'.$this->pathid.'/rules/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'show_rules'))));
@@ -530,7 +531,7 @@ if(!class_exists('APP_Base')) {
 					$this->cls_ajax->post = $this->post;
 
 					if(method_exists($this->cls_ajax,'router')) {
-						$this->cls_ajax->router();
+						return $this->cls_ajax->router($retflag);
 					} else {
 						$bypass = false;
 					}
@@ -588,6 +589,70 @@ if(!class_exists('APP_Base')) {
 			    readfile($file);
 			    exit;
 			}*/
+		}
+
+		function doprint($vars) {
+			//pre(array('$vars'=>$vars));
+
+			global $apptemplate, $appform, $current_page;
+
+			//$this->check_url();
+
+			//pre(array('$this->scripts'=>$apptemplate->scripts));
+
+			foreach($apptemplate->scripts as $k=>$v) {
+				if($v=='/app/js/') {
+					unset($apptemplate->scripts[$k]);
+				}
+			}
+
+			// header($title=false,$name='header',$vars=false, $ret=false) {
+
+			$header = $apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'appheader');
+
+			//$header = $apptemplate->header($this->desc.' | '.APP_NAME, 'appheader', false, true);
+
+			//echo $header;
+
+			//$apptemplate->page('topnav');
+
+			//$apptemplate->page('topmenu');
+
+			//$apptemplate->page('workarea');
+
+			// footer($name='footer', $vars=false, $ret=false) {
+
+			$page = '';
+
+			if(!empty($vars['params'])) {
+				$vars['params'] = str_replace(' ','+',$vars['params']);
+				$vars['post'] = json_decode(gzuncompress(base64_decode($vars['params'])),true);
+				if($vars['post']) {
+					$vars['post']['method'] = 'generatereportprint';
+					$tvars = array();
+					$tvars['json'] = $this->postjson($vars,1);
+					$tvars['formval'] = $vars['post']['formval'];
+					//echo 'hello, sherwin!';
+
+					//pre(array('$tvars'=>$tvars));
+
+					$page = $apptemplate->page('reportmainmonthlyattendance',$tvars,true);
+
+					$page = str_replace('%formval%',$vars['post']['formval'],$page);
+
+					//echo $page;
+				}
+			}
+
+
+			$footer = $apptemplate->footer('footer', false, true);
+
+			//echo $footer;
+
+			header_html();
+
+			die($header.$page.$footer);
+
 		}
 
 		function json($vars) { }

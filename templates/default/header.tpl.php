@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -27,7 +27,7 @@ if(defined('ANNOUNCE')) {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <title><?php $this->title(); ?></title>
-<?php 
+<?php
 do_action('action_meta_content_type');
 do_action('action_meta_description');
 do_action('action_meta_author');
@@ -45,5 +45,6 @@ do_action('action_header_bottom');
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 */ ?>
+<!-- hello -->
 </head>
 <body>

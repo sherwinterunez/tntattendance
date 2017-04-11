@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,24 +24,24 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_App')) {
 
 	class APP_App extends APP_Base {
-	
+
 		var $pathid = 'app';
 		var $desc = 'App';
 		var $post = false;
 		var $vars = false;
-		
+
 		var $cls_ajax = false;
 
 		var $usermod = false;
-	
+
 		function __construct() {
 			parent::__construct();
 		}
-		
+
 		function __destruct() {
 			parent::__destruct();
 		}
-		
+
 		function modulespath() {
 			return str_replace(basename(__FILE__),'',__FILE__);
 		}
@@ -65,7 +65,7 @@ if(!class_exists('APP_App')) {
 		}
 
 		function js($vars) {
-			require_once('app.mod.inc.js');				
+			require_once('app.mod.inc.js');
 		}
 
 		function render($vars) {
@@ -74,15 +74,15 @@ if(!class_exists('APP_App')) {
 			if(!$applogin->is_loggedin()) {
 				redirect301('/'.$applogin->pathid.'/');
 			}
-			
+
 			$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'appheader');
 
 			//$apptemplate->page('topnavbar');
-	
+
 			//$apptemplate->page('topnav');
-	
+
 			//$apptemplate->page('topmenu');
 
 			//$apptemplate->page('workarea');
@@ -90,7 +90,7 @@ if(!class_exists('APP_App')) {
 			//$apptemplate->page('app');
 
 			$apptemplate->footer();
-			
+
 		} // render
 
 	} // class APP_App

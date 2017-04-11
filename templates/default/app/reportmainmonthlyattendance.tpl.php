@@ -23,7 +23,9 @@ if(!empty($vars['post']['wid'])) {
 	die('Invalid Window ID');
 }
 
-$myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+//$myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'print',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+
+$myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
 
 ?>
 <!--
@@ -519,24 +521,6 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 							var yearlevel = [];
 							var section = [];
 
-							//myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
-								//showMessage('id: '+id,5000);
-								//var h = myGrid.getRowById(id);
-
-								//if(id==1) {
-								//	srt.dummy.apply(h);
-									//myGrid.setRowHidden(id,true);
-								//}
-
-								//if(!myWinObj.myGridNewMessageYearLevel.isRowHidden(id)) {
-									//showMessage("show: "+id,5000);
-									//rowids.push(id);
-								//} else {
-									//showMessage("hidden: "+id,15000);
-								//}
-
-							//});
-
 							myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
 								var checked = parseInt(myWinObj.myGridNewMessageYearLevel.cells(id,0).getValue());
 								var val = myWinObj.myGridNewMessageYearLevel.cells(id,1).getValue();
@@ -624,6 +608,69 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 			}, function(ddata,odata){
 
 				jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
+
+			});
+
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>print').onClick = function(id,formval,wid) {
+			showMessage("toolbar: "+id,5000);
+			//doSelect_%formval%("retail");
+
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			//console.log('id: '+id);
+			//console.log('formval: '+formval);
+			//console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			//console.log(this.parentobj);
+			//console.log(this.parentobj.form);
+
+			/*try {
+				var rowid = myGrid_%formval%.getSelectedRowId();
+				<?php echo $templatemainid.$submod; ?>grid_%formval%(rowid);
+			} catch(e) {
+				doSelect_%formval%("<?php echo $submod; ?>");
+			}*/
+
+			var yearlevel = [];
+			var section = [];
+
+			myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageYearLevel.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageYearLevel.cells(id,1).getValue();
+				if(checked&&val) {
+					yearlevel.push(id);
+				}
+			});
+
+			myWinObj.myGridNewMessageSection.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageSection.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageSection.cells(id,1).getValue();
+				if(checked&&val) {
+					section.push(id);
+				}
+			});
+
+			var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+			var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				//odata: {rowid:rowid},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto)+"&wid="+wid+"&yearlevel="+yearlevel+"&section="+section,
+			}, function(ddata,odata){
+
+				//jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
+
+				//window.open('/'+settings.router_id+'/app/print/sample');
+
+				var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"win","status=yes,scrollbars=yes,toolbar=no,menubar=yes,height=650,width=1000");
+
+				//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"_blank");
 
 			});
 

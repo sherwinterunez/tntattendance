@@ -1,6 +1,6 @@
 <?php
 $moduleid = 'report';
-$submod = 'dailyabsent';
+$submod = 'dailytardy';
 $templatemainid = $moduleid.'main';
 $templatedetailid = $moduleid.'detail';
 $mainheight = 250;
@@ -23,7 +23,9 @@ if(!empty($vars['post']['wid'])) {
 	die('Invalid Window ID');
 }
 
-$myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+//$myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+
+$myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$moduleid.'period',$moduleid.'datefrom');
 
 ?>
 <!--
@@ -96,6 +98,45 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 </div>
 <script>
 
+	function <?php echo $wid.$templatemainid.$submod; ?>_resize_%formval%(myWinObj) {
+
+		var myTab = srt.getTabUsingFormVal('%formval%');
+
+		var lbHeight = myTab.layout.cells('b').getHeight();
+		var lbWidth = myTab.layout.cells('b').getWidth();
+
+		var dim = myWinObj.getDimension();
+
+		layout_resize_%formval%();
+
+		console.log({lbHeight:lbHeight,lbWidth:lbWidth});
+
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_yearlevel_%formval% .dhxform_container").height(lbHeight-140);
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_yearlevel_%formval% .dhxform_container").width((lbWidth/2)-30);
+
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_section_%formval% .dhxform_container").height(lbHeight-140);
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_section_%formval% .dhxform_container").width((lbWidth/2)-30);
+
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_blockcontacts_%formval%").height(lbHeight-140);
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_blockcontacts_%formval%").width((lbWidth/2)-25);
+
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_blockyearlevel_%formval%").height(lbHeight-140);
+		$("#<?php echo $templatemainid.$submod; ?>mainform_%formval% .newmessage_blockyearlevel_%formval%").width((lbWidth/2)-25);
+
+		if(typeof(myWinObj.myGridNewMessageYearLevel)!='undefined') {
+			try {
+				myWinObj.myGridNewMessageYearLevel.setSizes();
+			} catch(e) {}
+		}
+
+		if(typeof(myWinObj.myGridNewMessageSection)!='undefined') {
+			try {
+				myWinObj.myGridNewMessageSection.setSizes();
+			} catch(e) {}
+		}
+
+	}
+
 	var myTab = srt.getTabUsingFormVal('%formval%');
 
 	myTab.layout.cells('b').hideArrow();
@@ -137,7 +178,8 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		myTabbar.setArrowsMode("auto");
 
-		myTabbar.addTab("tbDetails", "Generated Report");
+		myTabbar.addTab("tbDetails", "Parameter");
+		myTabbar.addTab("tbReports", "Generated Report");
 
 		myTabbar.tabs("tbDetails").setActive();
 
@@ -153,6 +195,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 				{type: "hidden", name: "rowid", value: "<?php echo $method==$moduleid.'edit' ? $vars['post']['rowid'] : ''; ?>"},
 			]},
 			{type: "block", name: "tbDetails", hidden:false, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbDetails']) ? json_encode($params['tbDetails']) : '[]'; ?>},
+			{type: "block", name: "tbReports", hidden:true, width: 1500, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbReports']) ? json_encode($params['tbReports']) : '[]'; ?>},
 			{type: "label", label: ""}
 		];
 
@@ -169,6 +212,206 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 		myFormStatus_%formval% = '<?php echo $method; ?>';
 
 ///////////////////////////////////
+
+		if(typeof(myWinObj.myGridNewMessageYearLevel)!='null'&&typeof(myWinObj.myGridNewMessageYearLevel)!='undefined'&&myWinObj.myGridNewMessageYearLevel!=null) {
+			try {
+				myWinObj.myGridNewMessageYearLevel.destructor();
+				myWinObj.myGridNewMessageYearLevel = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+
+		var myGridNewMessageYearLevel = myWinObj.myGridNewMessageYearLevel = new dhtmlXGridObject(myForm.getContainer('newmessage_yearlevel'));
+
+		myGridNewMessageYearLevel.setImagePath("/codebase/imgs/")
+
+		myGridNewMessageYearLevel.setHeader("#master_checkbox, ID, Year Level");
+
+		myGridNewMessageYearLevel.setInitWidths("35, 50,*");
+
+		myGridNewMessageYearLevel.setColAlign("center,center,left");
+
+		myGridNewMessageYearLevel.setColTypes("ch,ro,ro");
+
+		myGridNewMessageYearLevel.setColSorting("int,int,str");
+
+		myGridNewMessageYearLevel.init();
+
+		myTab.postData('/'+settings.router_id+'/json/', {
+			odata: {},
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&method=<?php echo $method; ?>&table=newmessageyearlevel&formval=%formval%",
+		}, function(ddata,odata){
+
+			try {
+				myGridNewMessageYearLevel.parse(ddata,function(){
+
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+					myGridNewMessageYearLevel.forEachRow(function(id){
+						//myGridNewMessageYearLevel.cells(id,1).setDisabled(true);
+						//myGridNewMessageYearLevel.cells(id,2).setDisabled(true);
+						//myGridNewMessageYearLevel.cells(id,3).setDisabled(true);
+						//myGridNewMessageYearLevel.cells(id,4).setDisabled(true);
+						//myGridNewMessageYearLevel.cells(id,5).setDisabled(true);
+					});
+
+					<?php } ?>
+
+					var x;
+
+					if(ddata.rows&&ddata.rows.length>0) {
+						for(x in ddata.rows) {
+							if(ddata.rows[x].yearlevel) {
+								//alert(JSON.stringify(ddata.rows[x].type));
+								var myCombo = myGridNewMessageYearLevel.getColumnCombo(3);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].yearlevel));
+
+								//myCombo.setComboText(ddata.rows[x].simcardfunctions_loadcommandid);
+
+								myCombo.enableFilteringMode(true);
+
+								//myGridNewMessageYearLevel.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
+
+								//myCombo.setComboValue(ddata.rows[x].data[1]);
+							}
+							/*if(ddata.rows[x].modemcommands) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageYearLevel.getColumnCombo(2);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].modemcommands));
+
+								myCombo.enableFilteringMode(true);
+							}*/
+							break;
+							/*
+							if(ddata.rows[x].category) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageYearLevel.getColumnCombo(2);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].category));
+
+								myCombo.enableFilteringMode(true);
+							}
+							if(ddata.rows[x].discount) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageYearLevel.getColumnCombo(4);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].discount));
+
+								myCombo.enableFilteringMode(true);
+							}
+							*/
+						}
+					}
+				},'json');
+			} catch(e) {
+				//console.log(e);
+			}
+
+		});
+
+///////////////////////////////////
+
+		if(typeof(myWinObj.myGridNewMessageSection)!='null'&&typeof(myWinObj.myGridNewMessageSection)!='undefined'&&myWinObj.myGridNewMessageSection!=null) {
+			try {
+				myWinObj.myGridNewMessageSection.destructor();
+				myWinObj.myGridNewMessageSection = null;
+			} catch(e) {
+				console.log(e);
+			}
+		}
+
+		var myGridNewMessageSection = myWinObj.myGridNewMessageSection = new dhtmlXGridObject(myForm.getContainer('newmessage_section'));
+
+		myGridNewMessageSection.setImagePath("/codebase/imgs/")
+
+		myGridNewMessageSection.setHeader("#master_checkbox, ID, Section");
+
+		myGridNewMessageSection.setInitWidths("35, 50,*");
+
+		myGridNewMessageSection.setColAlign("center,center,left");
+
+		myGridNewMessageSection.setColTypes("ch,ro,ro");
+
+		myGridNewMessageSection.setColSorting("int,int,str");
+
+		myGridNewMessageSection.init();
+
+		myTab.postData('/'+settings.router_id+'/json/', {
+			odata: {},
+			pdata: "routerid="+settings.router_id+"&action=grid&formid=<?php echo $templatemainid.$submod; ?>grid&module=<?php echo $moduleid; ?>&method=<?php echo $method; ?>&table=newmessagesection&formval=%formval%",
+		}, function(ddata,odata){
+
+			try {
+				myGridNewMessageSection.parse(ddata,function(){
+
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
+
+					myGridNewMessageSection.forEachRow(function(id){
+						//myGridNewMessageSection.cells(id,1).setDisabled(true);
+						//myGridNewMessageSection.cells(id,2).setDisabled(true);
+						//myGridNewMessageSection.cells(id,3).setDisabled(true);
+						//myGridNewMessageSection.cells(id,4).setDisabled(true);
+						//myGridNewMessageSection.cells(id,5).setDisabled(true);
+					});
+
+					<?php } ?>
+
+					var x;
+
+					if(ddata.rows&&ddata.rows.length>0) {
+						for(x in ddata.rows) {
+							if(ddata.rows[x].yearlevel) {
+								//alert(JSON.stringify(ddata.rows[x].type));
+								var myCombo = myGridNewMessageSection.getColumnCombo(3);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].yearlevel));
+
+								//myCombo.setComboText(ddata.rows[x].simcardfunctions_loadcommandid);
+
+								myCombo.enableFilteringMode(true);
+
+								//myGridNewMessageSection.cells(ddata.rows[x].id,1).setValue(ddata.rows[x].simcardfunctions_loadcommandid);
+
+								//myCombo.setComboValue(ddata.rows[x].data[1]);
+							}
+							/*if(ddata.rows[x].modemcommands) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageSection.getColumnCombo(2);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].modemcommands));
+
+								myCombo.enableFilteringMode(true);
+							}*/
+							break;
+							/*
+							if(ddata.rows[x].category) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageSection.getColumnCombo(2);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].category));
+
+								myCombo.enableFilteringMode(true);
+							}
+							if(ddata.rows[x].discount) {
+								//alert(JSON.stringify(ddata.rows[x].options));
+								var myCombo = myGridNewMessageSection.getColumnCombo(4);
+
+								myCombo.load(JSON.stringify(ddata.rows[x].discount));
+
+								myCombo.enableFilteringMode(true);
+							}
+							*/
+						}
+					}
+				},'json');
+			} catch(e) {
+				//console.log(e);
+			}
+
+		});
 
 ///////////////////////////////////
 
@@ -192,6 +435,9 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		myWinObj.onResizeFinishId = myWinObj.attachEvent("onResizeFinish", function(win){
 			myTabbar.setSizes();
+
+			<?php echo $wid.$templatemainid.$submod; ?>_resize_%formval%(this);
+
 			return true;
 		});
 
@@ -203,6 +449,9 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		myWinObj.onMaximizeId = myWinObj.attachEvent("onMaximize", function(win){
 			myTabbar.setSizes();
+
+			<?php echo $wid.$templatemainid.$submod; ?>_resize_%formval%(this);
+
 			return true;
 		});
 
@@ -214,12 +463,188 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$m
 
 		myWinObj.onMinimizeId = myWinObj.attachEvent("onMinimize", function(win){
 			myTabbar.setSizes();
+
+			<?php echo $wid.$templatemainid.$submod; ?>_resize_%formval%(this);
+
 			return true;
 		});
 
 ///////////////////////////////////
 
-		layout_resize_%formval%();
+		myTabbar.attachEvent("onTabClick", function(id, lastId){
+
+			//showMessage("onTabClick: "+id+", "+lastId,5000);
+
+			if(id==lastId) {
+				return true;
+			}
+
+			myTabbar.forEachTab(function(tab){
+					var tbId = tab.getId();
+
+					if(id==tbId) {
+
+						if(tbId=='tbReports') {
+
+							var yearlevel = [];
+							var section = [];
+
+							myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
+								var checked = parseInt(myWinObj.myGridNewMessageYearLevel.cells(id,0).getValue());
+								var val = myWinObj.myGridNewMessageYearLevel.cells(id,1).getValue();
+								if(checked&&val) {
+									yearlevel.push(id);
+								}
+							});
+
+							myWinObj.myGridNewMessageSection.forEachRow(function(id){
+								var checked = parseInt(myWinObj.myGridNewMessageSection.cells(id,0).getValue());
+								var val = myWinObj.myGridNewMessageSection.cells(id,1).getValue();
+								if(checked&&val) {
+									section.push(id);
+								}
+							});
+
+							//console.log({yearlevel:yearlevel,section:section,myWinObj:myWinObj});
+
+							var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+							var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
+							myTab.postData('/'+settings.router_id+'/json/', {
+								//odata: {rowid:rowid},
+								pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method=generatereport&section="+section+"&yearlevel="+yearlevel+"&formval=%formval%&wid="+myWinObj._idd+"&datefrom="+datefrom+"&dateto="+dateto,
+							}, function(ddata,odata){
+
+								console.log({ddata:ddata});
+
+								if(ddata.tbReports) {
+									var tbReports = {type: "block", name: "tbReports", className: "clsReports", hidden: true, width: 1500, blockOffset: 0, offsetTop:0, list:ddata.tbReports};
+								    myWinObj.form.removeItem("tbReports");
+								    myWinObj.form.addItem(null, tbReports,1);
+								    myWinObj.form.showItem(tbId);
+								}
+
+							});
+
+						} else {
+
+							myForm2_%formval%.showItem(tbId);
+
+						}
+
+					} else {
+						myForm2_%formval%.hideItem(tbId);
+					}
+			});
+
+		});
+
+///////////////////////////////////
+
+		//myTab.toolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick = function(id,formval,wid) {
+			showMessage("toolbar: "+id,5000);
+			//doSelect_%formval%("retail");
+
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			//console.log('id: '+id);
+			//console.log('formval: '+formval);
+			//console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			//console.log(this.parentobj);
+			//console.log(this.parentobj.form);
+
+			/*try {
+				var rowid = myGrid_%formval%.getSelectedRowId();
+				<?php echo $templatemainid.$submod; ?>grid_%formval%(rowid);
+			} catch(e) {
+				doSelect_%formval%("<?php echo $submod; ?>");
+			}*/
+
+			var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+			var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				//odata: {rowid:rowid},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto)+"&wid="+wid,
+			}, function(ddata,odata){
+
+				jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
+
+			});
+
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>print').onClick = function(id,formval,wid) {
+			showMessage("toolbar: "+id,5000);
+			//doSelect_%formval%("retail");
+
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			//console.log('id: '+id);
+			//console.log('formval: '+formval);
+			//console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			//console.log(this.parentobj);
+			//console.log(this.parentobj.form);
+
+			/*try {
+				var rowid = myGrid_%formval%.getSelectedRowId();
+				<?php echo $templatemainid.$submod; ?>grid_%formval%(rowid);
+			} catch(e) {
+				doSelect_%formval%("<?php echo $submod; ?>");
+			}*/
+
+			var yearlevel = [];
+			var section = [];
+
+			myWinObj.myGridNewMessageYearLevel.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageYearLevel.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageYearLevel.cells(id,1).getValue();
+				if(checked&&val) {
+					yearlevel.push(id);
+				}
+			});
+
+			myWinObj.myGridNewMessageSection.forEachRow(function(id){
+				var checked = parseInt(myWinObj.myGridNewMessageSection.cells(id,0).getValue());
+				var val = myWinObj.myGridNewMessageSection.cells(id,1).getValue();
+				if(checked&&val) {
+					section.push(id);
+				}
+			});
+
+			var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
+			var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
+
+			myTab.postData('/'+settings.router_id+'/json/', {
+				//odata: {rowid:rowid},
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $templatemainid.$submod; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval=%formval%&datefrom="+encodeURIComponent(datefrom)+"&dateto="+encodeURIComponent(dateto)+"&wid="+wid+"&yearlevel="+yearlevel+"&section="+section,
+			}, function(ddata,odata){
+
+				//jQuery("#formdiv_%formval% #<?php echo $templatemainid; ?>").parent().html(ddata.html);
+
+				//window.open('/'+settings.router_id+'/app/print/sample');
+
+				var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"win","status=yes,scrollbars=yes,toolbar=no,menubar=yes,height=650,width=1000");
+
+				//var win = window.open('/'+settings.router_id+'/print/'+ddata.topost,"_blank");
+
+			});
+
+		};
+
+		<?php echo $wid.$templatemainid.$submod; ?>_resize_%formval%(myWinObj);
 
   }
 

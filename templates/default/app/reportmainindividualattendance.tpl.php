@@ -23,7 +23,7 @@ if(!empty($vars['post']['wid'])) {
 	die('Invalid Window ID');
 }
 
-$myToolbar = array($moduleid.'refresh',$moduleid.'exportpdf',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
+$myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$moduleid.'from',$moduleid.'datefrom',$moduleid.'to',$moduleid.'dateto');
 
 ?>
 <!--

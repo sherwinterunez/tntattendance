@@ -304,38 +304,34 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 					);*/
 
 /////
-					$allblocks = array();
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
 						foreach($ylv as $sc=>$scv) {
 							//pre(array('$yl'=>$yl,'$sc'=>$sc));
 
-							$mainblock = array();
-
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'OBIS MONTESSORI',
 								'labelWidth' => 300,
 								'className' => 'schoolName_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => "Period: $fromstr",
 								'labelWidth' => 300,
 								'className' => 'period_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'DAILY ABSENT REPORT',
 								'labelWidth' => 300,
 								'className' => 'dailyabsentreport_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => $yl.' - '.$sc,
 								'labelWidth' => 300,
@@ -360,7 +356,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 								$ctr++;
 
-								$mainblock[] = array(
+								$params['tbReports'][] = array(
 									'type' => 'block',
 									'width' => 500,
 									'blockOffset' => 0,
@@ -371,42 +367,14 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							}
 
-							$allblocks[] = $mainblock;
-
-							/*$params['tbReports'][] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								//'labelWidth' => 1000,
 								'label' => '<hr class="page-break" style="opacity:0" />',
-							);*/
-
-						}
-					}
-
-					//pre(array('$allblocks'=>$allblocks));
-
-					if(!empty($allblocks)) {
-						for($i=0;$i<count($allblocks);$i++) {
-
-							$params['tbReports'][] = array(
-								'type' => 'block',
-								'width' => 500,
-								'blockOffset' => 0,
-								'offsetTop' => 0,
-								'list' => $allblocks[$i],
 							);
 
-							if($i==(count($allblocks)-1)) {
-							} else {
-								$params['tbReports'][] = array(
-									'type' => 'label',
-									//'labelWidth' => 1000,
-									'label' => '<hr class="page-break" style="opacity:0" />',
-								);
-							}
-
 						}
 					}
-
 /////
 					if($post['method']=='generatereportprint') {
 						return json_encode($params);
@@ -711,41 +679,37 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 					//pre(array('$students'=>$students));
 
 /////
-					$allblocks = array();
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
 						foreach($ylv as $sc=>$scv) {
 							//pre(array('$yl'=>$yl,'$sc'=>$sc));
 
-							$mainblock = array();
-
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'OBIS MONTESSORI',
-								'labelWidth' => 300,
+								'labelWidth' => 250,
 								'className' => 'schoolName_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => "Period: $fromstr",
-								'labelWidth' => 300,
+								'labelWidth' => 500,
 								'className' => 'period_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'DAILY TARDY REPORT',
 								'labelWidth' => 300,
 								'className' => 'dailytardyreport_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => $yl.' - '.$sc,
-								'labelWidth' => 300,
+								'labelWidth' => 250,
 								'className' => 'yearlevel_'.$post['formval'],
 							);
 
@@ -760,16 +724,16 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								$block[] = array(
 									'type' => 'label',
 									'label' => $ctr.'. '.$fullnames[$fid],
-									'labelWidth' => 300,
+									'labelWidth' => 200,
 									'offsetLeft' => 0,
 									'className' => 'studentName_'.$post['formval'],
 								);
 
 								$ctr++;
 
-								$mainblock[] = array(
+								$params['tbReports'][] = array(
 									'type' => 'block',
-									'width' => 500,
+									'width' => 1000,
 									'blockOffset' => 0,
 									'offsetTop' => 0,
 									'list' => $block,
@@ -778,40 +742,15 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							}
 
-							$allblocks[] = $mainblock;
-
-							/*$params['tbReports'][] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'labelWidth' => 1000,
 								'label' => '<hr/><br style="clear:both;" />',
-							);*/
+							);
 
 						}
 					}
 /////
-
-					if(!empty($allblocks)) {
-						for($i=0;$i<count($allblocks);$i++) {
-
-							$params['tbReports'][] = array(
-								'type' => 'block',
-								'width' => 500,
-								'blockOffset' => 0,
-								'offsetTop' => 0,
-								'list' => $allblocks[$i],
-							);
-
-							if($i==(count($allblocks)-1)) {
-							} else {
-								$params['tbReports'][] = array(
-									'type' => 'label',
-									//'labelWidth' => 1000,
-									'label' => '<hr class="page-break" style="opacity:0" />',
-								);
-							}
-
-						}
-					}
 
 					if($post['method']=='generatereportprint') {
 						return json_encode($params);
@@ -1487,38 +1426,34 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 ////////////////////////////////////////
 
-					$allblocks = array();
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
 						foreach($ylv as $sc=>$scv) {
 							//pre(array('$yl'=>$yl,'$sc'=>$sc));
 
-							$mainblock = array();
-
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'OBIS MONTESSORI',
 								'labelWidth' => 250,
 								'className' => 'schoolName_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => "Period: $fromstr - $tostr",
 								'labelWidth' => 500,
 								'className' => 'period_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => 'MONTHLY ATTENDANCE REPORT',
 								'labelWidth' => 300,
 								'className' => 'monthlyattendancereport_'.$post['formval'],
 							);
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'label' => $yl.' - '.$sc,
 								'labelWidth' => 250,
@@ -1561,7 +1496,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							}
 
-							$mainblock[] = array(
+							$params['tbReports'][] = array(
 								'type' => 'block',
 								'width' => 1000,
 								'blockOffset' => 0,
@@ -1628,7 +1563,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 								}*/
 
-								$mainblock[] = array(
+								$params['tbReports'][] = array(
 									'type' => 'block',
 									'width' => 1000,
 									'blockOffset' => 0,
@@ -1639,13 +1574,11 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							}
 
-							$allblocks[] = $mainblock;
-
-							/*$params['tbReports'][] = array(
+							$params['tbReports'][] = array(
 								'type' => 'label',
 								'labelWidth' => 1000,
 								'label' => '<hr/><br style="clear:both;" />',
-							);*/
+							);
 
 						}
 
@@ -1653,29 +1586,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 ////////////////////////////////////////
 
-					if(!empty($allblocks)) {
-						for($i=0;$i<count($allblocks);$i++) {
 
-							$params['tbReports'][] = array(
-								'type' => 'block',
-								'width' => 500,
-								'blockOffset' => 0,
-								'offsetTop' => 0,
-								'list' => $allblocks[$i],
-							);
-
-							if($i==(count($allblocks)-1)) {
-							} else {
-								$params['tbReports'][] = array(
-									'type' => 'label',
-									//'labelWidth' => 1000,
-									'label' => '<hr class="page-break" style="opacity:0" />',
-								);
-							}
-
-						}
-					}
-					
 					if($post['method']=='generatereportprint') {
 						return json_encode($params);
 						//pre(array('$post'=>$post));
