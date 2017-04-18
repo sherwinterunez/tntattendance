@@ -17,7 +17,8 @@ body, html, #printform {
 }
 
 @media print {
-	.page-break	{ display: block; page-break-before: always; }
+	/*.page-break	{ display: block; page-break-before: always; }*/
+  .page-break	{ display: block; page-break-before: auto; }
 }
 #printform .schoolName_%formval% {
   font-size: 25px;
@@ -28,8 +29,15 @@ body, html, #printform {
 #printform .monthlyattendancereport_%formval% {
   font-size: 18px;
 }
+#printform .dailyabsentreport_%formval% {
+  font-size: 18px;
+}
+#printform .dailytardyreport_%formval% {
+  font-size: 18px;
+}
 #printform .yearlevel_%formval% {
   font-size: 16px;
+  font-weight: bold;
 }
 #printform .section_%formval% {
   font-size: 14px;
@@ -38,6 +46,30 @@ body, html, #printform {
 #printform .studentName_%formval% {
   font-size: 12px;
   font-weight: normal;
+}
+#printform .totalabsent_%formval% {
+  font-size: 16px;
+  font-weight: normal;
+}
+#printform .totalabsentitem_%formval% {
+  font-size: 12px;
+  font-weight: normal;
+}
+#printform .totalabsenttotal_%formval% {
+  font-size: 14px;
+  font-weight: bold;
+}
+#printform .totaltardy_%formval% {
+  font-size: 16px;
+  font-weight: normal;
+}
+#printform .totaltardyitem_%formval% {
+  font-size: 12px;
+  font-weight: normal;
+}
+#printform .totaltardytotal_%formval% {
+  font-size: 14px;
+  font-weight: bold;
 }
 #printform .studentName_%formval% div.dhxform_txt_label2 {
   overflow: hidden;

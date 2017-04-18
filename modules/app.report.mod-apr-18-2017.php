@@ -183,11 +183,6 @@ if(!class_exists('APP_app_report')) {
 							'labelWidth' => 500,
 						);
 
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
 						json_encode_return($params);
 						die;
 					}
@@ -200,11 +195,6 @@ if(!class_exists('APP_app_report')) {
 							'label' => 'Please select date/period to generate report.',
 							'labelWidth' => 500,
 						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
 
 						json_encode_return($params);
 						die;
@@ -253,22 +243,12 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 					$students = array();
 					$ddmm = array();
 					$fullnames = array();
-					$allctr = array();
-					$totalabsent = 0;
 
 					if(!empty($result['rows'][0]['studentprofile_id'])) {
 						foreach($result['rows'] as $k=>$v) {
 							$yearlevel = getGroupRefName($v['studentprofile_yearlevel']);
 							$section = getGroupRefName($v['studentprofile_section']);
 							//$dt = pgDateUnix($v['studentdtr_unixtime'],'m-d-Y');
-
-							$totalabsent++;
-
-							if(!isset($allctr[$yearlevel])) {
-								$allctr[$yearlevel] = 1;
-							} else {
-								$allctr[$yearlevel]++;
-							}
 
 							if(!empty($students[$yearlevel][$section][$v['studentprofile_id']])) {
 							} else {
@@ -294,11 +274,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'label' => 'No record(s) found. Please check parameter and date filter.',
 							'labelWidth' => 500,
 						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
 
 						json_encode_return($params);
 						die;
@@ -337,35 +312,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					$allblocks = array();
 
-					/*$mainblock = array();
-
-					$mainblock[] = array(
-						'type' => 'label',
-						'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-						'labelWidth' => 500,
-						'className' => 'schoolName_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'label',
-						'label' => "Period: $fromstr",
-						'labelWidth' => 500,
-						'className' => 'period_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'label',
-						'label' => 'DAILY ABSENT REPORT',
-						'labelWidth' => 500,
-						'className' => 'dailyabsentreport_'.$post['formval'],
-					);
-
-					$allblocks[] = $mainblock;*/
-
-					$first = true;
-
-					$oyl = '';
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
@@ -374,60 +320,33 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							$mainblock = array();
 
-							if($first) {
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
+								'labelWidth' => 300,
+								'className' => 'schoolName_'.$post['formval'],
+							);
 
-								$first = false;
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => "Period: $fromstr",
+								'labelWidth' => 300,
+								'className' => 'period_'.$post['formval'],
+							);
 
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-									'labelWidth' => 500,
-									'className' => 'schoolName_'.$post['formval'],
-								);
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => 'DAILY ABSENT REPORT',
+								'labelWidth' => 300,
+								'className' => 'dailyabsentreport_'.$post['formval'],
+							);
 
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => "Period: $fromstr",
-									'labelWidth' => 500,
-									'className' => 'period_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => 'DAILY ABSENT REPORT',
-									'labelWidth' => 500,
-									'className' => 'dailyabsentreport_'.$post['formval'],
-								);
-							}
-
-							if($oyl==$yl) {
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $sc,
-									'labelWidth' => 480,
-									'offsetLeft' => 20,
-									'className' => 'section_'.$post['formval'],
-								);
-							} else {
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $yl,
-									'labelWidth' => 500,
-									'offsetTop' => 20,
-									'className' => 'yearlevel_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $sc,
-									'labelWidth' => 480,
-									'offsetLeft' => 20,
-									'className' => 'section_'.$post['formval'],
-								);
-							}
-
-
-							$oyl = $yl;
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => $yl.' - '.$sc,
+								'labelWidth' => 300,
+								'className' => 'yearlevel_'.$post['formval'],
+							);
 
 							$ctr = 1;
 
@@ -440,8 +359,8 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								$block[] = array(
 									'type' => 'label',
 									'label' => $ctr.'. '.$fullnames[$fid],
-									'labelWidth' => 460,
-									'offsetLeft' => 40,
+									'labelWidth' => 300,
+									'offsetLeft' => 0,
 									'className' => 'studentName_'.$post['formval'],
 								);
 
@@ -471,100 +390,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					//pre(array('$allblocks'=>$allblocks));
 
-					$mainblock = array();
-
-					$block = array();
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => 'TOTAL ABSENT:',
-						'labelWidth' => 500,
-						'offsetLeft' => 0,
-						'offsetTop' => 20,
-						'className' => 'totalabsent_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'block',
-						'width' => 500,
-						'blockOffset' => 0,
-						'offsetTop' => 0,
-						'list' => $block,
-						'className' => 'block_'.$post['formval'],
-					);
-
-					//$allblocks[] = $mainblock;
-
-					foreach($allctr as $ck=>$cv) {
-
-						$block = array();
-
-						$block[] = array(
-							'type' => 'label',
-							'label' => $ck,
-							'labelWidth' => 200,
-							'offsetLeft' => 40,
-							'className' => 'totalabsentitem_'.$post['formval'],
-						);
-
-						$block[] = array(
-							'type' => 'newcolumn',
-							'offset' => 0,
-						);
-
-						$block[] = array(
-							'type' => 'label',
-							'label' => $cv,
-							'labelWidth' => 200,
-							'offsetLeft' => 0,
-							'className' => 'totalabsentitem_'.$post['formval'],
-						);
-
-						$mainblock[] = array(
-							'type' => 'block',
-							'width' => 500,
-							'blockOffset' => 0,
-							'offsetTop' => 0,
-							'list' => $block,
-							'className' => 'block_'.$post['formval'],
-						);
-
-					}
-
-					$block = array();
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => 'TOTAL:',
-						'labelWidth' => 200,
-						'offsetLeft' => 40,
-						'className' => 'totalabsenttotal_'.$post['formval'],
-					);
-
-					$block[] = array(
-						'type' => 'newcolumn',
-						'offset' => 0,
-					);
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => $totalabsent,
-						'labelWidth' => 200,
-						'offsetLeft' => 0,
-						'className' => 'totalabsenttotal_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'block',
-						'width' => 500,
-						'blockOffset' => 0,
-						'offsetTop' => 0,
-						'list' => $block,
-						'className' => 'block_'.$post['formval'],
-					);
-
-					$allblocks[] = $mainblock;
-
 					if(!empty($allblocks)) {
 						for($i=0;$i<count($allblocks);$i++) {
 
@@ -574,22 +399,19 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								'blockOffset' => 0,
 								'offsetTop' => 0,
 								'list' => $allblocks[$i],
-								'className' => 'page-break',
 							);
 
-							/*if($i==(count($allblocks)-1)) {
+							if($i==(count($allblocks)-1)) {
 							} else {
 								$params['tbReports'][] = array(
 									'type' => 'label',
 									//'labelWidth' => 1000,
 									'label' => '<hr class="page-break" style="opacity:0" />',
 								);
-							}*/
+							}
 
 						}
 					}
-
-					//pre(array('$allctr'=>$allctr));
 
 /////
 					if($post['method']=='generatereportprint') {
@@ -797,11 +619,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'labelWidth' => 500,
 						);
 
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
 						json_encode_return($params);
 						die;
 					}
@@ -814,11 +631,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'label' => 'Please select date/period to generate report.',
 							'labelWidth' => 500,
 						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
 
 						json_encode_return($params);
 						die;
@@ -883,8 +695,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 					$students = array();
 					$ddmm = array();
 					$fullnames = array();
-					$allctr = array();
-					$totaltardy = 0;
 
 					if(!empty($result['rows'][0]['studentprofile_id'])) {
 						foreach($result['rows'] as $k=>$v) {
@@ -894,15 +704,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							if(!empty($students[$yearlevel][$section][$v['studentprofile_id']])) {
 							} else {
-
-								$totaltardy++;
-
-								if(!isset($allctr[$yearlevel])) {
-									$allctr[$yearlevel] = 1;
-								} else {
-									$allctr[$yearlevel]++;
-								}
-
 								//pre(array('$dt'=>$dt));
 								$fn = '';
 
@@ -926,11 +727,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'labelWidth' => 500,
 						);
 
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
 						json_encode_return($params);
 						die;
 
@@ -947,10 +743,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					$allblocks = array();
 
-					$first = true;
-
-					$oyl = '';
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
@@ -959,63 +751,33 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							$mainblock = array();
 
-							if($first) {
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
+								'labelWidth' => 300,
+								'className' => 'schoolName_'.$post['formval'],
+							);
 
-								$first = false;
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => "Period: $fromstr",
+								'labelWidth' => 300,
+								'className' => 'period_'.$post['formval'],
+							);
 
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-									'labelWidth' => 500,
-									'className' => 'schoolName_'.$post['formval'],
-								);
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => 'DAILY TARDY REPORT',
+								'labelWidth' => 300,
+								'className' => 'dailytardyreport_'.$post['formval'],
+							);
 
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => "Period: $fromstr",
-									'labelWidth' => 500,
-									'className' => 'period_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => 'DAILY TARDY REPORT',
-									'labelWidth' => 500,
-									'className' => 'dailytardyreport_'.$post['formval'],
-								);
-							}
-
-							if($oyl==$yl) {
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $sc,
-									'labelWidth' => 480,
-									'offsetLeft' => 20,
-									'className' => 'section_'.$post['formval'],
-								);
-
-							} else {
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $yl,
-									'labelWidth' => 500,
-									'offsetTop' => 20,
-									'className' => 'yearlevel_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => $sc,
-									'labelWidth' => 480,
-									'offsetLeft' => 20,
-									'className' => 'section_'.$post['formval'],
-								);
-
-							}
-
-							$oyl = $yl;
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => $yl.' - '.$sc,
+								'labelWidth' => 300,
+								'className' => 'yearlevel_'.$post['formval'],
+							);
 
 							$ctr = 1;
 
@@ -1030,8 +792,8 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								$block[] = array(
 									'type' => 'label',
 									'label' => $ctr.'. '.$fullnames[$fid],
-									'labelWidth' => 260,
-									'offsetLeft' => 40,
+									'labelWidth' => 300,
+									'offsetLeft' => 0,
 									'className' => 'studentName_'.$post['formval'],
 								); //
 
@@ -1086,100 +848,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 					}
 /////
 
-					$mainblock = array();
-
-					$block = array();
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => 'TOTAL TARDY:',
-						'labelWidth' => 500,
-						'offsetLeft' => 0,
-						'offsetTop' => 20,
-						'className' => 'totaltardy_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'block',
-						'width' => 500,
-						'blockOffset' => 0,
-						'offsetTop' => 0,
-						'list' => $block,
-						'className' => 'block_'.$post['formval'],
-					);
-
-					//$allblocks[] = $mainblock;
-
-					foreach($allctr as $ck=>$cv) {
-
-						$block = array();
-
-						$block[] = array(
-							'type' => 'label',
-							'label' => $ck,
-							'labelWidth' => 200,
-							'offsetLeft' => 40,
-							'className' => 'totaltardyitem_'.$post['formval'],
-						);
-
-						$block[] = array(
-							'type' => 'newcolumn',
-							'offset' => 0,
-						);
-
-						$block[] = array(
-							'type' => 'label',
-							'label' => $cv,
-							'labelWidth' => 200,
-							'offsetLeft' => 0,
-							'className' => 'totaltardyitem_'.$post['formval'],
-						);
-
-						$mainblock[] = array(
-							'type' => 'block',
-							'width' => 500,
-							'blockOffset' => 0,
-							'offsetTop' => 0,
-							'list' => $block,
-							'className' => 'block_'.$post['formval'],
-						);
-
-					}
-
-					$block = array();
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => 'TOTAL:',
-						'labelWidth' => 200,
-						'offsetLeft' => 40,
-						'className' => 'totaltardytotal_'.$post['formval'],
-					);
-
-					$block[] = array(
-						'type' => 'newcolumn',
-						'offset' => 0,
-					);
-
-					$block[] = array(
-						'type' => 'label',
-						'label' => $totaltardy,
-						'labelWidth' => 200,
-						'offsetLeft' => 0,
-						'className' => 'totaltardytotal_'.$post['formval'],
-					);
-
-					$mainblock[] = array(
-						'type' => 'block',
-						'width' => 500,
-						'blockOffset' => 0,
-						'offsetTop' => 0,
-						'list' => $block,
-						'className' => 'block_'.$post['formval'],
-					);
-
-					$allblocks[] = $mainblock;
-
 					if(!empty($allblocks)) {
 						for($i=0;$i<count($allblocks);$i++) {
 
@@ -1189,17 +857,16 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								'blockOffset' => 0,
 								'offsetTop' => 0,
 								'list' => $allblocks[$i],
-								'className' => 'page-break'
 							);
 
-							/*if($i==(count($allblocks)-1)) {
+							if($i==(count($allblocks)-1)) {
 							} else {
 								$params['tbReports'][] = array(
 									'type' => 'label',
 									//'labelWidth' => 1000,
 									'label' => '<hr class="page-break" style="opacity:0" />',
 								);
-							}*/
+							}
 
 						}
 					}
@@ -1431,378 +1098,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					json_encode_return($retval);
 					die;
-				} else
-				if(!empty($post['method'])&&$post['method']=='reportprint') {
-
-					$tpost = $post;
-
-					$tpost['method'] = 'generatereport';
-
-					$retval = array();
-					$retval['topost'] = base64_encode(gzcompress(json_encode($tpost)));
-					//$retval['post'] = $post;
-					json_encode_return($retval);
-				} else
-				if(!empty($post['method'])&&($post['method']=='generatereport'||$post['method']=='generatereportprint')) {
-
-					if(!empty($post['contact'])) {
-					} else
-					if(!empty($post['section'])) {
-					} else
-					if(!empty($post['yearlevel'])) {
-					} else {
-
-						$params['tbReports'][] = array(
-							'type' => 'label',
-							'label' => 'Please specify parameters to generate report.',
-							'labelWidth' => 500,
-						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
-						json_encode_return($params);
-						die;
-					}
-
-					if(!empty($post['datefrom'])&&!empty($post['dateto'])) {
-					} else {
-
-						$params['tbReports'][] = array(
-							'type' => 'label',
-							'label' => 'Please select date/period to generate report.',
-							'labelWidth' => 500,
-						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
-						json_encode_return($params);
-						die;
-					}
-
-					$from = date2timestamp($post['datefrom']." 00:00:00",'m/d/Y H:i:s');
-					$to = date2timestamp($post['dateto']." 23:59:59",'m/d/Y H:i:s');
-
-					$fromstr = date("d F Y",$from);
-					$tostr = date("d F Y",$to);
-
-					$where = '';
-
-					if(!empty($post['contact'])) {
-						$where .= "B.studentprofile_id in (".$post['contact'].")";
-					}
-
-					if(!empty($post['yearlevel'])) {
-						if(!empty($where)) {
-							$where .= ' or ';
-						}
-						$where .= "B.studentprofile_yearlevel in (".$post['yearlevel'].")";
-					}
-
-					if(!empty($post['section'])) {
-						if(!empty($where)) {
-							$where .= ' or ';
-						}
-						$where .= "B.studentprofile_section in (".$post['section'].")";
-					}
-
-					if(!empty($where)) {
-						$where = '('.$where.') and';
-					}
-
-					if(!($result = $appdb->query("select A.*,B.studentprofile_firstname,B.studentprofile_lastname,B.studentprofile_middlename,B.studentprofile_yearlevel,B.studentprofile_section,B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where $where A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to order by A.studentdtr_unixtime asc"))) {
-						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-						die;
-					}
-
-					$students = array();
-					$ddmm = array();
-					$fullnames = array();
-
-					if(!empty($result['rows'][0]['studentdtr_id'])) {
-						foreach($result['rows'] as $k=>$v) {
-							$yearlevel = getGroupRefName($v['studentprofile_yearlevel']);
-							$section = getGroupRefName($v['studentprofile_section']);
-							$dt = pgDateUnix($v['studentdtr_unixtime'],'m-d-Y');
-
-							$fn = '';
-
-							$fn .= !empty($v['studentprofile_lastname']) ? $v['studentprofile_lastname'] . ', ' : '' ;
-							$fn .= !empty($v['studentprofile_firstname']) ? $v['studentprofile_firstname'] . ' ' : '' ;
-							$fn .= !empty($v['studentprofile_middlename']) ? $v['studentprofile_middlename'] : '' ;
-
-							if(!empty($ddmm[$dt])) {
-							} else {
-								$ddmm[$dt] = $v['studentdtr_unixtime'];
-							}
-
-							if(!empty($fullnames[$v['studentprofile_id']])) {
-							} else {
-								$fullnames[$v['studentprofile_id']] = trim($fn);
-							}
-							$students[$yearlevel][$section][$v['studentprofile_id']][$dt]['data'] = $v;
-
-							$dtr = array();
-							$dtr['type'] = $v['studentdtr_type'];
-							$dtr['unixtime'] = $v['studentdtr_unixtime'];
-							$dtr['time'] = date('H:i',$v['studentdtr_unixtime']);
-							$dtr['date'] = date('m/d/Y',$v['studentdtr_unixtime']);
-
-							$students[$yearlevel][$section][$v['studentprofile_id']][$dt]['dtr'][] = $dtr;
-						}
-					} else {
-
-						$params['tbReports'][] = array(
-							'type' => 'label',
-							'label' => 'No record(s) found. Please check parameter and date filter.',
-							'labelWidth' => 500,
-						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
-						json_encode_return($params);
-						die;
-
-					}
-
-					//pre(array('$students'=>$students));
-
-////////////////////////////////////////
-
-					if(!empty(($license=checkLicense()))) {
-					} else {
-						$license = array();
-					}
-
-					$allblocks = array();
-
-					$first = true;
-
-					foreach($students as $yl=>$ylv) {
-						//pre(array('$yl'=>$yl));
-
-						foreach($ylv as $sc=>$scv) {
-							//pre(array('$yl'=>$yl,'$sc'=>$sc,'$scv'=>$scv));
-
-							$mainblock = array();
-
-							if($first) {
-
-								$first = false;
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-									'labelWidth' => 500,
-									'className' => 'schoolName_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => "Period: $fromstr - $tostr",
-									'labelWidth' => 500,
-									'className' => 'period_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => 'INDIVIDUAL ATTENDANCE REPORT',
-									'labelWidth' => 500,
-									'className' => 'monthlyattendancereport_'.$post['formval'],
-								);
-							}
-
-							/*$mainblock[] = array(
-								'type' => 'label',
-								'label' => $yl.' - '.$sc,
-								'labelWidth' => 500,
-								'className' => 'yearlevel_'.$post['formval'],
-							);
-
-							$mainblock[] = array(
-								'type' => 'label',
-								'label' => $yl.' - '.$sc,
-								'labelWidth' => 500,
-								'className' => 'yearlevel_'.$post['formval'],
-							);*/
-
-							foreach($scv as $fid=>$fidv) {
-
-								//pre(array('$fid'=>$fid,'$fullnames'=>$fullnames[$fid],'$fidv'=>$fidv));
-
-								$block = array();
-
-								$block[] = array(
-									'type' => 'label',
-									'label' => $fullnames[$fid],
-									'labelWidth' => 500,
-									'offsetLeft' => 0,
-									'className' => 'individualstudentname_'.$post['formval'],
-								);
-
-								$block[] = array(
-									'type' => 'label',
-									'label' => $yl.' - '.$sc,
-									'labelWidth' => 500,
-									'className' => 'yearlevel_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'block',
-									'width' => 1000,
-									'blockOffset' => 0,
-									'offsetTop' => 0,
-									'list' => $block,
-									'className' => 'block_'.$post['formval'],
-								);
-
-								foreach($fidv as $dk=>$dv) {
-
-									//pre(array('$dk'=>$dk,'$dv'=>$dv));
-
-									if(!empty($dv['data']['studentdtr_unixtime'])&&!empty($dv['dtr'][0]['unixtime'])) {
-									} else {
-										continue;
-									}
-
-									$dvdata = $dv['data'];
-									$dvdtr = $dv['dtr'];
-
-									$dtrfirst = true;
-
-									foreach($dvdtr as $dtrk=>$dtrv) {
-
-										$block = array();
-
-										if($dtrfirst) {
-
-											$dtrfirst = false;
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => date('d-M-Y',$dtrv['unixtime']),
-												'labelWidth' => 100,
-												'className' => 'dtrdate_'.$post['formval'],
-											);
-
-											$block[] = array(
-												'type' => 'newcolumn',
-												'offset' => 5,
-											);
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => $dtrv['type'],
-												'labelWidth' => 100,
-												'className' => 'dtrtype_'.$post['formval'],
-											);
-
-											$block[] = array(
-												'type' => 'newcolumn',
-												'offset' => 5,
-											);
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => $dtrv['time'],
-												'labelWidth' => 200,
-												'className' => 'dtrtime_'.$post['formval'],
-											);
-
-										} else {
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => '&nbsp;',
-												'labelWidth' => 100,
-												'className' => 'dtrdate_'.$post['formval'],
-											);
-
-											$block[] = array(
-												'type' => 'newcolumn',
-												'offset' => 5,
-											);
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => $dtrv['type'],
-												'labelWidth' => 100,
-												'className' => 'dtrtype_'.$post['formval'],
-											);
-
-											$block[] = array(
-												'type' => 'newcolumn',
-												'offset' => 5,
-											);
-
-											$block[] = array(
-												'type' => 'label',
-												'label' => $dtrv['time'],
-												'labelWidth' => 200,
-												'className' => 'dtrtime_'.$post['formval'],
-											);
-
-										}
-
-										$mainblock[] = array(
-											'type' => 'block',
-											'width' => 1000,
-											'blockOffset' => 0,
-											'offsetTop' => 0,
-											'list' => $block,
-											'className' => 'block_'.$post['formval'],
-										);
-
-									}
-
-								}
-
-							}
-
-							$allblocks[] = $mainblock;
-
-						}
-					}
-
-					if(!empty($allblocks)) {
-						for($i=0;$i<count($allblocks);$i++) {
-
-							$params['tbReports'][] = array(
-								'type' => 'block',
-								'width' => 500,
-								'blockOffset' => 0,
-								'offsetTop' => 0,
-								'list' => $allblocks[$i],
-								'className' => 'page-break',
-							);
-
-							/*if($i==(count($allblocks)-1)) {
-							} else {
-								$params['tbReports'][] = array(
-									'type' => 'label',
-									//'labelWidth' => 1000,
-									'label' => '<hr class="page-break" style="opacity:0" />',
-								);
-							}*/
-
-						}
-					}
-
-					if($post['method']=='generatereportprint') {
-						return json_encode($params);
-						//pre(array('$post'=>$post));
-					}
-
-					json_encode_return($params);
-					die;
 				}
 
 				$params['hello'] = 'Hello, Sherwin!';
@@ -1812,82 +1107,114 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 				$position = 'right';
 
 				$params['tbDetails'] = array();
-				$params['tbReports'] = array();
 				//$params['tbLoginNotification'] = array();
 
-				$block = array();
-
-				$block[] = array(
-					'type' => 'container',
-					'name' => 'newmessage_contacts',
-					'inputWidth' => 200,
-					'inputHeight' => 347,
-					'className' => 'newmessage_contacts_'.$post['formval'],
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'OBIS MONTESSORI',
+					'labelWidth' => 250,
+					'className' => 'schoolName_'.$post['formval'],
 				);
 
 				$params['tbDetails'][] = array(
-					'type' => 'block',
-					'width' => 200,
-					'blockOffset' => 0,
-					'offsetTop' => 5,
-					'list' => $block,
-					'className' => 'newmessage_blockcontacts_'.$post['formval'],
+					'type' => 'label',
+					'label' => 'Period: 07 April 2017',
+					'labelWidth' => 250,
+					'className' => 'period_'.$post['formval'],
 				);
 
 				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => 15,
-				);
-
-				$block = array();
-
-				$block[] = array(
-					'type' => 'container',
-					'name' => 'newmessage_yearlevel',
-					'inputWidth' => 200,
-					'inputHeight' => 300,
-					'className' => 'newmessage_yearlevel_'.$post['formval'],
-				);
-
-				/*$block[] = array(
-					'type' => 'container',
-					'name' => 'newmessage_contacts',
-					'inputWidth' => 400,
-					'inputHeight' => 347,
-					'className' => 'newmessage_contacts_'.$post['formval'],
-				);*/
-
-				$params['tbDetails'][] = array(
-					'type' => 'block',
-					'width' => 200,
-					'blockOffset' => 0,
-					'offsetTop' => 5,
-					'list' => $block,
-					'className' => 'newmessage_blockyearlevel_'.$post['formval'],
+					'type' => 'label',
+					'label' => 'DAILY TARDY REPORT',
+					'labelWidth' => 250,
+					'className' => 'dailytardyreport_'.$post['formval'],
 				);
 
 				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => 15,
-				);
-
-				$block = array();
-
-				$block[] = array(
-					'type' => 'container',
-					'name' => 'newmessage_section',
-					'inputWidth' => 200,
-					'inputHeight' => 300,
-					'className' => 'newmessage_section_'.$post['formval'],
+					'type' => 'label',
+					'label' => 'NURSERY',
+					'labelWidth' => 250,
+					'className' => 'yearlevel_'.$post['formval'],
 				);
 
 				$params['tbDetails'][] = array(
-					'type' => 'block',
-					'width' => 200,
-					'blockOffset' => 0,
-					'offsetTop' => 5,
-					'list' => $block,
-					'className' => 'newmessage_blocksection_'.$post['formval'],
+					'type' => 'label',
+					'label' => 'ST. JOHN',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. RODRIGO DUTERTE',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. MICHAEL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL TERUNEZ',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => 'ST. PAUL',
+					'labelWidth' => 250,
+					'offsetLeft' => 25,
+					'className' => 'section_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '1. SHERWIN PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '2. CELESTE PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'label',
+					'label' => '3. JOSHUA DANIEL PADILLA',
+					'labelWidth' => 250,
+					'offsetLeft' => 50,
+					'className' => 'studentName_'.$post['formval'],
 				);
 
 				/*$params['tbDetails'][] = array(
@@ -1954,8 +1281,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 				} else
 				if(!empty($post['method'])&&($post['method']=='generatereport'||$post['method']=='generatereportprint')) {
 
-					if(!empty($post['contact'])) {
-					} else
 					if(!empty($post['section'])) {
 					} else
 					if(!empty($post['yearlevel'])) {
@@ -1966,11 +1291,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'label' => 'Please specify parameters to generate report.',
 							'labelWidth' => 500,
 						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
 
 						json_encode_return($params);
 						die;
@@ -1985,11 +1305,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'labelWidth' => 500,
 						);
 
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
-
 						json_encode_return($params);
 						die;
 					}
@@ -2002,26 +1317,12 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					$where = '';
 
-					if(!empty($post['contact'])) {
-						$where .= "B.studentprofile_id in (".$post['contact'].")";
-					}
-
 					if(!empty($post['yearlevel'])) {
-						if(!empty($where)) {
-							$where .= ' or ';
-						}
-						$where .= "B.studentprofile_yearlevel in (".$post['yearlevel'].")";
+						$where = "B.studentprofile_yearlevel in (".$post['yearlevel'].") and ";
 					}
 
 					if(!empty($post['section'])) {
-						if(!empty($where)) {
-							$where .= ' or ';
-						}
-						$where .= "B.studentprofile_section in (".$post['section'].")";
-					}
-
-					if(!empty($where)) {
-						$where = '('.$where.') and';
+						$where = "B.studentprofile_section in (".$post['section'].") and ";
 					}
 
 					if(!($result = $appdb->query("select A.*,B.studentprofile_firstname,B.studentprofile_lastname,B.studentprofile_middlename,B.studentprofile_yearlevel,B.studentprofile_section,B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where $where A.studentdtr_type='IN' and A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to order by A.studentdtr_unixtime asc"))) {
@@ -2061,11 +1362,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 							'label' => 'No record(s) found. Please check parameter and date filter.',
 							'labelWidth' => 500,
 						);
-
-						if($post['method']=='generatereportprint') {
-							return json_encode($params);
-							//pre(array('$post'=>$post));
-						}
 
 						json_encode_return($params);
 						die;
@@ -2256,8 +1552,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 					$allblocks = array();
 
-					$first = true;
-
 					foreach($students as $yl=>$ylv) {
 						//pre(array('$yl'=>$yl));
 
@@ -2266,36 +1560,31 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							$mainblock = array();
 
-							if($first) {
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
+								'labelWidth' => 250,
+								'className' => 'schoolName_'.$post['formval'],
+							);
 
-								$first = false;
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => "Period: $fromstr - $tostr",
+								'labelWidth' => 500,
+								'className' => 'period_'.$post['formval'],
+							);
 
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-									'labelWidth' => 500,
-									'className' => 'schoolName_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => "Period: $fromstr - $tostr",
-									'labelWidth' => 500,
-									'className' => 'period_'.$post['formval'],
-								);
-
-								$mainblock[] = array(
-									'type' => 'label',
-									'label' => 'MONTHLY ATTENDANCE REPORT',
-									'labelWidth' => 500,
-									'className' => 'monthlyattendancereport_'.$post['formval'],
-								);
-							}
+							$mainblock[] = array(
+								'type' => 'label',
+								'label' => 'MONTHLY ATTENDANCE REPORT',
+								'labelWidth' => 300,
+								'className' => 'monthlyattendancereport_'.$post['formval'],
+							);
 
 							$mainblock[] = array(
 								'type' => 'label',
 								'label' => $yl.' - '.$sc,
-								'labelWidth' => 500,
+								'labelWidth' => 250,
 								'className' => 'yearlevel_'.$post['formval'],
 							);
 
@@ -2473,15 +1762,23 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 				$block[] = array(
 					'type' => 'container',
+					'name' => 'newmessage_yearlevel',
+					'inputWidth' => 400,
+					'inputHeight' => 300,
+					'className' => 'newmessage_yearlevel_'.$post['formval'],
+				);
+
+				/*$block[] = array(
+					'type' => 'container',
 					'name' => 'newmessage_contacts',
-					'inputWidth' => 200,
+					'inputWidth' => 400,
 					'inputHeight' => 347,
 					'className' => 'newmessage_contacts_'.$post['formval'],
-				);
+				);*/
 
 				$params['tbDetails'][] = array(
 					'type' => 'block',
-					'width' => 200,
+					'width' => 400,
 					'blockOffset' => 0,
 					'offsetTop' => 5,
 					'list' => $block,
@@ -2497,51 +1794,19 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 				$block[] = array(
 					'type' => 'container',
-					'name' => 'newmessage_yearlevel',
-					'inputWidth' => 200,
-					'inputHeight' => 300,
-					'className' => 'newmessage_yearlevel_'.$post['formval'],
-				);
-
-				/*$block[] = array(
-					'type' => 'container',
-					'name' => 'newmessage_contacts',
-					'inputWidth' => 400,
-					'inputHeight' => 347,
-					'className' => 'newmessage_contacts_'.$post['formval'],
-				);*/
-
-				$params['tbDetails'][] = array(
-					'type' => 'block',
-					'width' => 200,
-					'blockOffset' => 0,
-					'offsetTop' => 5,
-					'list' => $block,
-					'className' => 'newmessage_blockyearlevel_'.$post['formval'],
-				);
-
-				$params['tbDetails'][] = array(
-					'type' => 'newcolumn',
-					'offset' => 15,
-				);
-
-				$block = array();
-
-				$block[] = array(
-					'type' => 'container',
 					'name' => 'newmessage_section',
-					'inputWidth' => 200,
+					'inputWidth' => 400,
 					'inputHeight' => 300,
 					'className' => 'newmessage_section_'.$post['formval'],
 				);
 
 				$params['tbDetails'][] = array(
 					'type' => 'block',
-					'width' => 200,
+					'width' => 400,
 					'blockOffset' => 0,
 					'offsetTop' => 5,
 					'list' => $block,
-					'className' => 'newmessage_blocksection_'.$post['formval'],
+					'className' => 'newmessage_blockyearlevel_'.$post['formval'],
 				);
 
 				/*$params['tbDetails'][] = array(
@@ -2773,39 +2038,6 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							foreach($result['rows'] as $k=>$v) {
 								$rows[] = array('id'=>$v['modemcommands_id'],'data'=>array(0,$v['modemcommands_id'],$v['modemcommands_name'],$v['modemcommands_desc']));
-							}
-
-							$retval = array('rows'=>$rows);
-						}
-
-					} else
-					if($this->post['table']=='newmessagecontacts') {
-
-						if(!($result = $appdb->query("select * from tbl_studentprofile order by studentprofile_id asc"))) {
-							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;
-						}
-
-						if(!empty($result['rows'][0]['studentprofile_id'])) {
-							$rows = array();
-
-							foreach($result['rows'] as $k=>$v) {
-								//$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
-								$studentname = '';
-
-								if(!empty($v['studentprofile_firstname'])) {
-									$studentname .= $v['studentprofile_firstname'];
-								}
-
-								if(!empty($v['studentprofile_middlename'])) {
-									$studentname .= ' '.$v['studentprofile_middlename'];
-								}
-
-								if(!empty($v['studentprofile_lastname'])) {
-									$studentname .= ' '.$v['studentprofile_lastname'];
-								}
-
-								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_guardianmobileno'],$studentname));
 							}
 
 							$retval = array('rows'=>$rows);

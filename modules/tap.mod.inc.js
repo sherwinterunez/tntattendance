@@ -365,11 +365,63 @@ srt.getPrevious = function() {
 	});
 }
 
+srt.setPrevious = function() {
+	postData('/'+settings.router_id+'/setprevious/','test=1',function(data){
+		console.log('setPrevious',data);
+
+		//jQuery('#currentdatetime').html(data.currentTimeString);
+		//jQuery('#sysinfo').html('Server IP: '+data.localip);
+		//jQuery('#sysinfo').html(data.sysinfo);
+		//srt.myForm.setItemValue('unixtime',data.currentTime);
+
+		var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
+		var studentcontentHeight  = jQuery("#studentcontent").height();
+		var studentcontentdivPaddingTop = parseInt((studentcontentHeight - studentcontentdivHeight) / 2);
+
+		//showMessage('studentcontentHeight: '+studentcontentHeight,60000);
+		//showMessage('studentcontentdivHeight: '+studentcontentdivHeight,60000);
+		//showMessage('studentcontentdivPaddingTop: '+studentcontentdivPaddingTop,60000);
+
+		jQuery("#studentcontentdiv").css({paddingTop:studentcontentdivPaddingTop});
+
+		var contentpreviousHeight  = jQuery("#contentprevious").height();
+		var contentpreviousdivHeight = jQuery("#contentpreviousdiv").height();
+		var contentpreviousdivPaddingTop = parseInt((contentpreviousHeight - contentpreviousdivHeight) / 2);
+
+		//showMessage('contentpreviousHeight: '+contentpreviousHeight,60000);
+		//showMessage('contentpreviousdivHeight: '+contentpreviousdivHeight,60000);
+		//showMessage('contentpreviousdivPaddingTop: '+contentpreviousdivPaddingTop,60000);
+
+		jQuery("#contentpreviousdiv").css({paddingTop:contentpreviousdivPaddingTop});
+
+		if(typeof data.previous == 'object' &&  data.previous.length>0 ) {
+
+			var obj = [];
+			var max = 0;
+			var ctr = 0;
+
+			jQuery(".studentprev").each(function(idx){
+				obj[max] = this;
+				max++;
+			});
+
+			for(var prop in data.previous) {
+				if(typeof obj[ctr] == 'object') {
+					jQuery(obj[ctr]).html(data.previous[prop].html);
+					console.log(data.previous[prop]);
+					ctr++;
+				}
+			}
+		}
+
+	});
+}
+
 jQuery(document).ready(function($) {
 	srt.etap();
 	srt.doMarquee();
 	srt.doShowDateTime();
-	srt.getPrevious();
+	srt.setPrevious();
 
 	var width = jQuery(window).width();
 	var height = jQuery(window).height();

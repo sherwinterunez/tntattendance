@@ -75,6 +75,7 @@ if(!class_exists('APP_Tap')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/getbulletin/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getBulletin'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getdatetime/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getDateTime'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getprevious/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getPrevious'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/setprevious/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'setPrevious'))));
 			$approuter->addroute(array('^/'.$this->pathid.'$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 
 
@@ -282,7 +283,7 @@ if(!class_exists('APP_Tap')) {
 
 			header_json();
 			json_encode_return($retval);
-		}
+		} // function getBulletin($vars) {
 
 		function getDateTime($vars) {
 			global $appdb, $appaccess;
@@ -304,7 +305,7 @@ if(!class_exists('APP_Tap')) {
 
 			header_json();
 			json_encode_return($retval);
-		}
+		} // function getDateTime($vars) {
 
 		function getPrevious($vars) {
 			global $appdb, $appaccess;
@@ -362,7 +363,74 @@ if(!class_exists('APP_Tap')) {
 
 			header_json();
 			json_encode_return($retval);
-		}
+		} // function getPrevious($vars) {
+
+		function setPrevious($vars) {
+			global $appdb, $appaccess;
+
+			/*
+			if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
+				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+				die;
+			}
+
+			//pre(array('$result'=>$result));
+
+			$retval = array();
+
+			$previous = array();
+
+			if(!empty($result['rows'][0]['studentdtr_id'])) {
+
+				foreach($result['rows'] as $k=>$student) {
+
+					$tmp = array();
+
+					if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
+
+						$fullname = '';
+
+						if(!empty($profile['studentprofile_firstname'])) {
+							$fullname .= trim($profile['studentprofile_firstname']).' ';
+						}
+
+						if(!empty($profile['studentprofile_middlename'])) {
+							$fullname .= trim($profile['studentprofile_middlename']).' ';
+						}
+
+						if(!empty($profile['studentprofile_lastname'])) {
+							$fullname .= trim($profile['studentprofile_lastname']).' ';
+						}
+
+						$tmp['dtrid'] = $student['studentdtr_id'];
+						$tmp['studentid'] = $profile['studentprofile_id'];
+						$tmp['fullname'] = strtoupper(trim($fullname));
+						$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
+						$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
+						$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
+						$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel" class="bold">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
+
+						$previous[] = $tmp;
+					}
+				}
+
+			}*/
+
+			$previous = array();
+
+			for($i=0;$i<10;$i++) {
+				$tmp = array();
+				$tmp['html'] = '<img src="/userphoto.php?size=200" /><div id="studentprevlabel" class="bold">&nbsp;</div><div id="studentprevlabel">&nbsp;</div><br class="br" />';
+				$previous[] = $tmp;
+			}
+
+			if(!empty($previous)) {
+				$retval['previous'] = $previous;
+			}
+
+			header_json();
+			json_encode_return($retval);
+		} // function setPrevious($vars) {
 
 		function tapped($vars) {
 			global $appdb, $appaccess;

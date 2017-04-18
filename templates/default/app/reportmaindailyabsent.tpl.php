@@ -65,6 +65,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 	}
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .yearlevel_%formval% {
 		font-size: 16px;
+		font-weight: bold;
 	}
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .section_%formval% {
 		font-size: 14px;
@@ -73,6 +74,18 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .studentName_%formval% {
 		font-size: 12px;
 		font-weight: normal;
+	}
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .totalabsent_%formval% {
+		font-size: 16px;
+		font-weight: normal;
+	}
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .totalabsentitem_%formval% {
+		font-size: 12px;
+		font-weight: normal;
+	}
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .totalabsenttotal_%formval% {
+		font-size: 14px;
+		font-weight: bold;
 	}
 	#formdiv_%formval% .dhxtabbar_base_dhx_web div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
 		display: none;
@@ -625,6 +638,12 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 					section.push(id);
 				}
 			});
+
+			if(yearlevel.length>0||yearlevel.length>0) {
+			} else {
+				showAlertError('Please specify parameters to generate report.');
+				return false;
+			}
 
 			var datefrom = myTab.toolbar.getValue("<?php echo $moduleid; ?>datefrom");
 			var dateto = myTab.toolbar.getValue("<?php echo $moduleid; ?>dateto");
