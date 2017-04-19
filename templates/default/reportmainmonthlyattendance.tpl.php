@@ -71,6 +71,39 @@ body, html, #printform {
   font-size: 14px;
   font-weight: bold;
 }
+#printform .individualschoolname_%formval% {
+  font-size: 25px;
+  text-align: center;
+}
+#printform .individualperiod_%formval% {
+  font-size: 14px;
+  text-align: center;
+}
+#printform .individualattendancereport_%formval% {
+  font-size: 18px;
+  text-align: center;
+}
+#printform .individualyearlevel_%formval% {
+  font-size: 16px;
+  text-align: center;
+}
+#printform .individualstudentname_%formval% {
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+#printform .blockdtrblock_%formval% {
+  display: block;
+  /*border: 1px solid #f00;*/
+  text-align: center;
+  width: 1000px;
+}
+#printform .blockdtrblock_%formval% .dhxform_block {
+  display: block;
+  /*border: 1px solid #0f0;*/
+  float: none;
+  margin: 0 auto;
+}
 #printform .studentName_%formval% div.dhxform_txt_label2 {
   overflow: hidden;
   display: block;

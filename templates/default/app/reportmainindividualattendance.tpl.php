@@ -54,17 +54,21 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 		overflow-y: scroll;
 		margin-top: 3px;
 	}
-	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .schoolName_%formval% {
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .individualschoolname_%formval% {
 		font-size: 25px;
+		text-align: center;
 	}
-	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .period_%formval% {
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .individualperiod_%formval% {
 		font-size: 14px;
+		text-align: center;
 	}
-	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .monthlyattendancereport_%formval% {
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .individualattendancereport_%formval% {
 		font-size: 18px;
+		text-align: center;
 	}
-	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .yearlevel_%formval% {
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .individualyearlevel_%formval% {
 		font-size: 16px;
+		text-align: center;
 	}
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .section_%formval% {
 		font-size: 14px;
@@ -73,6 +77,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .individualstudentname_%formval% {
 		font-size: 25px;
 		font-weight: bold;
+		text-align: center;
 	}
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .studentName_%formval% div.dhxform_txt_label2 {
 		overflow: hidden;
@@ -82,6 +87,18 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .block_%formval% {
 		/*display: block;
 		border: 1px solid #00f;*/
+	}
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .blockdtrblock_%formval% {
+		display: block;
+		/*border: 1px solid #f00;*/
+		text-align: center;
+		width: 1000px;
+	}
+	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .blockdtrblock_%formval% .dhxform_block {
+		display: block;
+		/*border: 1px solid #0f0;*/
+		float: none;
+		margin: 0 auto;
 	}
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?>mainform_%formval% .absent_%formval% {
 		display: block;

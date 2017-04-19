@@ -1601,22 +1601,22 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								$mainblock[] = array(
 									'type' => 'label',
 									'label' => !empty($license['sc']) ? $license['sc'] : 'TAP N TXT DEMO UNIT (UNLICENSED)',
-									'labelWidth' => 500,
-									'className' => 'schoolName_'.$post['formval'],
+									'labelWidth' => 1000,
+									'className' => 'individualschoolname_'.$post['formval'],
 								);
 
 								$mainblock[] = array(
 									'type' => 'label',
 									'label' => "Period: $fromstr - $tostr",
-									'labelWidth' => 500,
-									'className' => 'period_'.$post['formval'],
+									'labelWidth' => 1000,
+									'className' => 'individualperiod_'.$post['formval'],
 								);
 
 								$mainblock[] = array(
 									'type' => 'label',
 									'label' => 'INDIVIDUAL ATTENDANCE REPORT',
-									'labelWidth' => 500,
-									'className' => 'monthlyattendancereport_'.$post['formval'],
+									'labelWidth' => 1000,
+									'className' => 'individualattendancereport_'.$post['formval'],
 								);
 							}
 
@@ -1643,16 +1643,17 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 								$block[] = array(
 									'type' => 'label',
 									'label' => $fullnames[$fid],
-									'labelWidth' => 500,
+									'labelWidth' => 1000,
 									'offsetLeft' => 0,
+									'offsetTop' => 20,
 									'className' => 'individualstudentname_'.$post['formval'],
 								);
 
 								$block[] = array(
 									'type' => 'label',
 									'label' => $yl.' - '.$sc,
-									'labelWidth' => 500,
-									'className' => 'yearlevel_'.$post['formval'],
+									'labelWidth' => 1000,
+									'className' => 'individualyearlevel_'.$post['formval'],
 								);
 
 								$mainblock[] = array(
@@ -1713,7 +1714,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 											$block[] = array(
 												'type' => 'label',
 												'label' => $dtrv['time'],
-												'labelWidth' => 200,
+												'labelWidth' => 50,
 												'className' => 'dtrtime_'.$post['formval'],
 											);
 
@@ -1746,7 +1747,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 											$block[] = array(
 												'type' => 'label',
 												'label' => $dtrv['time'],
-												'labelWidth' => 200,
+												'labelWidth' => 50,
 												'className' => 'dtrtime_'.$post['formval'],
 											);
 
@@ -1754,11 +1755,11 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 										$mainblock[] = array(
 											'type' => 'block',
-											'width' => 1000,
+											'width' => 280,
 											'blockOffset' => 0,
 											'offsetTop' => 0,
 											'list' => $block,
-											'className' => 'block_'.$post['formval'],
+											'className' => 'blockdtrblock_'.$post['formval'],
 										);
 
 									}
@@ -1777,7 +1778,7 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 							$params['tbReports'][] = array(
 								'type' => 'block',
-								'width' => 500,
+								'width' => 1000,
 								'blockOffset' => 0,
 								'offsetTop' => 0,
 								'list' => $allblocks[$i],
