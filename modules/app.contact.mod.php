@@ -312,6 +312,7 @@ if(!class_exists('APP_app_contact')) {
 					$content['studentprofile_number'] = !empty($post['studentprofile_number']) ? $post['studentprofile_number'] : '';
 					$content['studentprofile_rfid'] = !empty($post['studentprofile_rfid']) ? $post['studentprofile_rfid'] : '';
 					$content['studentprofile_active'] = !empty($post['studentprofile_active']) ? 1 : 0;
+					$content['studentprofile_schoolyear'] = !empty($post['studentprofile_schoolyear']) ? $post['studentprofile_schoolyear'] : '';
 					$content['studentprofile_firstname'] = !empty($post['studentprofile_firstname']) ? $post['studentprofile_firstname'] : '';
 					$content['studentprofile_lastname'] = !empty($post['studentprofile_lastname']) ? $post['studentprofile_lastname'] : '';
 					$content['studentprofile_middlename'] = !empty($post['studentprofile_middlename']) ? $post['studentprofile_middlename'] : '';
@@ -445,6 +446,7 @@ if(!class_exists('APP_app_contact')) {
 					'labelWidth' => 120,
 					'name' => 'studentprofile_schoolyear',
 					'readonly' => $readonly,
+					'inputMask' => array('mask'=>'2099-2099'),
 					//'required' => !$readonly,
 					'value' => !empty($params['studentinfo']['studentprofile_schoolyear']) ? $params['studentinfo']['studentprofile_schoolyear'] : '',
 				);

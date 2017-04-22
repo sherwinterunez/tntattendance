@@ -1428,6 +1428,10 @@ alter table tbl_studentprofile add column studentprofile_in integer NOT NULL DEF
 alter table tbl_studentprofile add column studentprofile_out integer NOT NULL DEFAULT 0;
 alter table tbl_studentprofile add column studentprofile_late integer NOT NULL DEFAULT 0;
 
+alter table tbl_studentprofile add column studentprofile_schoolyear text DEFAULT ''::text NOT NULL;
+
+alter table tbl_studentprofile drop column studentprofile_schoolyear;
+
 alter table tbl_studentprofile add column studentprofile_sync integer NOT NULL DEFAULT 0;
 alter table tbl_studentprofile add column studentprofile_update integer NOT NULL DEFAULT 0;
 

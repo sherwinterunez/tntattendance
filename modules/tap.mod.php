@@ -690,7 +690,13 @@ if(!class_exists('APP_Tap')) {
 							$retval['yearlevel'] = !empty($vars['studentinfo']['studentprofile_yearlevel']) ? getGroupRefName($vars['studentinfo']['studentprofile_yearlevel']) : 'Year Level';
 							$retval['section'] = !empty($vars['studentinfo']['studentprofile_section']) ? getGroupRefName($vars['studentinfo']['studentprofile_section']) : 'Section';
 
-							if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
+							// get previous time-in/time-out for this day
+
+							// studentdtr_unixtime >= $from and studentdtr_unixtime <= $to
+
+							//if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
+
+							if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 10"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}

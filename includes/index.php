@@ -59,5 +59,6 @@ require_once(INCLUDE_PATH.'at.inc.php');
 require_once(INCLUDE_PATH.'sms.inc.php');
 require_once(INCLUDE_PATH.'userfuncs.inc.php');
 require_once(INCLUDE_PATH.'usermodules.inc.php');
+require_once(INCLUDE_PATH.'userdbupdates.inc.php');
 
 #eof ./includes/index.php
