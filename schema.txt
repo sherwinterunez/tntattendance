@@ -1429,6 +1429,8 @@ alter table tbl_studentprofile add column studentprofile_out integer NOT NULL DE
 alter table tbl_studentprofile add column studentprofile_late integer NOT NULL DEFAULT 0;
 
 alter table tbl_studentprofile add column studentprofile_schoolyear text DEFAULT ''::text NOT NULL;
+alter table tbl_studentprofile add column studentprofile_schoolyearstart integer NOT NULL DEFAULT 0;
+alter table tbl_studentprofile add column studentprofile_schoolyearend integer NOT NULL DEFAULT 0;
 
 alter table tbl_studentprofile drop column studentprofile_schoolyear;
 

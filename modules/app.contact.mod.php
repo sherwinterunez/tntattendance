@@ -313,6 +313,14 @@ if(!class_exists('APP_app_contact')) {
 					$content['studentprofile_rfid'] = !empty($post['studentprofile_rfid']) ? $post['studentprofile_rfid'] : '';
 					$content['studentprofile_active'] = !empty($post['studentprofile_active']) ? 1 : 0;
 					$content['studentprofile_schoolyear'] = !empty($post['studentprofile_schoolyear']) ? $post['studentprofile_schoolyear'] : '';
+
+					if(!empty($content['studentprofile_schoolyear'])) {
+						$studentprofile_schoolyear = explode('-',$content['studentprofile_schoolyear']);
+
+						$content['studentprofile_schoolyearstart'] = !empty($studentprofile_schoolyear[0]) ? $studentprofile_schoolyear[0] : 0;
+						$content['studentprofile_schoolyearend'] = !empty($studentprofile_schoolyear[1]) ? $studentprofile_schoolyear[1] : 0;
+					}
+
 					$content['studentprofile_firstname'] = !empty($post['studentprofile_firstname']) ? $post['studentprofile_firstname'] : '';
 					$content['studentprofile_lastname'] = !empty($post['studentprofile_lastname']) ? $post['studentprofile_lastname'] : '';
 					$content['studentprofile_middlename'] = !empty($post['studentprofile_middlename']) ? $post['studentprofile_middlename'] : '';
@@ -928,7 +936,7 @@ if(!class_exists('APP_app_contact')) {
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
+								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_schoolyear'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
 							}
 
 							$retval = array('rows'=>$rows);

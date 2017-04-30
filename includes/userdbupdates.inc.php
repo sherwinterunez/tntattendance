@@ -29,6 +29,14 @@ if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyear')) {
 	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyear text DEFAULT ''::text NOT NULL");
 }
 
+if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyearstart')) {
+	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyearstart integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyearend')) {
+	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyearend integer NOT NULL DEFAULT 0");
+}
+
 /* INCLUDES_END */
 
 

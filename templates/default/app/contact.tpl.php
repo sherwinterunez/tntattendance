@@ -216,15 +216,15 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 			myGridContacts.setImagePath("/codebase/imgs/")
 
-			myGridContacts.setHeader("#master_checkbox, ID, Student No, RFID, First Name, Last Name, Middle Name, Year Level, Section, Guardian Name, Mobile No, Email");
+			myGridContacts.setHeader("#master_checkbox, ID, School Year, Student No, RFID, First Name, Last Name, Middle Name, Year Level, Section, Guardian Name, Mobile No, Email");
 
-			myGridContacts.setInitWidths("35,50,120,120,120,120,120,120,120,120,120,120");
+			myGridContacts.setInitWidths("35,50,120,120,120,120,120,120,120,120,120,120,120");
 
-			myGridContacts.setColAlign("center,center,left,left,left,left,left,left,left,left,left,left");
+			myGridContacts.setColAlign("center,center,left,left,left,left,left,left,left,left,left,left,left");
 
-			myGridContacts.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+			myGridContacts.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
-			myGridContacts.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str");
+			myGridContacts.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
 
 			myGridContacts.init();
 

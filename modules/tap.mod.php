@@ -595,7 +595,15 @@ if(!class_exists('APP_Tap')) {
 							$studentprofile_out = 0;
 							$studentprofile_late = 0;
 
-							if(!($result = $appdb->query("select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+							$dbdate = intval(getDbUnixDate());
+
+							$dbyear = intval(date('Y',$dbdate));
+
+							$dbnextyear = $dbyear+1;
+
+							$studentprofile_schoolyear = $dbyear.'-'.$dbnextyear;
+
+							if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$studentprofile_schoolyear'"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}
@@ -759,6 +767,14 @@ if(!class_exists('APP_Tap')) {
 							//$vars['sql'] = $appdb;
 
 						}
+					} else {
+						$retval = array();
+						$retval['return_code'] = 4595;
+						$retval['return_message'] = 'You\'re done tapping!';
+
+						header_json();
+						json_encode_return($retval);
+						die;
 					}
 
 				}
