@@ -419,13 +419,13 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		<?php 	/*if(empty($vars['post']['rowid'])) { ?>
+		<?php 	/*if(empty($vars['post']['rowid'])) {
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>edit');
 
 		myWinToolbar.disableItem('<?php echo $moduleid; ?>delete');
 
-		<?php 	}*/ ?>
+		 	}*/ ?>
 
 		myWinToolbar.showOnly(myToolbar);
 
@@ -653,6 +653,11 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					if(ddata.html) {
 						jQuery("#"+odata.obj.wid).html(ddata.html);
 						//layout_resize_%formval%();
+					}
+				},function(ddata,odata){
+					console.log('hello sherwin!');
+					if(obj.wid) {
+						closeWindow(obj.wid);
 					}
 				});
 			});

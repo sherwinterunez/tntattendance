@@ -42,7 +42,9 @@
 
 		//var myToolbar = ['messagingsendstart','messagingforward','messagingdelete','messagingrefresh'];
 
-		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+		//var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+
+		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingdelete','messagingrefresh'];
 
 		myChanged_%formval% = false;
 
@@ -52,7 +54,7 @@
 
 		myTab.toolbar.enableOnly(['messagingrefresh']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		if(typeof(f)!='undefined'&&typeof(myGrid_%formval%)!='undefined') {
 			try {
@@ -183,9 +185,9 @@
 
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
 				$("#formdiv_%formval% #messagingmainoutboxgrid div.objbox").html('<span style="display:block;width:150px;margin:0 auto;"><center>Outbox is empty!</center></span>');
 

@@ -247,6 +247,8 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 			myGridNewMessageContacts.setColSorting("int,int,str,str");
 
+			myGridNewMessageContacts.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter");
+
 			myGridNewMessageContacts.init();
 
 			try {
@@ -348,6 +350,8 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 			myGridNewMessageYearLevel.setColSorting("int,int,str");
 
+			myGridNewMessageYearLevel.attachHeader("&nbsp;,&nbsp;,#text_filter");
+
 			myGridNewMessageYearLevel.init();
 
 			try {
@@ -448,6 +452,8 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 			myGridNewMessageSection.setColTypes("ch,ro,ro");
 
 			myGridNewMessageSection.setColSorting("int,int,str");
+
+			myGridNewMessageSection.attachHeader("&nbsp;,&nbsp;,#text_filter");
 
 			myGridNewMessageSection.init();
 

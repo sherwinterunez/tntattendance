@@ -233,9 +233,16 @@ if(!class_exists('APP_Login')) {
 
 			//pre(array('$_SESSION'=>$_SESSION));
 
-			$push = 1;
+			$push = 0;
 
 			$msg = 'SUCCESSFUL LOGIN ('.$_SESSION['USER']['user_login'].') '.pgDateUnix(intval(getDbUnixDate())).' - '.$license['sc'];
+
+
+			$msgdt = date('F j, Y, l - h:i:s A',intval(getDbUnixDate()));
+
+			// TNT Login Successfully to  PREMIERE HEIGHTS LEARNING CENTER , May 12,2017, Friday - 04:08:16 PM
+
+			$msg = 'TNT Login Successfully to '.$license['sc'].', '.$msgdt;
 
 			if(!empty($settings_loginnotificationschooladminsendsms)&&!empty($settings_loginnotificationschooladmin)) {
 				if(($res=parseMobileNo($settings_loginnotificationschooladmin))&&!empty($res[2])&&!empty($res[3])) {

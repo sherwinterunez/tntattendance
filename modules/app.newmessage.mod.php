@@ -234,6 +234,8 @@ if(!class_exists('APP_app_newmessage')) {
 					'label' => 'SEND PUSH NOTIFICATION',
 					'labelWidth' => 250,
 					'name' => 'newmessage_sendpushnotification',
+					'checked' => true,
+					'readonly' => true,
 					//'readonly' => $readonly,
 					//'checked' => !empty($settings_loginnotificationschooladminsendsms) ? true : false,
 					'position' => 'label-right',

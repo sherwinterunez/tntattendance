@@ -276,7 +276,7 @@ if(!class_exists('APP_Tap')) {
 
 			if(!empty(($license=checkLicense()))) {
 			} else {
-				$bulletin .= ' THIS IS AN UNLICENSED VERSION OF TAP N TXT. FOR DEMO ONLY.';
+				$bulletin = 'THIS IS AN UNLICENSED COPY OF TAP N TXT. FOR DEMO ONLY. THIS IS AN UNLICENSED COPY OF TAP N TXT. FOR DEMO ONLY. THIS IS AN UNLICENSED COPY OF TAP N TXT. FOR DEMO ONLY. THIS IS AN UNLICENSED COPY OF TAP N TXT. FOR DEMO ONLY.';
 			}
 
 			$retval['bulletin'] = trim($bulletin);
@@ -290,7 +290,7 @@ if(!class_exists('APP_Tap')) {
 
 			//pre(array('$vars'=>$vars));
 
-			$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
+			//$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
 
 			$retval = array();
 			$retval['currentTime'] = intval(getDbUnixDate());
@@ -459,6 +459,19 @@ if(!class_exists('APP_Tap')) {
 					die;
 				}
 
+				$current_schoolyear = getCurrentSchoolYear();
+
+				if(!empty($vars['studentinfo']['studentprofile_schoolyear'])&&$vars['studentinfo']['studentprofile_schoolyear']==$current_schoolyear) {
+				} else {
+					$retval = array();
+					$retval['return_code'] = 4591;
+					$retval['return_message'] = 'Invalid school year!';
+
+					header_json();
+					json_encode_return($retval);
+					die;
+				}
+
 				//pre(array('$vars'=>$vars));
 
 				if(!empty($vars['studentinfo']['studentprofile_id'])) {
@@ -595,15 +608,11 @@ if(!class_exists('APP_Tap')) {
 							$studentprofile_out = 0;
 							$studentprofile_late = 0;
 
-							$dbdate = intval(getDbUnixDate());
+							//$studentprofile_schoolyear = getCurrentSchoolYear();
 
-							$dbyear = intval(date('Y',$dbdate));
+							//pre(array('$studentprofile_schoolyear'=>$studentprofile_schoolyear));
 
-							$dbnextyear = $dbyear+1;
-
-							$studentprofile_schoolyear = $dbyear.'-'.$dbnextyear;
-
-							if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$studentprofile_schoolyear'"))) {
+							if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$current_schoolyear'"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 								die;
 							}

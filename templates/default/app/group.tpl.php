@@ -144,12 +144,12 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbStudentSection", "Student Section");
 		myTabbar.addTab("tbStudentYearlevel", "Student Year Level");
 		myTabbar.addTab("tbEmployeeDepartment", "Employee Department");
 		myTabbar.addTab("tbEmployeePosition", "Employee Position");
-		myTabbar.addTab("tbThreshold", "Threshold");
+		//myTabbar.addTab("tbThreshold", "Threshold");
 
 		myTabbar.tabs("tbStudentSection").setActive();
 
@@ -162,7 +162,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -171,7 +171,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			{type: "block", name: "tbStudentYearlevel", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbStudentYearlevel']) ? json_encode($params['tbStudentYearlevel']) : '[]'; ?>},
 			{type: "block", name: "tbEmployeeDepartment", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbEmployeeDepartment']) ? json_encode($params['tbEmployeeDepartment']) : '[]'; ?>},
 			{type: "block", name: "tbEmployeePosition", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbEmployeePosition']) ? json_encode($params['tbEmployeePosition']) : '[]'; ?>},
-			{type: "block", name: "tbThreshold", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbThreshold']) ? json_encode($params['tbThreshold']) : '[]'; ?>},
+			//{type: "block", name: "tbThreshold", hidden: false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbThreshold']) ? json_encode($params['tbThreshold']) : '[]'; ?>},
 			{type: "label", label: ""}
 		];
 
@@ -198,7 +198,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 		myForm.hideItem('tbStudentYearlevel');
 		myForm.hideItem('tbEmployeeDepartment');
 		myForm.hideItem('tbEmployeePosition');
-		myForm.hideItem('tbThreshold');
+		//myForm.hideItem('tbThreshold');
 
 ///////////////////////////////////
 
@@ -257,7 +257,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			try {
 				myGridStudentSection.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridStudentSection.forEachRow(function(id){
 						//myGridStudentSection.cells(id,1).setDisabled(true);
@@ -360,7 +360,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			try {
 				myGridStudentYearlevel.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridStudentYearlevel.forEachRow(function(id){
 						myGridStudentYearlevel.cells(id,2).setDisabled(true);
@@ -471,7 +471,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			try {
 				myGridEmployeeDepartment.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridEmployeeDepartment.forEachRow(function(id){
 						myGridEmployeeDepartment.cells(id,2).setDisabled(true);
@@ -574,7 +574,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			try {
 				myGridEmployeePosition.parse(ddata,function(){
 
-					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?> 
+					<?php if(!($method==$moduleid.'new'||$method==$moduleid.'edit')) { ?>
 
 					myGridEmployeePosition.forEachRow(function(id){
 						myGridEmployeePosition.cells(id,2).setDisabled(true);
@@ -672,7 +672,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new') { ?> 
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -682,9 +682,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'edit') { ?> 
+		<?php } else if($method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -694,9 +694,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -704,7 +704,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -722,7 +722,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		<?php 	}*/ ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -817,7 +817,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -940,7 +940,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			var myForm = winObj.form;
 
 			//var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-			
+
 			//if(isNaN(txt_optionnumber)) {
 			//	txt_optionnumber = '';
 			//}
@@ -951,7 +951,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			/*jQuery('<div>Saving in progress. Please wait...</div>').modal({
 				escapeClose: false,
@@ -1080,7 +1080,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
 
 							showMessage(data.return_message,5000);

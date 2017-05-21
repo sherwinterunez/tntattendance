@@ -14,7 +14,9 @@ $access = $applogin->getAccess();
 
 $savecancel = false;
 
-$toolbars = array('messagingresend','messagingforward','messagingrefresh');
+//$toolbars = array('messagingresend','messagingforward','messagingrefresh');
+
+$toolbars = array('messagingrefresh');
 
 if(in_array('sentdelete',$access)) {
 	$toolbars[] = 'messagingdelete';

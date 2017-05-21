@@ -152,6 +152,19 @@ if(!class_exists('APP_app_contact')) {
 					$readonly = false;
 				}
 
+				if($post['method']=='contactnew') {
+					$license = checkLicense();
+
+					if(!empty($license)&&!empty($license['ns'])&&intval($license['ns'])>0&&intval($license['ns'])>getTotalStudentCurrentSchoolYear()) {
+					} else {
+						$retval = array();
+						$retval['error_code'] = '345346';
+						$retval['error_message'] = 'Invalid license or maximum number of allowed student for this school year has been reached!';
+
+						json_encode_return($retval);
+					}
+				}
+
 				if(!empty($post['method'])&&($post['method']=='onrowselect'||$post['method']=='contactedit'||$post['method']=='contactrefresh'||$post['method']=='contactcancel')) {
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 						if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_id=".$post['rowid']))) {
@@ -307,6 +320,17 @@ if(!class_exists('APP_app_contact')) {
 					$retval['return_message'] = 'Contact successfully saved!';
 					$retval['post'] = $post;
 
+					$license = checkLicense();
+
+					if(!empty($license)&&!empty($license['ns'])&&intval($license['ns'])>0&&intval($license['ns'])>getTotalStudentCurrentSchoolYear()) {
+					} else {
+						$retval = array();
+						$retval['error_code'] = '345346';
+						$retval['error_message'] = 'Invalid license or maximum number of allowed student for this school year has been reached!';
+
+						json_encode_return($retval);
+					}
+
 					//pre(array('$post',$post));
 					$content = array();
 					$content['studentprofile_number'] = !empty($post['studentprofile_number']) ? $post['studentprofile_number'] : '';
@@ -314,12 +338,20 @@ if(!class_exists('APP_app_contact')) {
 					$content['studentprofile_active'] = !empty($post['studentprofile_active']) ? 1 : 0;
 					$content['studentprofile_schoolyear'] = !empty($post['studentprofile_schoolyear']) ? $post['studentprofile_schoolyear'] : '';
 
-					if(!empty($content['studentprofile_schoolyear'])) {
-						$studentprofile_schoolyear = explode('-',$content['studentprofile_schoolyear']);
+					if(!isValidSchoolYear($content['studentprofile_schoolyear'])) {
+						$retval = array();
+						$retval['error_code'] = 4581;
+						$retval['error_message'] = 'Invalid school year!';
 
-						$content['studentprofile_schoolyearstart'] = !empty($studentprofile_schoolyear[0]) ? $studentprofile_schoolyear[0] : 0;
-						$content['studentprofile_schoolyearend'] = !empty($studentprofile_schoolyear[1]) ? $studentprofile_schoolyear[1] : 0;
+						header_json();
+						json_encode_return($retval);
+						die;
 					}
+
+					$studentprofile_schoolyear = explode('-',$content['studentprofile_schoolyear']);
+
+					$content['studentprofile_schoolyearstart'] = !empty($studentprofile_schoolyear[0]) ? $studentprofile_schoolyear[0] : 0;
+					$content['studentprofile_schoolyearend'] = !empty($studentprofile_schoolyear[1]) ? $studentprofile_schoolyear[1] : 0;
 
 					$content['studentprofile_firstname'] = !empty($post['studentprofile_firstname']) ? $post['studentprofile_firstname'] : '';
 					$content['studentprofile_lastname'] = !empty($post['studentprofile_lastname']) ? $post['studentprofile_lastname'] : '';
@@ -448,16 +480,29 @@ if(!class_exists('APP_app_contact')) {
 					'value' => !empty($params['studentinfo']['studentprofile_rfid']) ? $params['studentinfo']['studentprofile_rfid'] : '',
 				);
 
-				$params['tbStudentProfile'][] = array(
-					'type' => 'input',
-					'label' => 'SCHOOL YEAR',
-					'labelWidth' => 120,
-					'name' => 'studentprofile_schoolyear',
-					'readonly' => $readonly,
-					'inputMask' => array('mask'=>'2099-2099'),
-					//'required' => !$readonly,
-					'value' => !empty($params['studentinfo']['studentprofile_schoolyear']) ? $params['studentinfo']['studentprofile_schoolyear'] : '',
-				);
+				if($post['method']=='contactnew') {
+					$params['tbStudentProfile'][] = array(
+						'type' => 'input',
+						'label' => 'SCHOOL YEAR',
+						'labelWidth' => 120,
+						'name' => 'studentprofile_schoolyear',
+						'readonly' => $readonly,
+						'inputMask' => array('mask'=>'2099-2099'),
+						//'required' => !$readonly,
+						'value' => getCurrentSchoolYear(),
+					);
+				} else {
+					$params['tbStudentProfile'][] = array(
+						'type' => 'input',
+						'label' => 'SCHOOL YEAR',
+						'labelWidth' => 120,
+						'name' => 'studentprofile_schoolyear',
+						'readonly' => $readonly,
+						'inputMask' => array('mask'=>'2099-2099'),
+						//'required' => !$readonly,
+						'value' => !empty($params['studentinfo']['studentprofile_schoolyear']) ? $params['studentinfo']['studentprofile_schoolyear'] : '',
+					);
+				}
 
 				$params['tbStudentProfile'][] = array(
 					'type' => 'input',

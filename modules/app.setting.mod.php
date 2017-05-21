@@ -80,12 +80,19 @@ if(!class_exists('APP_app_setting')) {
 
 				$readonly = true;
 
+				$default_schoolyear = getCurrentSchoolYear();
+				$default_tardinessgraceperiodminute = 30;
+
 				$default_bulletin = 'DEMO UNIT... OBIS SOFTWARE TECHNOLOGY... OBIS SOFTWARE TECHNOLOGY... DEMO UNIT...';
 				$default_timeinnotification = '%STUDENTFULLNAME% has timed-in at %DATETIME%';
 				$default_timeoutnotification = '%STUDENTFULLNAME% has timed-out at %DATETIME%';
-				$default_timeinmessage = 'Welcome to School! Have a nice day!';
-				$default_timeoutmessage = 'Goodbye! See you later!';
-				$default_latemessage = 'Welcome to School! Have a nice day! Please be early next time!';
+				$default_latenotification = '%STUDENTFULLNAME% as of %DATETIME% has not yet arrived in school.';
+				$default_absentnotification = '%STUDENTFULLNAME% as of %DATETIME% did not arrived in school.';
+				$default_timeinmessage = 'Welcome to School! Nice to see you again!';
+				$default_timeoutmessage = 'Goodbye! Keep safe!';
+				$default_latemessage = 'Welcome to School! You are encourage to come on time!';
+
+				$settings_schoolyear = getOption('$SETTINGS_SCHOOLYEAR',$default_schoolyear);
 
 				$settings_electronicbulletin = getOption('$SETTINGS_ELECTRONICBULLETIN',$default_bulletin);
 				$settings_loginnotificationschooladmin = getOption('$SETTINGS_LOGINNOTIFICATIONSCHOOLADMIN','');
@@ -101,10 +108,19 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_synctoserver = getOption('$SETTINGS_SYNCTOSERVER',false);
 
+				$settings_tardinessgraceperiodminute = getOption('$SETTINGS_TARDINESSGRACEPERIODMINUTE',$default_tardinessgraceperiodminute);
+
+				$settings_sendtimeinnotification  = getOption('$SETTINGS_SENDTIMEINNOTIFICATION',true);
+				$settings_sendtimeoutnotification  = getOption('$SETTINGS_SENDTIMEOUTNOTIFICATION',true);
+				$settings_sendlatenotification  = getOption('$SETTINGS_SENDLATENOTIFICATION',false);
+				$settings_sendabsentnotification  = getOption('$SETTINGS_SENDABSENTNOTIFICATION',false);
 				$settings_sendpushnotification  = getOption('$SETTINGS_SENDPUSHNOTIFICATION',false);
+				$settings_sendsmsnotification  = getOption('$SETTINGS_SENDSMSNOTIFICATION',true);
 
 				$settings_timeinnotification = getOption('$SETTINGS_TIMEINNOTIFICATION',$default_timeinnotification);
 				$settings_timeoutnotification = getOption('$SETTINGS_TIMEOUTNOTIFICATION',$default_timeoutnotification);
+				$settings_latenotification = getOption('$SETTINGS_LATENOTIFICATION',$default_latenotification);
+				$settings_absentnotification = getOption('$SETTINGS_ABSENTNOTIFICATION',$default_absentnotification);
 
 				$settings_timeinmessage = getOption('$SETTINGS_TIMEINMESSAGE',$default_timeinmessage);
 				$settings_timeoutmessage = getOption('$SETTINGS_TIMEOUTMESSAGE',$default_timeoutmessage);
@@ -143,6 +159,28 @@ if(!class_exists('APP_app_setting')) {
 
 					//pre(array('$post',$post));
 
+					/*$validsy = false;
+
+					if(!empty($post['settings_schoolyear'])) {
+						$sy = explode('-',$post['settings_schoolyear']);
+
+						if(!empty($sy[0])&&!empty($sy[1])&&intval($sy[0])>2000&&intval($sy[1])>2000&&intval($sy[1])>intval($sy[0])&&(intval($sy[1])-intval($sy[0]))==1) {
+							$validsy = true;
+						}
+					}*/
+
+					if(!isValidSchoolYear($post['settings_schoolyear'])) {
+						$retval = array();
+						$retval['error_code'] = 4581;
+						$retval['error_message'] = 'Invalid school year!';
+
+						header_json();
+						json_encode_return($retval);
+						die;
+					}
+
+					setSetting('$SETTINGS_SCHOOLYEAR',!empty($post['settings_schoolyear'])?$post['settings_schoolyear']:$default_schoolyear);
+
 					setSetting('$SETTINGS_ELECTRONICBULLETIN',!empty($post['settings_electronicbulletin'])?$post['settings_electronicbulletin']:$default_bulletin);
 
 					setSetting('$SETTINGS_LOGINNOTIFICATIONSCHOOLADMIN',!empty($post['settings_loginnotificationschooladmin'])?$post['settings_loginnotificationschooladmin']:'');
@@ -161,11 +199,27 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_SYNCTOSERVER',!empty($post['settings_synctoserver'])?true:false);
 
-					setSetting('$SETTINGS_SENDPUSHNOTIFICATION',!empty($post['settings_sendpushnotification'])?true:false);
+					setSetting('$SETTINGS_TARDINESSGRACEPERIODMINUTE',!empty($post['settings_tardinessgraceperiodminute'])?intval($post['settings_tardinessgraceperiodminute']):$default_tardinessgraceperiodminute);
 
 					setSetting('$SETTINGS_TIMEINNOTIFICATION',!empty($post['settings_timeinnotification'])?$post['settings_timeinnotification']:$default_timeinnotification);
 
 					setSetting('$SETTINGS_TIMEOUTNOTIFICATION',!empty($post['settings_timeoutnotification'])?$post['settings_timeoutnotification']:$default_timeoutnotification);
+
+					setSetting('$SETTINGS_LATENOTIFICATION',!empty($post['settings_latenotification'])?$post['settings_latenotification']:$default_latenotification);
+
+					setSetting('$SETTINGS_ABSENTNOTIFICATION',!empty($post['settings_absentnotification'])?$post['settings_absentnotification']:$default_absentnotification);
+
+					setSetting('$SETTINGS_SENDPUSHNOTIFICATION',!empty($post['settings_sendpushnotification'])?true:false);
+
+					setSetting('$SETTINGS_SENDSMSNOTIFICATION',!empty($post['settings_sendsmsnotification'])?true:false);
+
+					setSetting('$SETTINGS_SENDTIMEINNOTIFICATION',!empty($post['settings_sendtimeinnotification'])?true:false);
+
+					setSetting('$SETTINGS_SENDTIMEOUTNOTIFICATION',!empty($post['settings_sendtimeoutnotification'])?true:false);
+
+					setSetting('$SETTINGS_SENDLATENOTIFICATION',!empty($post['settings_sendlatenotification'])?true:false);
+
+					setSetting('$SETTINGS_SENDABSENTNOTIFICATION',!empty($post['settings_sendabsentnotification'])?true:false);
 
 					setSetting('$SETTINGS_TIMEINMESSAGE',!empty($post['settings_timeinmessage'])?$post['settings_timeinmessage']:$default_timeinmessage);
 
@@ -238,8 +292,20 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbLoginNotification'] = array();
 				$params['tbNotifications'] = array();
 				$params['tbGeneral'] = array();
+				$params['tbThreshold'] = array();
 				$params['tbServer'] = array();
 				$params['tbLicense'] = array();
+
+				$params['tbSchoolYear'][] = array(
+					'type' => 'input',
+					'label' => 'SCHOOL YEAR',
+					'labelWidth' => 120,
+					'name' => 'settings_schoolyear',
+					'readonly' => $readonly,
+					'inputMask' => array('mask'=>'2099-2099'),
+					//'required' => !$readonly,
+					'value' => !empty($settings_schoolyear) ? $settings_schoolyear : '',
+				);
 
 				$params['tbElectronicBulletin'][] = array(
 					'type' => 'input',
@@ -401,8 +467,8 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbNotifications'][] = array(
 					'type' => 'input',
 					'label' => 'TIME-IN NOTIFICATION',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 900,
+					//'rows' => 2,
 					'labelWidth' => 200,
 					'name' => 'settings_timeinnotification',
 					'readonly' => $readonly,
@@ -414,14 +480,80 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbNotifications'][] = array(
 					'type' => 'input',
 					'label' => 'TIME-OUT NOTIFICATION',
-					'inputWidth' => 500,
-					'rows' => 5,
+					'inputWidth' => 900,
+					//'rows' => 2,
 					'labelWidth' => 200,
 					'name' => 'settings_timeoutnotification',
 					'readonly' => $readonly,
 					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_timeoutnotification) ? $settings_timeoutnotification : '',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'input',
+					'label' => 'LATE NOTIFICATION',
+					'inputWidth' => 900,
+					//'rows' => 2,
+					'labelWidth' => 200,
+					'name' => 'settings_latenotification',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_latenotification) ? $settings_latenotification : '',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'input',
+					'label' => 'ABSENT NOTIFICATION',
+					'inputWidth' => 900,
+					//'rows' => 2,
+					'labelWidth' => 200,
+					'name' => 'settings_absentnotification',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_absentnotification) ? $settings_absentnotification : '',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND TIME-IN NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_sendtimeinnotification',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendtimeinnotification) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND TIME-OUT NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_sendtimeoutnotification',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendtimeoutnotification) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND LATE NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_sendlatenotification',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendlatenotification) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND ABSENT NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_sendabsentnotification',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendabsentnotification) ? true : false,
+					'position' => 'label-right',
 				);
 
 				$params['tbNotifications'][] = array(
@@ -434,12 +566,22 @@ if(!class_exists('APP_app_setting')) {
 					'position' => 'label-right',
 				);
 
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND SMS NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_sendsmsnotification',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendsmsnotification) ? true : false,
+					'position' => 'label-right',
+				);
+
 				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'RFID INTERVAL (minutes)',
 					//'inputWidth' => 500,
 					//'rows' => 5,
-					'labelWidth' => 200,
+					'labelWidth' => 220,
 					'name' => 'settings_rfidinterval',
 					'readonly' => $readonly,
 					'numeric' => true,
@@ -454,7 +596,7 @@ if(!class_exists('APP_app_setting')) {
 					'label' => 'SHOW ADS AFTER IDLE (minutes)',
 					//'inputWidth' => 500,
 					//'rows' => 5,
-					'labelWidth' => 200,
+					'labelWidth' => 220,
 					'name' => 'settings_showadsinterval',
 					'readonly' => $readonly,
 					'numeric' => true,
@@ -489,8 +631,8 @@ if(!class_exists('APP_app_setting')) {
 					'type' => 'input',
 					'label' => 'TIME-IN MESSAGE',
 					'inputWidth' => 900,
-					'rows' => 2,
-					'labelWidth' => 200,
+					//'rows' => 2,
+					'labelWidth' => 220,
 					'name' => 'settings_timeinmessage',
 					'readonly' => $readonly,
 					//'numeric' => true,
@@ -502,8 +644,8 @@ if(!class_exists('APP_app_setting')) {
 					'type' => 'input',
 					'label' => 'TIME-OUT MESSAGE',
 					'inputWidth' => 900,
-					'rows' => 2,
-					'labelWidth' => 200,
+					//'rows' => 2,
+					'labelWidth' => 220,
 					'name' => 'settings_timeoutmessage',
 					'readonly' => $readonly,
 					//'numeric' => true,
@@ -515,13 +657,24 @@ if(!class_exists('APP_app_setting')) {
 					'type' => 'input',
 					'label' => 'LATE MESSAGE',
 					'inputWidth' => 900,
-					'rows' => 2,
-					'labelWidth' => 200,
+					//'rows' => 2,
+					'labelWidth' => 220,
 					'name' => 'settings_latemessage',
 					'readonly' => $readonly,
 					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_latemessage) ? $settings_latemessage : '',
+				);
+
+				$params['tbThreshold'][] = array(
+					'type' => 'input',
+					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'name' => 'settings_tardinessgraceperiodminute',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_tardinessgraceperiodminute) ? $settings_tardinessgraceperiodminute : '',
 				);
 
 				$params['tbServer'][] = array(

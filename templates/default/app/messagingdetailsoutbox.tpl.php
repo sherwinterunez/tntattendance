@@ -70,7 +70,9 @@ if(!empty($vars['post']['method'])) {
 
 		//var myToolbar = ['messagingsendstart','messagingforward','messagingdelete','messagingrefresh'];
 
-		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+		//var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingforward','messagingdelete','messagingrefresh'];
+
+		var myToolbar = ['messagingsendstart','messagingsendstop','messagingresend','messagingdelete','messagingrefresh'];
 
 		myTab.toolbar.getToolbarData('messagingsendstart').onClick = function(id,formval) {
 			//showMessage("toolbar: "+id,5000);

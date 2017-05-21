@@ -18,11 +18,13 @@ $toolbars = array('messagingforward','messagingrefresh');
 
 if(empty($params['smsinboxinfo']['smsinbox_contactsid'])) {
 	if(!empty($params['smsinboxinfo']['smsinbox_contactnumber'])&&preg_match('/^\d+$/', $params['smsinboxinfo']['smsinbox_contactnumber'])) {
-		$toolbars = array('messagingaddcontact','messagingreply','messagingforward','messagingrefresh','messagingexport');
+		//$toolbars = array('messagingaddcontact','messagingreply','messagingforward','messagingrefresh','messagingexport');
+		$toolbars = array('messagingrefresh');
 	}
 } else
 if(!empty($params['smsinboxinfo']['smsinbox_contactsid'])) {
-	$toolbars = array('messagingreply','messagingforward','messagingrefresh','messagingexport');
+	//$toolbars = array('messagingreply','messagingforward','messagingrefresh','messagingexport');
+	$toolbars = array('messagingrefresh');
 }
 
 if(in_array('inboxdelete',$access)) {

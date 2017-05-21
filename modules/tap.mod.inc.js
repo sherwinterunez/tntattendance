@@ -230,7 +230,7 @@ srt.etap = function() {
 				}
 			});*/
 
-		});
+		},true);
 
 
 	});
@@ -252,7 +252,7 @@ srt.doMarquee = function() {
 			jQuery('#marquee').html(data.bulletin);
 			jQuery('#marquee').marquee({duration: 10000});
 		}
-	});
+	},true);
 }
 
 srt.doShowDateTime = function() {
@@ -281,7 +281,7 @@ srt.doShowDateTime = function() {
 			}
 		}
 
-	});
+	},true);
 }
 
 srt.doShowAds = function() {
@@ -362,7 +362,7 @@ srt.getPrevious = function() {
 			}
 		}
 
-	});
+	},true);
 }
 
 srt.setPrevious = function() {
@@ -414,7 +414,7 @@ srt.setPrevious = function() {
 			}
 		}
 
-	});
+	},true);
 }
 
 jQuery(document).ready(function($) {

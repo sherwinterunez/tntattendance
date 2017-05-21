@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,7 +24,7 @@ if(defined('ANNOUNCE')) {
 if(!class_exists('APP_app_group')) {
 
 	class APP_app_group extends APP_Base_Ajax {
-	
+
 		var $desc = 'group';
 
 		var $pathid = 'group';
@@ -39,7 +39,7 @@ if(!class_exists('APP_app_group')) {
 		function __construct() {
 			$this->init();
 		}
-		
+
 		function __destruct() {
 		}
 
@@ -80,7 +80,7 @@ if(!class_exists('APP_app_group')) {
 
 				$readonly = true;
 
-				$settings_tardinessgraceperiodminute = getOption('$SETTINGS_TARDINESSGRACEPERIODMINUTE','');
+				//$settings_tardinessgraceperiodminute = getOption('$SETTINGS_TARDINESSGRACEPERIODMINUTE','');
 
 				if(!empty($post['method'])&&($post['method']=='groupedit')) {
 					$readonly = false;
@@ -92,7 +92,7 @@ if(!class_exists('APP_app_group')) {
 					$retval['return_message'] = 'Group Reference successfully saved!';
 					$retval['post'] = $post;
 
-					setSetting('$SETTINGS_TARDINESSGRACEPERIODMINUTE',!empty($post['group_tardinessgraceperiod'])?$post['group_tardinessgraceperiod']:0);
+					//setSetting('$SETTINGS_TARDINESSGRACEPERIODMINUTE',!empty($post['group_tardinessgraceperiod'])?$post['group_tardinessgraceperiod']:0);
 
 					//pre(array('$post',$post));
 
@@ -112,7 +112,7 @@ if(!class_exists('APP_app_group')) {
 							$content['groupref_seq'] = !empty($post['studentsection_seq'][$k]) ? $post['studentsection_seq'][$k] : 0;
 
 							if(!empty($post['studentsection_yearlevel'][$k]) && is_numeric($post['studentsection_yearlevel'][$k]) && intval($post['studentsection_yearlevel'][$k]) > 0) {
-								$content['groupref_yearlevel'] = intval($post['studentsection_yearlevel'][$k]);							
+								$content['groupref_yearlevel'] = intval($post['studentsection_yearlevel'][$k]);
 							}
 
 							$content['groupref_name'] = !empty($post['studentsection_sectionname'][$k]) ? $post['studentsection_sectionname'][$k] : '';
@@ -129,14 +129,14 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->update("tbl_groupref",$content,"groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								} else {
 
 									if(!($result = $appdb->query("delete from tbl_groupref where groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -147,7 +147,7 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									if(!empty($result['returning'][0]['groupref_id'])) {
@@ -188,14 +188,14 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->update("tbl_groupref",$content,"groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								} else {
 
 									if(!($result = $appdb->query("delete from tbl_groupref where groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -206,7 +206,7 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									if(!empty($result['returning'][0]['groupref_id'])) {
@@ -249,14 +249,14 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->update("tbl_groupref",$content,"groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								} else {
 
 									if(!($result = $appdb->query("delete from tbl_groupref where groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -267,7 +267,7 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									if(!empty($result['returning'][0]['groupref_id'])) {
@@ -308,14 +308,14 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->update("tbl_groupref",$content,"groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								} else {
 
 									if(!($result = $appdb->query("delete from tbl_groupref where groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 								}
@@ -326,7 +326,7 @@ if(!class_exists('APP_app_group')) {
 
 									if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-										die;				
+										die;
 									}
 
 									if(!empty($result['returning'][0]['groupref_id'])) {
@@ -406,7 +406,7 @@ if(!class_exists('APP_app_group')) {
 					'className' => 'group_threshold_'.$post['formval'],
 				);*/
 
-				$params['tbThreshold'][] = array(
+				/*$params['tbThreshold'][] = array(
 					'type' => 'input',
 					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
 					'labelWidth' => 250,
@@ -415,7 +415,7 @@ if(!class_exists('APP_app_group')) {
 					'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_tardinessgraceperiodminute)?$settings_tardinessgraceperiodminute:'',
-				);
+				);*/
 
 				$templatefile = $this->templatefile($routerid,$formid);
 
@@ -423,11 +423,11 @@ if(!class_exists('APP_app_group')) {
 
 				if(file_exists($templatefile)) {
 					return $this->_form_load_template($templatefile,$params);
-				}				
+				}
 			}
 
 			return false;
-			
+
 		} // _form_group
 
 		function router() {
@@ -495,7 +495,7 @@ if(!class_exists('APP_app_group')) {
 						if($retflag==2) {
 							return $jsonval;
 						}
-					} 
+					}
 
 				} else
 				if( $this->post['action']=='form' && !empty($this->post['formid']) ) {
@@ -618,7 +618,7 @@ if(!class_exists('APP_app_group')) {
 					if($this->post['table']=='modemcommands') {
 						if(!($result = $appdb->query("select * from tbl_modemcommands order by modemcommands_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 						//pre(array('$result'=>$result));
 
@@ -637,7 +637,7 @@ if(!class_exists('APP_app_group')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=1 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$groupref = getGroupRef(2);
@@ -677,7 +677,7 @@ if(!class_exists('APP_app_group')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=2 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$rows = array();
@@ -708,7 +708,7 @@ if(!class_exists('APP_app_group')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=3 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$rows = array();
@@ -739,7 +739,7 @@ if(!class_exists('APP_app_group')) {
 
 						if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=4 order by groupref_id asc"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						$rows = array();
@@ -784,7 +784,7 @@ if(!class_exists('APP_app_group')) {
 
 			return false;
 		} // router($vars=false,$retflag=false)
-		
+
 	}
 
 	$appappgroup = new APP_app_group;

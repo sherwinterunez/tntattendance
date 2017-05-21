@@ -635,7 +635,7 @@ dhtmlXCellObject.prototype._executeScript = function(data) {
 
 };
 
-dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {
+dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess,perror) {
 
 	var mdata;
 	var odata = this;
@@ -690,7 +690,11 @@ dhtmlXCellObject.prototype.postData = function(purl,pdata,psuccess) {
 					setTimeout(function(){
 						window.location = settings.site+'/login/';
 					},2000);
-				}
+				} else {
+          if(typeof(perror)=='function') {
+            perror(data,odata);
+          }
+        }
 			} else {
 				psuccess(data,odata);
 				hideLoader();

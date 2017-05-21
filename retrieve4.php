@@ -221,7 +221,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 								$messages[$number]['number'] = getContactNumber($messages[$number]['id']);
 							} else {
 								$messages[$number]['id'] = 0;
-								$messages[$number]['number'] = $msg['number'];
+								$messages[$number]['number'] = $number; //$msg['number'];
 							}
 
 							$messages[$number]['short']['messages'][$msgid] = $msg['message']; //$sms->history[0][$i+1];
@@ -237,7 +237,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 							$messages[$number]['number'] = getContactNumber($messages[$number]['id']);
 						} else {
 							$messages[$number]['id'] = 0;
-							$messages[$number]['number'] = $msg['number'];
+							$messages[$number]['number'] = $number; //$msg['number'];
 						}
 
 						$messages[$number]['short']['messages'][$msgid] = $msg['message']; //$sms->history[0][$i+1];

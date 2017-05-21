@@ -146,14 +146,16 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myTabbar.setArrowsMode("auto");
 
+		myTabbar.addTab("tbSchoolYear", "School Year");
 		myTabbar.addTab("tbElectronicBulletin", "Electronic Bulletin");
 		myTabbar.addTab("tbLoginNotification", "Login Notification");
 		myTabbar.addTab("tbNotifications", "Notifications");
 		myTabbar.addTab("tbGeneral", "General");
+		myTabbar.addTab("tbThreshold", "Threshold");
 		myTabbar.addTab("tbServer", "Server");
 		myTabbar.addTab("tbLicense", "License");
 
-		myTabbar.tabs("tbElectronicBulletin").setActive();
+		myTabbar.tabs("tbSchoolYear").setActive();
 
 		myWinToolbar.resetAll();
 
@@ -169,10 +171,12 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
 			]},
+			{type: "block", name: "tbSchoolYear", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbSchoolYear']) ? json_encode($params['tbSchoolYear']) : '[]'; ?>},
 			{type: "block", name: "tbElectronicBulletin", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbElectronicBulletin']) ? json_encode($params['tbElectronicBulletin']) : '[]'; ?>},
 			{type: "block", name: "tbLoginNotification", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbLoginNotification']) ? json_encode($params['tbLoginNotification']) : '[]'; ?>},
 			{type: "block", name: "tbNotifications", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbNotifications']) ? json_encode($params['tbNotifications']) : '[]'; ?>},
 			{type: "block", name: "tbGeneral", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbGeneral']) ? json_encode($params['tbGeneral']) : '[]'; ?>},
+			{type: "block", name: "tbThreshold", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbThreshold']) ? json_encode($params['tbThreshold']) : '[]'; ?>},
 			{type: "block", name: "tbServer", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbServer']) ? json_encode($params['tbServer']) : '[]'; ?>},
 			{type: "block", name: "tbLicense", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbLicense']) ? json_encode($params['tbLicense']) : '[]'; ?>},
 			{type: "label", label: ""}
@@ -191,9 +195,11 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myFormStatus_%formval% = '<?php echo $method; ?>';
 
+		myForm.hideItem('tbElectronicBulletin');
 		myForm.hideItem('tbLoginNotification');
 		myForm.hideItem('tbNotifications');
 		myForm.hideItem('tbGeneral');
+		myForm.hideItem('tbThreshold');
 		myForm.hideItem('tbServer');
 		myForm.hideItem('tbLicense');
 

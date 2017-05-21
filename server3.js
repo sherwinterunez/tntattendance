@@ -1,12 +1,16 @@
 
 
 //const TIMEOUT = 10000;
-const TIMEOUT = 1000;
+const TIMEOUT = 100;
 
 const PORT = 8080;
 const ADDRESS = '0.0.0.0';
 
 var PHPFPM = require('./node_modules/node-phpfpm');
+
+//var io     = require('./node_modules/socket.io');
+var spawn = require('child_process').spawn;
+//var http = require('http');
 
 //var PHPFPM = require('/usr/local/etc/node_modules/node-phpfpm');
 
@@ -33,7 +37,10 @@ var phpfpm = new PHPFPM(
     port: 9000,
     //documentRoot: __dirname + '/',
     //documentRoot: '/WEBDEV/sms101.dev/',
-    documentRoot: '/srv/www/sms101.dev/',
+    //documentRoot: '/srv/www/sms102.dev/',
+    //documentRoot: '/srv/www/tntmobile.dev/',
+    documentRoot: '/WEBDEV/tntattendance.dev/',
+    //documentRoot: '/srv/www/tnt.dev/',
 });
 
 /*console.log(phpfpm);
@@ -45,9 +52,19 @@ phpfpm.run('sms3.php', function(err, output, phpErrors)
     if (phpErrors) console.error(phpErrors);
 });*/
 
+var runPortCheck = false;
+
+var portCheckRunning = false;
+
+var lastSim = false;
+
 var processCount = 0;
 
 var terminateFlag = false;
+
+var poweroffFlag = false;
+
+var rebootFlag = false;
 
 var pauseFlag = false;
 
@@ -64,7 +81,7 @@ var server = http.createServer(function (req, res) {
   //console.log(res);
 
   //console.log('req.method => '+req.method);
-  
+
   //console.log('req.url => '+req.url);
 
   /*if(req.url==='/test') {
@@ -78,6 +95,31 @@ var server = http.createServer(function (req, res) {
     return true;
   }*/
 
+  if(req.url==='/restartkiosk') {
+    //poweroffFlag = true;
+    //runPortCheck = true;
+    spawn("killall", ["electron-quick-start"]);
+    res.end('restarting kiosk.\n');
+
+    return true;
+  }
+
+  if(req.url==='/poweroff') {
+    poweroffFlag = true;
+    runPortCheck = true;
+    res.end('powering off.\n');
+
+    return true;
+  }
+
+  if(req.url==='/reboot') {
+    rebootFlag = true;
+    runPortCheck = true;
+    res.end('rebooting.\n');
+
+    return true;
+  }
+
   if(req.url==='/terminate') {
     terminateFlag = true;
     runPortCheck = true;
@@ -88,6 +130,11 @@ var server = http.createServer(function (req, res) {
 
   if(req.url==='/process') {
     res.end('processCount: '+processCount+'\n');
+    return true;
+  }
+
+  if(req.url==='/processcount') {
+    res.end(''+processCount+'');
     return true;
   }
 
@@ -109,6 +156,20 @@ var server = http.createServer(function (req, res) {
   if(req.url==='/resume') {
     pauseFlag = false;
     res.end('resumed.\n');
+
+    return true;
+  }
+
+  if(req.url==='/status') {
+
+    if(portCheckRunning) {
+      res.end('scanning');
+    } else
+    if(pauseFlag) {
+      res.end('paused');
+    } else {
+      res.end('running');
+    }
 
     return true;
   }
@@ -137,6 +198,22 @@ server.listen(PORT, ADDRESS, function () {
     doInit();
 });
 
+//var filename = '/var/log/messages';
+
+//var io = io.listen(server);
+
+//io.on('connection', function(client){
+  //console.log('Client connected');
+//  var tail = spawn("tail", ["-f", filename]);
+//  client.send( { filename : filename } );
+
+//  tail.stdout.on("data", function (data) {
+    //console.log(data.toString('utf-8'))
+//    client.send( { tail : data.toString('utf-8') } )
+//  });
+
+//});
+
 /*var ctr=0;
 
 setInterval(function(){
@@ -146,9 +223,9 @@ setInterval(function(){
   phpfpm.run('sms3.php?q=check', function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
-      
+
       console.log(output);
-      
+
       if (phpErrors) console.error(phpErrors);
   });
 
@@ -159,11 +236,11 @@ setInterval(function(){
   phpfpm.run('sms3.php?q=check', function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
-      
+
       console.log(output);
 
       setTimeout(doCheck, 10);
-      
+
       if (phpErrors) console.error(phpErrors);
   });
 
@@ -175,15 +252,68 @@ function doInit() {
 
   portCheck();
 
+  syncToServer();
+
 }
 
-var runPortCheck = false;
+function syncToServer() {
 
-var portCheckRunning = false;
+  //console.log("synctoserver.php running...");
 
-var lastSim = false;
+  //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+  phpfpm.run('synctoserver.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      //console.log("synctoserver.php done.");
+
+      if(output) console.log(output);
+
+      //setTimeout(doInit, (60*1000*2));
+
+      //processCount--;
+
+      setTimeout(function(){
+      //  processCommands(dev,sim,ip);
+        //processOutbox(dev,sim);
+        processNotification();
+      }, TIMEOUT);
+
+      if (phpErrors) console.error(phpErrors);
+  });
+
+}
+
+function processNotification() {
+  //console.log("processnotification.php running...");
+
+  //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+  phpfpm.run('processnotification.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      //console.log("processnotification.php done.");
+
+      if(output) console.log(output);
+
+      //setTimeout(doInit, (60*1000*2));
+
+      //processCount--;
+
+      setTimeout(function(){
+      //  processCommands(dev,sim,ip);
+        //processOutbox(dev,sim);
+        syncToServer();
+      }, TIMEOUT);
+
+      if (phpErrors) console.error(phpErrors);
+  });
+}
 
 function portCheck() {
+
+  //syncToServer();
+  //processNotification();
 
   if(portCheckRunning) return false;
 
@@ -191,14 +321,24 @@ function portCheck() {
     setTimeout(function(){
       portCheck();
     }, 500);
-    return false;              
+    return false;
   }
 
   if(terminateFlag) {
     process.exit(1);
   }
 
+  if(rebootFlag) {
+    spawn("reboot");
+  }
+
+  if(poweroffFlag) {
+    spawn("halt", ["-p"]);
+  }
+
   portCheckRunning = true;
+
+  console.log("portcheck.php running...");
 
   phpfpm.run('portcheck.php', function(err, output, phpErrors)
   {
@@ -210,12 +350,12 @@ function portCheck() {
 
         var obj = JSON.parse(output);
 
-        //console.log(obj);
+        console.log(obj);
 
       } catch(e) {
         console.log(e);
       }
-      
+
       //console.log(output);
 
       //setTimeout(doInit, (60*1000*2));
@@ -228,19 +368,19 @@ function portCheck() {
 
       portCheckRunning = false;
 
-      if(obj) {
+      if(obj&&obj.devices&&obj.devices.length>0) {
 
         //var sims = ['/dev/ttyUSB0','/dev/ttyUSB1'];
 
-        sims = obj.ports;
+        sims = obj.devices;
 
-        lastSim = sims[sims.length-1];
+        lastSim = sims[sims.length-1].port;
 
         for(var i in sims) {
 
          //console.log('sim: '+sims[i]);
 
-          simInit(sims[i]);
+          simInit(sims[i].port,sims[i].sim,sims[i].ip);
         }
 
       } else {
@@ -254,84 +394,125 @@ function portCheck() {
 
 }
 
-function simInit(dev) {
+function simInit(dev,sim,ip) {
 
     processCount++;
 
-    phpfpm.run('siminit.php?dev='+dev, function(err, output, phpErrors)
+    //console.log("siminit.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('siminit.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
-        
-        console.log(output);
+
+        //console.log("siminit.php "+dev+" "+sim+" "+ip+" done.");
+
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
         //processCount--;
 
         setTimeout(function(){
-          retrieveSMS(dev);
+          retrieveSMS(dev,sim,ip);
         }, TIMEOUT);
-        
+
         if (phpErrors) console.error(phpErrors);
     });
 
 }
 
-function retrieveSMS(dev) {
+function retrieveSMS(dev,sim,ip) {
 
     //processCount++;
 
-    phpfpm.run('retrieve2.php?dev='+dev, function(err, output, phpErrors)
+    //console.log("retrieve2.php "+dev+" "+sim+" "+ip+" running...");
+    //console.log("retrieve4.php "+dev+" "+sim+" "+ip+" running...");
+
+    //phpfpm.run('retrieve2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+    phpfpm.run('retrieve4.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
-        
-        console.log(output);
+
+        //console.log("retrieve4.php "+dev+" "+sim+" "+ip+" done.");
+
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
         //processCount--;
 
         setTimeout(function(){
-          processCommands(dev);
-          //processOutbox(dev);
+          processCommands(dev,sim,ip);
+          //processOutbox(dev,sim);
         }, TIMEOUT);
-        
+
         if (phpErrors) console.error(phpErrors);
     });
 
 }
 
-function processCommands(dev) {
+function processCommands(dev,sim,ip) {
 
     //processCount++;
 
-    phpfpm.run('process4.php?dev='+dev, function(err, output, phpErrors)
+    //console.log("process4.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('process4.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
-        
-        console.log(output);
+
+        //console.log("process4.php "+dev+" "+sim+" "+ip+" done.");
+
+        if(output) console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
         //processCount--;
 
         setTimeout(function(){
-          processOutbox(dev);
+          processOutbox(dev,sim,ip);
         }, TIMEOUT);
-        
+
         if (phpErrors) console.error(phpErrors);
     });
 
 }
 
-function processOutbox(dev) {
+function processOutbox(dev,sim,ip) {
 
     //processCount++;
 
-    phpfpm.run('processoutbox2.php?dev='+dev, function(err, output, phpErrors)
+    //console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('processoutbox2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
-        
+
+        //console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" done.");
+
+        if(output) console.log(output);
+
+        setTimeout(function(){
+          checkError(dev,sim,ip)
+        }, TIMEOUT);
+
+        if (phpErrors) console.error(phpErrors);
+    });
+
+}
+
+function processOutboxXXX(dev,sim,ip) {
+
+    //processCount++;
+
+    console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('processoutbox2.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+    {
+        if (err == 99) console.error('PHPFPM server error');
+
+        console.log("processoutbox2.php "+dev+" "+sim+" "+ip+" done.");
+
         console.log(output);
 
         processCount--;
@@ -343,7 +524,7 @@ function processOutbox(dev) {
             setTimeout(function(){
               //simInit(dev);
               systemPaused();
-            }, TIMEOUT);          
+            }, TIMEOUT);
 
           }
 
@@ -355,14 +536,66 @@ function processOutbox(dev) {
             setTimeout(function(){
               //simInit(dev);
               portCheck();
-            }, TIMEOUT);          
+            }, TIMEOUT);
 
           }
 
         } else {
-          simInit(dev);
+          simInit(dev,sim,ip);
         }
-        
+
+        if (phpErrors) console.error(phpErrors);
+    });
+
+}
+
+function checkError(dev,sim,ip) {
+
+    //processCount++;
+
+    //console.log("checkerror.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('checkerror.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+    {
+        if (err == 99) console.error('PHPFPM server error');
+
+        //console.log("checkerror.php "+dev+" "+sim+" "+ip+" done.");
+
+        if(output) console.log(output);
+
+        if(output.match(/STATUS_SIMERROR/)) {
+          runPortCheck = true;
+        }
+
+        processCount--;
+
+        if(pauseFlag) {
+
+          if(lastSim===dev) {
+
+            setTimeout(function(){
+              //simInit(dev);
+              systemPaused();
+            }, TIMEOUT);
+
+          }
+
+        } else
+        if(runPortCheck) {
+
+          if(lastSim===dev) {
+
+            setTimeout(function(){
+              //simInit(dev);
+              portCheck();
+            }, TIMEOUT);
+
+          }
+
+        } else {
+          simInit(dev,sim,ip);
+        }
+
         if (phpErrors) console.error(phpErrors);
     });
 
@@ -374,10 +607,22 @@ function systemPaused() {
 
     console.log('System is paused.');
 
+    if(processCount==0&&terminateFlag) {
+      process.exit(1);
+    }
+
+    if(processCount==0&&rebootFlag) {
+      spawn("reboot");
+    }
+
+    if(processCount==0&&poweroffFlag) {
+      spawn("halt", ["-p"]);
+    }
+
     setTimeout(function(){
       //simInit(dev);
       systemPaused();
-    }, TIMEOUT);   
+    }, TIMEOUT);
 
   } else {
 
@@ -386,24 +631,24 @@ function systemPaused() {
         setTimeout(function(){
           //simInit(dev);
           portCheck();
-        }, TIMEOUT);          
+        }, TIMEOUT);
 
-    }
+    } else
     if(sims.length) {
-      lastSim = sims[sims.length-1];
+      lastSim = sims[sims.length-1].port;
 
       for(var i in sims) {
 
        //console.log('sim: '+sims[i]);
 
-        simInit(sims[i]);
-      }      
+        simInit(sims[i].port,sims[i].sim,sims[i].ip);
+      }
     }
 
     /*setTimeout(function(){
       //simInit(dev);
       portCheck();
-    }, TIMEOUT);  */        
+    }, TIMEOUT);  */
 
   }
 
@@ -417,7 +662,7 @@ function doTest(ctr) {
     phpfpm.run('test102.php?ctr='+ctr, function(err, output, phpErrors)
     {
         if (err == 99) console.error('PHPFPM server error');
-        
+
         console.log(output);
 
         try {
@@ -431,11 +676,11 @@ function doTest(ctr) {
         } catch(e) {
           console.log(e);
         }
-        
+
         if (phpErrors) console.error(phpErrors);
     });
 
 }
 
-//doCheck();
 
+//doCheck();

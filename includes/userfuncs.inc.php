@@ -855,7 +855,7 @@ function parseMobileNo($mno=false,$regx = '^(\d+)(\d{3})(\d{7})$') {
 
 function getMyLocalIP() {
 	$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-	socket_connect($sock, "8.8.8.8", 53);
+	@socket_connect($sock, "8.8.8.8", 53);
 	socket_getsockname($sock, $name); // $name passed by reference
 
 	return $name;
@@ -1221,6 +1221,58 @@ function getStudentProfile($studentId) {
 	return false;
 }
 
+function getCurrentSchoolYear() {
+	$dbdate = intval(getDbUnixDate());
+
+	$cyear = intval(date('Y',$dbdate));
+	$nyear = $cyear++;
+
+	$default_schoolyear = $cyear.'-'.$nyear;
+
+	return getOption('$SETTINGS_SCHOOLYEAR',$default_schoolyear);
+}
+
+function getTotalStudentCurrentSchoolYear() {
+	return getTotalStudent(getCurrentSchoolYear());
+}
+
+function getTotalStudent($schoolyear=false) {
+	global $appdb;
+
+	if(!empty($schoolyear)&&isValidSchoolYear($schoolyear)) {
+	} else {
+		return 0;
+	}
+
+	$sql = "select count(studentprofile_id) from tbl_studentprofile where studentprofile_schoolyear='$schoolyear'";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['count'])&&intval($result['rows'][0]['count'])>0) {
+		return intval($result['rows'][0]['count']);
+	}
+
+	return 0;
+}
+
+function isValidSchoolYear($schoolyear=false) {
+	$validsy = false;
+
+	if(!empty($schoolyear)) {
+		$sy = explode('-',$schoolyear);
+
+		if(!empty($sy[0])&&!empty($sy[1])&&intval($sy[0])>2000&&intval($sy[1])>2000&&intval($sy[1])>intval($sy[0])&&(intval($sy[1])-intval($sy[0]))==1) {
+			$validsy = true;
+		}
+	}
+
+	return $validsy;
+}
+
 function setSimNumber($dev,$mobileNo,$ip='') {
 
 	if(!empty($dev)&&!empty($mobileNo)) {
@@ -1499,6 +1551,11 @@ function getDbUnixDate() {
 
 function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0) {
 	global $appdb;
+
+	if(!empty($simnumber)) {
+	} else {
+		$simnumber = '09191234567';
+	}
 
 	if(!empty($contactnumber)&&!empty($simnumber)&&!empty($message)) {
 	} else {

@@ -94,6 +94,7 @@ if(!empty($keys['privatekey'])&&!empty($keys['publickey'])) {
 
 }*/
 
+/*
 $studentprofile_schoolyear = explode('-','2017-2018');
 
 pre(array('$studentprofile_schoolyear'=>$studentprofile_schoolyear));
@@ -110,5 +111,10 @@ $nextyear = $dbdate+$oneyear;
 $dbnextyear = date('m/d/Y H:i:s',$nextyear);
 
 pre(array('$dbdate'=>$dbdate,'$dbyear'=>$dbyear,'$nextyear'=>$nextyear,'$dbnextyear'=>$dbnextyear));
+*/
+
+$total = getTotalStudentCurrentSchoolYear();
+
+pre(array('$total'=>$total));
 
 //

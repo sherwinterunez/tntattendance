@@ -58,6 +58,7 @@ date_default_timezone_set('Asia/Manila');
 
 if(!empty(($license=checkLicense()))) {
 } else {
+	print_r(array('ERROR'=>'Invalid or expired license!'));
 	return false;
 }
 
@@ -74,7 +75,7 @@ if(!empty($result['rows'][0]['studentdtr_id'])) {
 
 if(!empty($notifications)) {
 
-	print_r($notifications);
+	print_r(array('studentdtr notifications'=>$notifications));
 
 	foreach($notifications as $k=>$v) {
 
@@ -91,18 +92,20 @@ if(!empty($notifications)) {
 
 		$profile = getStudentProfile($v['studentdtr_studentid']);
 
+		print_r(array('$profile'=>$profile));
+
 		if(!empty($fullname)) {
 			$msgin = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$msgin);
 			$msgout = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$msgout);
 		}
 
-		$msgin = str_replace('%FIRSTNAME%',strtoupper($v['studentprofile_firstname']),$msgin);
-		$msgin = str_replace('%LASTNAME%',strtoupper($v['studentprofile_lastname']),$msgin);
-		$msgin = str_replace('%MIDDLENAME%',strtoupper($v['studentprofile_middlename']),$msgin);
+		$msgin = str_replace('%FIRSTNAME%',strtoupper($profile['studentprofile_firstname']),$msgin);
+		$msgin = str_replace('%LASTNAME%',strtoupper($profile['studentprofile_lastname']),$msgin);
+		$msgin = str_replace('%MIDDLENAME%',strtoupper($profile['studentprofile_middlename']),$msgin);
 
-		$msgout = str_replace('%FIRSTNAME%',strtoupper($v['studentprofile_firstname']),$msgout);
-		$msgout = str_replace('%LASTNAME%',strtoupper($v['studentprofile_lastname']),$msgout);
-		$msgout = str_replace('%MIDDLENAME%',strtoupper($v['studentprofile_middlename']),$msgout);
+		$msgout = str_replace('%FIRSTNAME%',strtoupper($profile['studentprofile_firstname']),$msgout);
+		$msgout = str_replace('%LASTNAME%',strtoupper($profile['studentprofile_lastname']),$msgout);
+		$msgout = str_replace('%MIDDLENAME%',strtoupper($profile['studentprofile_middlename']),$msgout);
 
 		$msgin = str_replace('%d%',date('d',$v['studentdtr_unixtime']),$msgin);
 		$msgin = str_replace('%F%',date('F',$v['studentdtr_unixtime']),$msgin);
@@ -144,6 +147,11 @@ if(!empty($notifications)) {
 		$msgout = str_replace('%DATETIME%',$dt,$msgout);
 
 		$mobileno = getGuardianMobileNo($v['studentdtr_studentid']);
+
+		if(!empty($mobileno)) {
+		} else {
+			continue;
+		}
 
 		/*if(getOption('$SETTINGS_SENDPUSHNOTIFICATION',false)) {
 
@@ -238,6 +246,23 @@ if(!empty($notifications)) {
 				break;
 			}
 
+		} else {
+			// no sim card detected or no connected gsm modem
+
+			if($v['studentdtr_type']=='IN') {
+				if(!empty($license['sc'])) {
+					$msgin .= ' '.$license['sc'];
+				}
+				pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
+				sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin,$push);
+			} else {
+				if(!empty($license['sc'])) {
+					$msgout .= ' '.$license['sc'];
+				}
+				pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
+				sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout,$push);
+			}
+
 		}
 
 	}
@@ -257,7 +282,7 @@ if(!empty($result['rows'][0]['smsoutbox_id'])) {
 
 if(!empty($notifications)) {
 
-	print_r($notifications);
+	print_r(array('outbox notifications'=>$notifications));
 
 	foreach($notifications as $k=>$v) {
 
@@ -280,23 +305,6 @@ if(!empty($notifications)) {
 		$smsoutbox_message = str_replace('%FIRSTNAME%',strtoupper($profile['studentprofile_firstname']),$smsoutbox_message);
 		$smsoutbox_message = str_replace('%LASTNAME%',strtoupper($profile['studentprofile_lastname']),$smsoutbox_message);
 		$smsoutbox_message = str_replace('%MIDDLENAME%',strtoupper($profile['studentprofile_middlename']),$smsoutbox_message);
-
-		/*$smsoutbox_message = str_replace('%d%',date('d',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%F%',date('F',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%m%',date('m',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%M%',date('M',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%n%',date('n',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%y%',date('y',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%Y%',date('Y',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%a%',date('a',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%A%',date('A',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%g%',date('g',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%G%',date('G',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%h%',date('h',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%H%',date('H',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%i%',date('i',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%s%',date('s',$profile['studentdtr_unixtime']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%r%',date('r',$profile['studentdtr_unixtime']),$smsoutbox_message);*/
 
 		$dt = date('m/d/Y H:i:s',$profile['studentdtr_unixtime']);
 
