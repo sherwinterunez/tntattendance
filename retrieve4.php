@@ -155,6 +155,8 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 						} else {
 							$number = strrev($number);
 						}
+
+						$msg['number'] = $number;
 					}
 
 					//print_r(array('$msg[number]'=>$msg['number'],'$number'=>$number));
@@ -184,7 +186,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 								$smsinboxtemp_contactnumber = getContactNumber($smsinboxtemp_contactsid);
 							} else {
 								$smsinboxtemp_contactsid = 0;
-								$smsinboxtemp_contactnumber = $msg['number'];
+								$smsinboxtemp_contactnumber = $number; //$msg['number'];
 							}
 
 							$smsinboxtemp_udhref = $ref;
