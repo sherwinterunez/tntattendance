@@ -1452,6 +1452,9 @@ alter table tbl_studentprofile alter column studentprofile_yearlevel drop defaul
 alter table tbl_studentprofile alter column studentprofile_yearlevel type integer USING studentprofile_yearlevel::integer;
 alter table tbl_studentprofile alter column studentprofile_yearlevel set default 0;
 
+CREATE UNIQUE INDEX indx_studentprofile_number ON tbl_studentprofile USING btree (studentprofile_number);
+CREATE UNIQUE INDEX indx_studentprofile_rfid ON tbl_studentprofile USING btree (studentprofile_rfid);
+
 alter table tbl_smsoutbox add column smsoutbox_sendpush integer NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_pushstatus integer NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_pushid bigint NOT NULL DEFAULT 0;
@@ -1459,6 +1462,15 @@ alter table tbl_smsoutbox add column smsoutbox_pushcreatestamp timestamp with ti
 alter table tbl_smsoutbox add column smsoutbox_pushsentstamp timestamp with time zone DEFAULT now();
 alter table tbl_smsoutbox add column smsoutbox_priority integer NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_failedstamp timestamp with time zone DEFAULT now();
+alter table tbl_smsoutbox add column smsoutbox_priority integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_latenoti integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_absentnoti integer NOT NULL DEFAULT 0;
+
+alter table tbl_users alter column user_email type text;
+alter table tbl_users alter column user_hash type text;
+alter table tbl_users alter column user_login type text;
+
+
 
 
 ---

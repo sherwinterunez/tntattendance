@@ -58,7 +58,7 @@ $access = $applogin->getAccess();
 
 //$appaccess->showrules();
 
-pre(array('$_SESSION'=>$_SESSION));
+/*pre(array('$_SESSION'=>$_SESSION));*/
 
 ?>
 -->

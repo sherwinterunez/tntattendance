@@ -479,7 +479,7 @@ jQuery(document).ready(function($) {
 	jQuery("#contentprevious").css({height:studentcontentHeight});
 	jQuery("#studentphotobg").css({width:studentphotobgHeight,height:studentphotobgHeight});
 	jQuery("#studentphoto").css({width:studentphotobgHeight,height:studentphotobgHeight});
-	jQuery("#studentphoto img").css({width:studentphotobgHeight,height:studentphotobgHeight});
+	jQuery("#studentphoto img").css({width:studentphotobgHeight,height:studentphotobgHeight,"max-width":studentphotobgHeight,"max-height":studentphotobgHeight});
 
 	var studentcontentdivHeight = jQuery("#studentcontentdiv").height();
 	var studentcontentHeight  = jQuery("#studentcontent").height();
@@ -489,7 +489,7 @@ jQuery(document).ready(function($) {
 
 	srt.myForm.setItemValue('imagesize',studentphotobgHeight);
 
-	jQuery('#studentphoto').html('<img src="/obislogo.php?size='+studentphotobgHeight+'" />');
+	jQuery('#studentphoto').html('<img src="/obislogo.php?size='+studentphotobgHeight+'" style="max-width:'+studentphotobgHeight+'px;max-height:'+studentphotobgHeight+'px" />');
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});

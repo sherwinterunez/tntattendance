@@ -85,7 +85,7 @@ if($savecancel) {
 		<div id="messagingdetailssenteditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsoutboxinfo']['smsoutbox_message']) ? str_replace("\n",'<br>',$vars['params']['smsoutboxinfo']['smsoutbox_message']) : ''; ?>
 		</div>
-		<?php //pre(array('$vars'=>$vars)); ?>
+		<?php /*pre(array('$vars'=>$vars));*/ ?>
 	</div>
 </div>
 <script>

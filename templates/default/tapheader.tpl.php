@@ -458,14 +458,14 @@ if(!empty(($license=checkLicense()))) {
 	<div id="contentleft">
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
 		<div id="info">
-			<div class="label">Database:</div>
-			<div id="db">&nbsp;</div>
+			<div class="label">DB:</div>
+			<div id="db"><?php echo getTotalStudentCurrentSchoolYear(); ?></div>
 			<div class="label">IN:</div>
-			<div id="in">&nbsp;</div>
+			<div id="in">0</div>
 			<div class="label">OUT:</div>
-			<div id="out">&nbsp;</div>
+			<div id="out">0</div>
 			<div class="label">LATE:</div>
-			<div id="late">&nbsp;</div>
+			<div id="late">0</div>
 			<br class="br" />
 		</div>
 	</div>

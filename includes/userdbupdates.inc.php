@@ -37,6 +37,14 @@ if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyearend')) 
 	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyearend integer NOT NULL DEFAULT 0");
 }
 
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_latenoti')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_latenoti integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_absentnoti')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_absentnoti integer NOT NULL DEFAULT 0");
+}
+
 /* INCLUDES_END */
 
 

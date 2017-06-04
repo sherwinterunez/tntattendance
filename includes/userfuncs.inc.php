@@ -999,6 +999,94 @@ function getLoadProducts($network=false) {
 	return false;
 }
 
+function insertYearLevel($name=false) {
+	global $appdb;
+
+	if(!empty($name)) {
+	} else {
+		return false;
+	}
+
+	$name = trim($name);
+
+	if(!empty($name)) {
+	} else {
+		return false;
+	}
+
+	$content = array();
+	$content['groupref_name'] = $name;
+	$content['groupref_type'] = 2;
+
+	if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
+		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		die;
+	}
+
+	if(!empty($result['returning'][0]['groupref_id'])) {
+		return $result['returning'][0]['groupref_id'];
+	}
+
+	return false;
+}
+
+function insertSection($name=false,$yearlevel=false,$starttime=false,$endtime=false) {
+	global $appdb;
+
+	if(!empty($name)&&!empty($yearlevel)&&!empty($starttime)&&!empty($endtime)) {
+	} else {
+		return false;
+	}
+
+	$name = trim($name);
+
+	if(!empty($name)) {
+	} else {
+		return false;
+	}
+
+	$content = array();
+	$content['groupref_name'] = $name;
+	$content['groupref_type'] = 1;
+	$content['groupref_yearlevel'] = $yearlevel;
+	$content['groupref_starttime'] = $starttime;
+	$content['groupref_endtime'] = $endtime;
+
+	if(!($result = $appdb->insert("tbl_groupref",$content,"groupref_id"))) {
+		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+		die;
+	}
+
+	if(!empty($result['returning'][0]['groupref_id'])) {
+		return $result['returning'][0]['groupref_id'];
+	}
+
+	return false;
+}
+
+function getGroupRefId($ref=false) {
+	global $appdb;
+
+	if(!empty($ref)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_name='$ref'";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_id'])) {
+		return $result['rows'][0]['groupref_id'];
+	}
+
+	return false;
+}
+
 function getGroupRef($id=false,$mode=1) {
 	global $appdb;
 
@@ -1549,7 +1637,7 @@ function getDbUnixDate() {
 	return false;
 }
 
-function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0) {
+function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0,$latenoti=0,$absentnoti=0,$thecontactid=0) {
 	global $appdb;
 
 	if(!empty($simnumber)) {
@@ -1583,6 +1671,10 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 
 	if(!$contactid) {
 		$contactid = 0;
+	}
+
+	if(!empty($thecontactid)) {
+		$contactid = $thecontactid;
 	}
 
 	if(strlen($message)>160) {
@@ -1619,6 +1711,14 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 			$content['smsoutbox_pushstatus'] = 1;
 		}
 
+		if(!empty($latenoti)) {
+			$content['smsoutbox_latenoti'] = 1;
+		}
+
+		if(!empty($absentnoti)) {
+			$content['smsoutbox_absentnoti'] = 1;
+		}
+
 	} else {
 
 		$content = array();
@@ -1645,6 +1745,14 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 			$content['smsoutbox_pushstatus'] = 1;
 		}
 
+		if(!empty($latenoti)) {
+			$content['smsoutbox_latenoti'] = 1;
+		}
+
+		if(!empty($absentnoti)) {
+			$content['smsoutbox_absentnoti'] = 1;
+		}
+
 	}
 
 	if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
@@ -1662,8 +1770,8 @@ function sendToOutBoxPush($contactnumber=false,$simnumber=false,$message=false,$
 	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push);
 }
 
-function sendToOutBoxPriority($contactnumber=false,$simnumber=false,$message=false,$push=0,$priority=1) {
-	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push,$priority);
+function sendToOutBoxPriority($contactnumber=false,$simnumber=false,$message=false,$push=0,$priority=1,$status=1,$latenoti=0,$absentnoti=0,$contactid=0) {
+	return sendToOutBox($contactnumber,$simnumber,$message,$status,0,0,$push,$priority,$latenoti,$absentnoti,$contactid);
 }
 
 function wLog($text='',$module='') {

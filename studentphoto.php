@@ -49,6 +49,10 @@ date_default_timezone_set('Asia/Manila');
 
 global $appdb;
 
+if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
+	$size = intval($_GET['size']);
+}
+
 if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 	if(!($result = $appdb->query("select * from tbl_upload where upload_studentprofileid=".intval($_GET['pid'])))) {
@@ -59,36 +63,60 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 	if(!empty($result['rows'][0]['upload_content'])) {
 		//$retval['uploadid'] = $result['rows'][0]['upload_id'];
 		$content = base64_decode($result['rows'][0]['upload_content']);
+	} else {
+
+		define('TAP_PATH', ABS_PATH . 'templates/default/tap');
+
+		$defaultphoto = TAP_PATH.'/user.jpg';
+
+		if(file_exists($defaultphoto)&&($hf=fopen($defaultphoto,'r'))) {
+
+	    $content = fread($hf,filesize($defaultphoto));
+
+			//pre(array('$defaultphoto'=>$defaultphoto,'$size'=>$size)); die;
+
+			//pre($content); die;
+
+	    fclose($hf);
+
+			header("Content-Type: image/jpg");
+
+			if(!empty($content)) {
+				$img = new APP_SimpleImage;
+
+				$img->loadfromstring($content);
+
+				if(!empty($size)) {
+						$img->resize($size,$size);
+				}
+
+				$img->output();
+			}
+
+			die;
+
+		}
 	}
 
 	if(!empty($content)) {
 
-		if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
-			$size = intval($_GET['size']);
-		}
-
 		header("Content-Type: image/jpg");
 
-		$img = new APP_SimpleImage;
+		$detector = new FaceDetector;
 
-		$img->loadfromstring($content);
+		$detector->faceDetectString($content);
+		//$detector->faceDetect('duterte101.jpg');
+
+		$detector->cropFaceToJpeg2();
 
 		if(!empty($size)) {
-			$width = $img->getWidth();
-			$height = $img->getHeight();
-			if($width<$height) {
-				$img->crop($width);
-				$img->resizeToWidth($size);
-			} else
-			if($height<$width) {
-				$img->crop($height);
-				$img->resizeToHeight($size);
-			} else {
-				$img->resizeToHeight($size);
-			}
+			$detector->resize($size,$size);
 		}
 
-		$img->output();
+		$detector->output();
+
+		//$detector->cropFaceToJpeg();
+		//$detector->cropFaceToJpeg2();
 
 		//print_r($content);
 	}

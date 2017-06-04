@@ -29,7 +29,7 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 //pre(array('$vars'=>$vars));
 ?>
 <!--
-<?php pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars)); ?>
+<?php /*pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars));*/ ?>
 -->
 <style>
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?> {
@@ -225,6 +225,8 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 			myGridContacts.setColTypes("ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
 
 			myGridContacts.setColSorting("int,int,str,str,str,str,str,str,str,str,str,str,str");
+
+			myGridContacts.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter,#text_filter,#text_filter,#text_filter");
 
 			myGridContacts.init();
 

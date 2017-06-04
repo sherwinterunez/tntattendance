@@ -71,9 +71,9 @@ if($savecancel) {
 		font-weight: bold;
 		color: #000;
 	}
-	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link, 
-	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:visited, 
-	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:active, 
+	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link,
+	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:visited,
+	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:active,
 	#formdiv_%formval% .dhxform_obj_dhx_skyblue div.dhxform_label div.dhxform_label_nav_link:hover {
 	    color: inherit;
 	    cursor: default;
@@ -90,7 +90,7 @@ if($savecancel) {
 		<div id="messagingdetailssimdetailsform_%formval%"></div>
 		<br style="clear:both;" />
 	</div>
-	<?php //pre(array('$vars'=>$vars)); ?>
+	<?php /*pre(array('$vars'=>$vars));*/ ?>
 </div>
 <script>
 
@@ -109,7 +109,7 @@ if($savecancel) {
 		var myTabbar = new dhtmlXTabBar("messagingdetailssimtabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("a1", "Details");
 		//myTabbar.addTab("a2", "Tab 1-2");
 		//myTabbar.addTab("a3", "Tab 1-3");
@@ -125,7 +125,7 @@ if($savecancel) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "messaging"},
-				{type: "hidden", name: "formid", value: "messagingdetailssim"},				
+				{type: "hidden", name: "formid", value: "messagingdetailssim"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo $method=='messagingedit' ? $vars['post']['rowid'] : ''; ?>"},
 			]},
@@ -153,7 +153,7 @@ if($savecancel) {
 
 ///////////////////////////////////
 
-		<?php if($method=='messagingnew'||$method=='messagingedit') { ?> 
+		<?php if($method=='messagingnew'||$method=='messagingedit') { ?>
 
 		myTab.toolbar.disableAll();
 
@@ -167,7 +167,7 @@ if($savecancel) {
 
 		//srt.dummy.apply(jQuery("#messagingdetailssimdetailsform_%formval% input[name='txt_simnumber']"));
 
-		<?php } else if($method=='messagingsave') { ?> 
+		<?php } else if($method=='messagingsave') { ?>
 
 		myTab.toolbar.disableAll();
 
@@ -175,7 +175,7 @@ if($savecancel) {
 
 		myTab.toolbar.disableOnly(['messagingsave','messagingcancel']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -185,7 +185,7 @@ if($savecancel) {
 
 		myTab.toolbar.disableOnly(['messagingsave','messagingcancel']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -223,9 +223,9 @@ if($savecancel) {
 				msg = 'Please enter Password. This field is required.';
 			} else if(id=='user_pass2') {
 				if(typeof(value)=='string' && value!='') {
-					msg = 'Please make sure the password is the same.';					
+					msg = 'Please make sure the password is the same.';
 				} else {
-					msg = 'Please enter Confirm Password. This field is required. ';					
+					msg = 'Please enter Confirm Password. This field is required. ';
 				}
 			} else if(id=='user_email') {
 				msg = 'Please enter proper Email Address (eg. joshua@yahoo.com). This field is required.';
@@ -331,7 +331,7 @@ if($savecancel) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			//$("#usermanagementmanageform_"+formval+" input[name='buttonid']").val(id);
 
@@ -386,7 +386,7 @@ if($savecancel) {
 
 					/*if(typeof(data.xml)=='string') {
 						myTree_%formval%.deleteItem('roleid_0');
-						myTree_%formval%.parse(data.xml,"xml"); 
+						myTree_%formval%.parse(data.xml,"xml");
 
 						if(data.role_id) {
 							myTree_%formval%.selectItem(data.role_id,true);
@@ -398,7 +398,7 @@ if($savecancel) {
 					}*/
 
 					if(data.error_code) {
-					} else 
+					} else
 					if(data.html) {
 
 						//$("#formdiv_%formval% #messagingdetails").parent().html(data.html);

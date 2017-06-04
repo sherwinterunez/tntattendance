@@ -98,7 +98,7 @@ if($savecancel) {
 		<div id="messagingdetailsinboxeditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsinboxinfo']['smsinbox_message']) ? str_replace("\n",'<br />',$vars['params']['smsinboxinfo']['smsinbox_message']) : ''; ?>
 		</div>
-		<?php //pre(array('$vars'=>$vars)); ?>
+		<?php /*pre(array('$vars'=>$vars));*/ ?>
 	</div>
 </div>
 <script>

@@ -27,7 +27,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 //pre(array('$vars'=>$vars));
 ?>
 <!--
-<?php pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars)); ?>
+<?php /*pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars));*/ ?>
 -->
 <style>
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?> {
@@ -144,7 +144,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 		var myTabbar = new dhtmlXTabBar("<?php echo $wid.$templatedetailid.$submod; ?>tabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("tbElectronicBulletin", "Electronic Bulletin");
 		myTabbar.addTab("tbLoginNotification", "Login Notification");
 
@@ -159,7 +159,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "<?php echo $moduleid; ?>"},
-				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},				
+				{type: "hidden", name: "formid", value: "<?php echo $moduleid; ?>"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo !empty($vars['post']['rowid']) ? $vars['post']['rowid'] : ''; ?>"},
 				{type: "hidden", name: "wid", value: "<?php echo !empty($vars['post']['wid']) ? $vars['post']['wid'] : ''; ?>"},
@@ -186,7 +186,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 ///////////////////////////////////
 
-		<?php if($method==$moduleid.'new') { ?> 
+		<?php if($method==$moduleid.'new') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -196,9 +196,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'edit') { ?> 
+		<?php } else if($method==$moduleid.'edit') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -208,9 +208,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myForm.enableLiveValidation(true);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
-		<?php } else if($method==$moduleid.'save') { ?> 
+		<?php } else if($method==$moduleid.'save') { ?>
 
 		myWinToolbar.disableAll();
 
@@ -218,7 +218,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myWinToolbar.disableOnly(['<?php echo $moduleid; ?>save','<?php echo $moduleid; ?>cancel']);
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -236,7 +236,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		<?php 	}*/ ?>
 
-		myWinToolbar.showOnly(myToolbar);	
+		myWinToolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -331,7 +331,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				    //myForm2_%formval%.hideItem(tbId);
 			    }
 			});
- 
+
 		});
 
 		myForm.attachEvent("onBeforeChange", function (name, old_value, new_value){
@@ -455,7 +455,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -509,7 +509,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(obj.o,['<?php echo $moduleid; ?>refresh',obj.formval]);
 
 							showMessage(data.return_message,5000);

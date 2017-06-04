@@ -55,7 +55,7 @@ if(!empty($vars['post']['method'])) {
 		<div id="messagingdetailsoutboxeditor" class="dhxform_obj_dhx_web">
 			<?php echo !empty($vars['params']['smsoutboxinfo']['smsoutbox_message']) ? str_replace("\n",'<br>',$vars['params']['smsoutboxinfo']['smsoutbox_message']) : ''; ?>
 		</div>
-		<?php //pre(array('$vars'=>$vars)); ?>
+		<?php /*pre(array('$vars'=>$vars));*/ ?>
 	</div>
 </div>
 <script>

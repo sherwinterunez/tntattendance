@@ -217,8 +217,50 @@ if(!class_exists('APP_app_contact')) {
 					}
 
 					if(!empty($content)) {
+
+						$detector = new FaceDetector;
+
+						$detector->faceDetectString($content);
+						//$detector->faceDetect('duterte101.jpg');
+
+						//$detector->cropFaceToJpeg();
+						$detector->cropFaceToJpeg2();
 						header("Content-Type: image/jpg");
-						print_r($content);
+						$detector->output();
+						//print_r($content);
+					} else {
+
+						define('TAP_PATH', ABS_PATH . 'templates/default/tap');
+
+						$defaultphoto = TAP_PATH.'/user.jpg';
+
+						if(file_exists($defaultphoto)&&($hf=fopen($defaultphoto,'r'))) {
+
+					    $content = fread($hf,filesize($defaultphoto));
+
+							//pre(array('$defaultphoto'=>$defaultphoto,'$size'=>$size)); die;
+
+							//pre($content); die;
+
+					    fclose($hf);
+
+							header("Content-Type: image/jpg");
+
+							if(!empty($content)) {
+								$img = new APP_SimpleImage;
+
+								$img->loadfromstring($content);
+
+								//if(!empty($size)) {
+								//		$img->resize($size,$size);
+								//}
+
+								$img->output();
+							}
+
+							die;
+
+						}
 					}
 
 					die();
@@ -359,9 +401,33 @@ if(!class_exists('APP_app_contact')) {
 					$content['studentprofile_birthdate'] = !empty($post['studentprofile_birthdate']) ? $post['studentprofile_birthdate'] : '';
 					$content['studentprofile_yearlevel'] = !empty($post['studentprofile_yearlevel']) ? $post['studentprofile_yearlevel'] : 0;
 					$content['studentprofile_section'] = !empty($post['studentprofile_section']) ? $post['studentprofile_section'] : 0;
-					$content['studentprofile_guardianname'] = !empty($post['studentprofile_guardianname']) ? $post['studentprofile_guardianname'] : '';
+
+					$guardian = array();
+
+				  if(!empty($content['studentprofile_firstname'])) {
+				    $guardian[] = $content['studentprofile_firstname'];
+				  }
+
+				  if(!empty($content['studentprofile_middlename'])) {
+				    $guardian[] = $content['studentprofile_middlename'];
+				  }
+
+				  if(!empty($content['studentprofile_lastname'])) {
+				    $guardian[] = $content['studentprofile_lastname'];
+				  }
+
+				  $guardianname = implode(' ',$guardian);
+
+					$content['studentprofile_guardianname'] = !empty($post['studentprofile_guardianname']) ? $post['studentprofile_guardianname'] : $guardianname;
 					$content['studentprofile_guardianmobileno'] = !empty($post['studentprofile_guardianmobileno']) ? $post['studentprofile_guardianmobileno'] : '';
-					$content['studentprofile_guardianemail'] = !empty($post['studentprofile_guardianemail']) ? $post['studentprofile_guardianemail'] : '';
+
+					$studentprofile_guardianemail = sha1(microtime()).'@yahoo.com';
+
+					if(!empty($post['studentprofile_guardianemail'])&&$post['studentprofile_guardianemail']!='_@_._') {
+						$studentprofile_guardianemail = $post['studentprofile_guardianemail'];
+					}
+
+					$content['studentprofile_guardianemail'] = $studentprofile_guardianemail;
 
 					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0) {
 
@@ -476,7 +542,7 @@ if(!class_exists('APP_app_contact')) {
 					'labelWidth' => 120,
 					'name' => 'studentprofile_rfid',
 					'readonly' => $readonly,
-					//'required' => !$readonly,
+					'required' => !$readonly,
 					'value' => !empty($params['studentinfo']['studentprofile_rfid']) ? $params['studentinfo']['studentprofile_rfid'] : '',
 				);
 
@@ -554,7 +620,7 @@ if(!class_exists('APP_app_contact')) {
 					$params['tbStudentProfile'][] = array(
 						'type' => 'input',
 						'label' => 'BIRTH DATE',
-						'labelWidth' => 150,
+						'labelWidth' => 180,
 						'name' => 'studentprofile_birthdate',
 						'readonly' => $readonly,
 						//'required' => !$readonly,
@@ -565,7 +631,7 @@ if(!class_exists('APP_app_contact')) {
 					$params['tbStudentProfile'][] = array(
 						'type' => 'calendar',
 						'label' => 'BIRTH DATE',
-						'labelWidth' => 150,
+						'labelWidth' => 180,
 						'name' => 'studentprofile_birthdate',
 						'readonly' => $readonly,
 						'calendarPosition' => 'right',
@@ -634,10 +700,10 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbStudentProfile'][] = array(
 					'type' => 'combo',
 					'label' => 'YEAR LEVEL',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'studentprofile_yearlevel',
 					'readonly' => true, //$readonly,
-					//'required' => !$readonly,
+					'required' => !$readonly,
 					//'value' => !empty($params['studentinfo']['studentprofile_yearlevel']) ? $params['studentinfo']['studentprofile_yearlevel'] : '',
 					'options' => $opt,
 				);
@@ -667,10 +733,10 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbStudentProfile'][] = array(
 					'type' => 'combo',
 					'label' => 'SECTION',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'studentprofile_section',
 					'readonly' => true, //$readonly,
-					//'required' => !$readonly,
+					'required' => !$readonly,
 					//'value' => !empty($params['studentinfo']['studentprofile_section']) ? $params['studentinfo']['studentprofile_section'] : '',
 					'options' => $opt,
 				);
@@ -678,7 +744,7 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbStudentProfile'][] = array(
 					'type' => 'input',
 					'label' => 'GUARDIAN NAME',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'studentprofile_guardianname',
 					'readonly' => $readonly,
 					//'required' => !$readonly,
@@ -688,17 +754,18 @@ if(!class_exists('APP_app_contact')) {
 				$params['tbStudentProfile'][] = array(
 					'type' => 'input',
 					'label' => 'GUARDIAN MOBILE NO.',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'studentprofile_guardianmobileno',
+					'inputMask' => array('mask'=>'09999999999'),
 					'readonly' => $readonly,
-					//'required' => !$readonly,
+					'required' => !$readonly,
 					'value' => !empty($params['studentinfo']['studentprofile_guardianmobileno']) ? $params['studentinfo']['studentprofile_guardianmobileno'] : '',
 				);
 
 				$params['tbStudentProfile'][] = array(
 					'type' => 'input',
 					'label' => 'GUARDIAN EMAIL ADD.',
-					'labelWidth' => 150,
+					'labelWidth' => 180,
 					'name' => 'studentprofile_guardianemail',
 					'readonly' => $readonly,
 					'inputMask' => array('alias'=>'email','prefix'=>'','autoUnmask'=>true),

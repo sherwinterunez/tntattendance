@@ -29,7 +29,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 
 ?>
 <!--
-<?php print_r(array('$vars'=>$vars)); ?>
+<?php /*print_r(array('$vars'=>$vars));*/ ?>
 -->
 <style>
 	#formdiv_%formval% #<?php echo $templatemainid.$submod; ?> {

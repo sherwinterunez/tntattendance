@@ -29,7 +29,7 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 //pre(array('$vars'=>$vars));
 ?>
 <!--
-<?php pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars)); ?>
+<?php /*pre(array('$_SESSION'=>$_SESSION)); pre(array('$vars'=>$vars));*/ ?>
 -->
 <style>
 	#<?php echo $wid; ?> #<?php echo $wid.$templatedetailid.$submod; ?> {

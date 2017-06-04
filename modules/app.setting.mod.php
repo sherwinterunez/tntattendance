@@ -82,6 +82,9 @@ if(!class_exists('APP_app_setting')) {
 
 				$default_schoolyear = getCurrentSchoolYear();
 				$default_tardinessgraceperiodminute = 30;
+				$default_absentgraceperiodminute1 = 40;
+				$default_absentgraceperiodminute2 = 0;
+				$default_absentgraceperiodminute3 = 0;
 
 				$default_bulletin = 'DEMO UNIT... OBIS SOFTWARE TECHNOLOGY... OBIS SOFTWARE TECHNOLOGY... DEMO UNIT...';
 				$default_timeinnotification = '%STUDENTFULLNAME% has timed-in at %DATETIME%';
@@ -109,6 +112,10 @@ if(!class_exists('APP_app_setting')) {
 				$settings_synctoserver = getOption('$SETTINGS_SYNCTOSERVER',false);
 
 				$settings_tardinessgraceperiodminute = getOption('$SETTINGS_TARDINESSGRACEPERIODMINUTE',$default_tardinessgraceperiodminute);
+
+				$settings_absentgraceperiodminute1 = getOption('$SETTINGS_ABSENTGRACEPERIODMINUTE1',$default_absentgraceperiodminute1);
+				$settings_absentgraceperiodminute2 = getOption('$SETTINGS_ABSENTGRACEPERIODMINUTE2',$default_absentgraceperiodminute2);
+				$settings_absentgraceperiodminute3 = getOption('$SETTINGS_ABSENTGRACEPERIODMINUTE3',$default_absentgraceperiodminute3);
 
 				$settings_sendtimeinnotification  = getOption('$SETTINGS_SENDTIMEINNOTIFICATION',true);
 				$settings_sendtimeoutnotification  = getOption('$SETTINGS_SENDTIMEOUTNOTIFICATION',true);
@@ -200,6 +207,12 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_SYNCTOSERVER',!empty($post['settings_synctoserver'])?true:false);
 
 					setSetting('$SETTINGS_TARDINESSGRACEPERIODMINUTE',!empty($post['settings_tardinessgraceperiodminute'])?intval($post['settings_tardinessgraceperiodminute']):$default_tardinessgraceperiodminute);
+
+					setSetting('$SETTINGS_ABSENTGRACEPERIODMINUTE1',!empty($post['settings_absentgraceperiodminute1'])?intval($post['settings_absentgraceperiodminute1']):$default_absentgraceperiodminute1);
+
+					setSetting('$SETTINGS_ABSENTGRACEPERIODMINUTE2',!empty($post['settings_absentgraceperiodminute2'])?intval($post['settings_absentgraceperiodminute2']):$default_absentgraceperiodminute2);
+
+					setSetting('$SETTINGS_ABSENTGRACEPERIODMINUTE3',!empty($post['settings_absentgraceperiodminute3'])?intval($post['settings_absentgraceperiodminute3']):$default_absentgraceperiodminute3);
 
 					setSetting('$SETTINGS_TIMEINNOTIFICATION',!empty($post['settings_timeinnotification'])?$post['settings_timeinnotification']:$default_timeinnotification);
 
@@ -670,11 +683,68 @@ if(!class_exists('APP_app_setting')) {
 					'type' => 'input',
 					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
 					'labelWidth' => 250,
+					'inputWidth' => 100,
 					'name' => 'settings_tardinessgraceperiodminute',
 					'readonly' => $readonly,
 					'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_tardinessgraceperiodminute) ? $settings_tardinessgraceperiodminute : '',
+				);
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'ABSENT GRACE PERIOD (MINUTE)',
+					'labelWidth' => 250,
+					'inputWidth' => 100,
+					'name' => 'settings_absentgraceperiodminute1',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_absentgraceperiodminute1) ? $settings_absentgraceperiodminute1 : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					//'label' => 'ABSENT GRACE PERIOD (MINUTE)',
+					//'labelWidth' => 250,
+					'inputWidth' => 100,
+					'name' => 'settings_absentgraceperiodminute2',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_absentgraceperiodminute2) ? $settings_absentgraceperiodminute2 : '',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					//'label' => 'ABSENT GRACE PERIOD (MINUTE)',
+					//'labelWidth' => 250,
+					'inputWidth' => 100,
+					'name' => 'settings_absentgraceperiodminute3',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_absentgraceperiodminute3) ? $settings_absentgraceperiodminute3 : '',
+				);
+
+				$params['tbThreshold'][] = array(
+					'type' => 'block',
+					'width' => 1150,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
 				);
 
 				$params['tbServer'][] = array(

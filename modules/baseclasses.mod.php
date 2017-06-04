@@ -436,11 +436,11 @@ if(!class_exists('APP_Base')) {
 		}
 
 		function doapi2($vars=false,$retflag=false) {
-
+			//pre($vars); die;
 			if(!empty($vars['params'])) {
 				$vars['post'] = json_decode(gzuncompress(base64_decode($vars['params'])),true);
 				if($vars['post']) {
-					//pre($vars);
+					//pre($vars); die;
 					$this->postjson($vars,$retflag);
 				}
 			}

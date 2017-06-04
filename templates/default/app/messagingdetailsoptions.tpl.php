@@ -68,7 +68,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		<div id="messagingdetailsoptionsdetailsform_%formval%"></div>
 		<br style="clear:both;" />
 	</div>
-	<?php //pre(array('$vars'=>$vars)); ?>
+	<?php /*pre(array('$vars'=>$vars));*/ ?>
 </div>
 <script>
 
@@ -83,7 +83,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 		var myTabbar = new dhtmlXTabBar("messagingdetailsoptionstabform_%formval%");
 
 		myTabbar.setArrowsMode("auto");
-			
+
 		myTabbar.addTab("a1", "Details");
 		//myTabbar.addTab("a2", "Tab 1-2");
 		//myTabbar.addTab("a3", "Tab 1-3");
@@ -99,12 +99,12 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 				{type: "hidden", name: "formval", value: "%formval%"},
 				{type: "hidden", name: "action", value: "formonly"},
 				{type: "hidden", name: "module", value: "messaging"},
-				{type: "hidden", name: "formid", value: "messagingdetailsoptions"},				
+				{type: "hidden", name: "formid", value: "messagingdetailsoptions"},
 				{type: "hidden", name: "method", value: "<?php echo !empty($method) ? $method : ''; ?>"},
 				{type: "hidden", name: "rowid", value: "<?php echo $method=='messagingedit' ? $vars['post']['rowid'] : ''; ?>"},
 			]},
 			{type: "input", label: "Name", name: "txt_optionsname", <?php echo $readonly?'':'validate: "NotEmpty", required: true, '; ?>readonly: <?php echo $readonly?'true':'false'; ?>, value: <?php echo !empty($vars['params']['optionsinfo']['options_name']) ? json_encode($vars['params']['optionsinfo']['options_name']) : '""'; ?>},
-			<?php if($method=='messagingnew'||$method=='messagingedit') { ?> 
+			<?php if($method=='messagingnew'||$method=='messagingedit') { ?>
 			{type: "combo", label: "Type", name: "txt_optionstype", required: true, readonly: true, options:[
 				{text: "STRING", value: "STRING"<?php echo !empty($options_type) && $options_type=='STRING' ? ', selected: true' : ''; ?>},
 				{text: "NUMERIC", value: "NUMERIC"<?php echo !empty($options_type) && $options_type=='NUMERIC' ? ', selected: true' : ''; ?>},
@@ -141,7 +141,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 ///////////////////////////////////
 
-		<?php if($method=='messagingnew'||$method=='messagingedit') { ?> 
+		<?php if($method=='messagingnew'||$method=='messagingedit') { ?>
 
 		myTab.toolbar.disableAll();
 
@@ -149,7 +149,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myForm.setItemFocus("txt_optionsname");
 
-		<?php } else if($method=='messagingsave') { ?> 
+		<?php } else if($method=='messagingsave') { ?>
 
 		myTab.toolbar.disableAll();
 
@@ -157,7 +157,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myTab.toolbar.disableOnly(['messagingsave','messagingcancel']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		<?php } else { ?>
 
@@ -167,7 +167,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 		myTab.toolbar.disableOnly(['messagingsave','messagingcancel']);
 
-		myTab.toolbar.showOnly(myToolbar);	
+		myTab.toolbar.showOnly(myToolbar);
 
 		<?php } ?>
 
@@ -324,7 +324,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 			var myForm = myForm2_%formval%;
 
 			var txt_optionnumber = parseInt($("#messagingdetailsoptionsdetailsform_%formval% input[name='txt_optionnumber']").val());
-			
+
 			if(isNaN(txt_optionnumber)) {
 				txt_optionnumber = '';
 			}
@@ -335,7 +335,7 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 
 			myForm.trimAllInputs();
 
-			if(!myForm.validate()) return false; 
+			if(!myForm.validate()) return false;
 
 			showSaving();
 
@@ -391,14 +391,14 @@ if(!empty($vars['params']['optionsinfo']['options_value'])) {
 					}
 
 					if(data.error_code) {
-					} else 
+					} else
 					if(data.html) {
 						layout_resize_%formval%($("#messagingdetailsoptionsdetailsform_%formval% input[name='rowid']").val());
 					}
 
 					if(data.return_code) {
 						if(data.return_code=='SUCCESS') {
-	
+
 							if(data.rowid) {
 								layout_resize_%formval%();
 								messagingmainoptionsgrid_%formval%(data.rowid);
