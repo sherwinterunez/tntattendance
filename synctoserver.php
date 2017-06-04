@@ -123,7 +123,7 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 
 	$studentprofiles = $result['rows'];
 
-	print_r($studentprofiles);
+	//print_r($studentprofiles);
 
 	foreach($studentprofiles as $k=>$v) {
 

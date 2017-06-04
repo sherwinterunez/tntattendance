@@ -439,6 +439,23 @@ if(!class_exists('APP_Tap')) {
 
 			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])&&!empty($vars['post']['imagesize'])&&is_numeric($vars['post']['imagesize'])) {
 
+				$settings_servershutdownrfid = getOption('$SETTINGS_SERVERSHUTDOWNRFID',false);
+				$settings_servershutdownrfidenable = getOption('$SETTINGS_SERVERSHUTDOWNRFIDENABLE',false);
+
+				if($settings_servershutdownrfidenable&&$settings_servershutdownrfid&&$vars['post']['rfid']==$settings_servershutdownrfid) {
+					$curl = new MyCurl;
+					$curl->get('http://127.0.0.1:8080/poweroff');
+
+					$retval = array();
+					$retval['return_code'] = 4544;
+					$retval['return_message'] = 'Powering Off...';
+
+					header_json();
+					json_encode_return($retval);
+					die;
+
+				}
+
 				$vars['post']['unixtime'] = intval(getDbUnixDate());
 				$post = $vars['post'];
 
