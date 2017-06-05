@@ -55,6 +55,21 @@ if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
 
 if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
+	$pid = intval($_GET['pid']);
+	$ssize = '';
+
+	if($size) {
+		$ssize = '-'.$size;
+	}
+
+	$imagefile = '/var/log/cache/'.$pid.$ssize.'.jpg';
+
+	if(@file_exists($imagefile)) {
+		header("Content-Type: image/jpg");
+		readfile($imagefile);
+		die;
+	}
+
 	if(!($result = $appdb->query("select * from tbl_upload where upload_studentprofileid=".intval($_GET['pid'])))) {
 		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 		die;
@@ -112,6 +127,8 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 		if(!empty($size)) {
 			$detector->resize($size,$size);
 		}
+
+		@$detector->output(IMAGETYPE_JPEG, $imagefile);
 
 		$detector->output();
 

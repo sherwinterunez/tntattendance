@@ -312,6 +312,7 @@ if(!class_exists('APP_Tap')) {
 				$retval['license'] = $license['sc'];
 			} else {
 				$retval['license'] = 'TAP N TXT DEMO UNIT (UNLICENSED)';
+				//$retval['license'] = 'THE QUICK BROWN FOX';
 			}
 
 			header_json();

@@ -451,13 +451,13 @@ class FaceDetector
 			$this->resize($width,$height);
 		}
 
-    public function output($image_type=IMAGETYPE_JPEG) {
+    public function output($image_type=IMAGETYPE_JPEG, $file=NULL) {
 			if( $image_type == IMAGETYPE_JPEG ) {
-				imagejpeg($this->canvas);
+				imagejpeg($this->canvas, $file);
 			} elseif( $image_type == IMAGETYPE_GIF ) {
-				imagegif($this->canvas);
+				imagegif($this->canvas, $file);
 			} elseif( $image_type == IMAGETYPE_PNG ) {
-				imagepng($this->canvas);
+				imagepng($this->canvas, $file);
 			}
 		}
 
