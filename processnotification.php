@@ -344,7 +344,7 @@ if($settings_sendlatenotification) {
 		die;
 	}
 
-	pre(array('$result'=>$result,'$sql'=>$sql));
+	//pre(array('$result'=>$result,'$sql'=>$sql));
 
 	$ids = array();
 
@@ -381,7 +381,7 @@ if($settings_sendlatenotification) {
 			}
 		}
 
-		pre(array('$result'=>$result,'$sql'=>$sql,'$ids'=>$ids,'$sids'=>$sids));
+		//pre(array('$result'=>$result,'$sql'=>$sql,'$ids'=>$ids,'$sids'=>$sids));
 
 	} // if(!empty($ids)) {
 
@@ -427,13 +427,13 @@ if($settings_sendlatenotification) {
 			$gracePeriodStamp = $gracePeriod + $startTimeStamp;
 
 
-			pre(array('$profile'=>$profile,'$startTime'=>$startTime,'$startTimeStamp'=>$startTimeStamp,'$startTimeDt'=>date('m/d/Y H:i:s',$startTimeStamp),'$endTime'=>$endTime,'$endTimeStamp'=>$endTimeStamp,'$endTimeDt'=>date('m/d/Y H:i:s',$endTimeStamp),'$gracePeriodStamp'=>$gracePeriodStamp,'$gracePeriodDt'=>date('m/d/Y H:i:s',$gracePeriodStamp)));
+			//pre(array('$profile'=>$profile,'$startTime'=>$startTime,'$startTimeStamp'=>$startTimeStamp,'$startTimeDt'=>date('m/d/Y H:i:s',$startTimeStamp),'$endTime'=>$endTime,'$endTimeStamp'=>$endTimeStamp,'$endTimeDt'=>date('m/d/Y H:i:s',$endTimeStamp),'$gracePeriodStamp'=>$gracePeriodStamp,'$gracePeriodDt'=>date('m/d/Y H:i:s',$gracePeriodStamp)));
 
 			if($unixtime>$gracePeriodStamp) {
 
 				$msg = $settings_latenotification;
 
-				pre(array('late'=>'yes','$msg'=>$msg));
+				//pre(array('late'=>'yes','$msg'=>$msg));
 
 				if(!empty($fullname)) {
 					$msg = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$msg);
@@ -526,7 +526,7 @@ if($settings_sendabsentnotification) {
 	$from = date2timestamp("$cdt 00:00:00",'m/d/Y H:i:s');
 	//$to = date2timestamp("$cdt 23:59:59",'m/d/Y H:i:s');
 
-	pre(array('$from'=>$from,'$fromdt'=>pgDateUnix($from),'$to'=>$to,'$todt'=>pgDateUnix($to)));
+	//pre(array('$from'=>$from,'$fromdt'=>pgDateUnix($from),'$to'=>$to,'$todt'=>pgDateUnix($to)));
 
 	//
 
@@ -541,7 +541,7 @@ if($settings_sendabsentnotification) {
 		die;
 	}
 
-	pre(array('$result'=>$result,'$sql'=>$sql));
+	//pre(array('$result'=>$result,'$sql'=>$sql));
 
 	$ids = array();
 
@@ -638,7 +638,7 @@ if($settings_sendabsentnotification) {
 
 			$gracePeriodStamp = $gracePeriod + $startTimeStamp;
 
-			pre(array('$profile'=>$profile,'$startTime'=>$startTime,'$startTimeStamp'=>$startTimeStamp,'$startTimeDt'=>date('m/d/Y H:i:s',$startTimeStamp),'$endTime'=>$endTime,'$endTimeStamp'=>$endTimeStamp,'$endTimeDt'=>date('m/d/Y H:i:s',$endTimeStamp),'$gracePeriodStamp'=>$gracePeriodStamp,'$gracePeriodDt'=>date('m/d/Y H:i:s',$gracePeriodStamp)));
+			//pre(array('$profile'=>$profile,'$startTime'=>$startTime,'$startTimeStamp'=>$startTimeStamp,'$startTimeDt'=>date('m/d/Y H:i:s',$startTimeStamp),'$endTime'=>$endTime,'$endTimeStamp'=>$endTimeStamp,'$endTimeDt'=>date('m/d/Y H:i:s',$endTimeStamp),'$gracePeriodStamp'=>$gracePeriodStamp,'$gracePeriodDt'=>date('m/d/Y H:i:s',$gracePeriodStamp)));
 
 			if($unixtime>$gracePeriodStamp) {
 
@@ -646,7 +646,7 @@ if($settings_sendabsentnotification) {
 
 				$msg = $settings_absentnotification;
 
-				pre(array('late'=>'yes','$msg'=>$msg));
+				//pre(array('late'=>'yes','$msg'=>$msg));
 
 				if(!empty($fullname)) {
 					$msg = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$msg);
@@ -743,7 +743,7 @@ if(!empty($result['rows'][0]['smsoutbox_id'])) {
 
 if(!empty($notifications)) {
 
-	print_r(array('outbox notifications'=>$notifications));
+	//print_r(array('outbox notifications'=>$notifications));
 
 	foreach($notifications as $k=>$v) {
 
@@ -789,13 +789,13 @@ if(!empty($notifications)) {
 		$post['msg'] = $smsoutbox_message;
 		$post['title'] = 'TAP N TXT';
 
-		pre(array('$post'=>$post,'$profile'=>$profile));
+		//pre(array('$post'=>$post,'$profile'=>$profile));
 
 		if(!($retcont = $ch->post(REMOTE_FCMSENDTOTOPIC_URL,$post))) {
 			print_r(array('error'=>$retcont));
 		}
 
-		print_r(array('$retcont'=>$retcont));
+		//print_r(array('$retcont'=>$retcont));
 
 		if(!empty($retcont['content'])) {
 			$retval = json_decode($retcont['content'],true);
