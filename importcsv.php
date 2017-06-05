@@ -178,7 +178,8 @@ foreach($lines as $k=>$v) {
   }
 
   if(!empty($data[14])&&!empty($studentprofile_yearlevel)) {
-    $studentprofile_section = getGroupRefId(trim($data[14]));
+    //$studentprofile_section = getGroupRefId(trim($data[14]));
+		$studentprofile_section = getSectionId(trim($data[14]),$studentprofile_yearlevel);
 
     if(!empty($studentprofile_section)) {
       $content['studentprofile_section'] = $studentprofile_section;
@@ -276,7 +277,7 @@ foreach($lines as $k=>$v) {
 
   } else
 	if(!empty($studentprofile_id)) {
-		$appdb->commit();		
+		$appdb->commit();
 	}
 
 	$appdb->rollback();

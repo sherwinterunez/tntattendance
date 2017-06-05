@@ -723,10 +723,10 @@ if(!class_exists('APP_app_contact')) {
 					}
 					if($readonly) {
 						if($selected) {
-							$opt[] = array('text'=>$v['groupref_name'],'value'=>$v['groupref_id'],'selected'=>$selected);
+							$opt[] = array('text'=>getGroupRefName($v['groupref_yearlevel']).' / '.$v['groupref_name'],'value'=>$v['groupref_id'],'selected'=>$selected);
 						}
 					} else {
-						$opt[] = array('text'=>$v['groupref_name'],'value'=>$v['groupref_id'],'selected'=>$selected);
+						$opt[] = array('text'=>getGroupRefName($v['groupref_yearlevel']).' / '.$v['groupref_name'],'value'=>$v['groupref_id'],'selected'=>$selected);
 					}
 				}
 

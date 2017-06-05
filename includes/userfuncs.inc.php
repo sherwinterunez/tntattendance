@@ -1175,6 +1175,29 @@ function getGroupRefName($id=false) {
 	return false;
 }
 
+function getSectionId($section=false,$yearlevel=false) {
+	global $appdb;
+
+	if(!empty($section)&&!empty($yearlevel)&&intval($yearlevel)>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_name='$section' and groupref_yearlevel='".intval($yearlevel)."'";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_id'])) {
+		return $result['rows'][0]['groupref_id'];
+	}
+
+	return false;
+}
+
 function getSectionStartTime($id=false) {
 	global $appdb;
 
