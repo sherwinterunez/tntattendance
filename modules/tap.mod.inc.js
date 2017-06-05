@@ -281,6 +281,10 @@ srt.doShowDateTime = function() {
 			}
 		}
 
+		if(typeof data.license != 'undefined' ) {
+			jQuery('#schoolname').html(data.license);
+		}
+
 	},true);
 }
 

@@ -292,6 +292,11 @@ if(!class_exists('APP_Tap')) {
 
 			//$bulletin = getOption('$SETTINGS_ELECTRONICBULLETIN','The quick brown fox jump over the lazy dog besides the river bank.');
 
+			if(!empty(($license=checkLicense()))) {
+			} else {
+				$license = array();
+			}
+
 			$retval = array();
 			$retval['currentTime'] = intval(getDbUnixDate());
 			$retval['currentTimeString'] = date('l, F d Y g:i A', $retval['currentTime']);
@@ -302,6 +307,12 @@ if(!class_exists('APP_Tap')) {
 			$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
 
 			//$load = sys_getloadavg();
+
+			if(!empty($license['sc'])) {
+				$retval['license'] = $license['sc'];
+			} else {
+				$retval['license'] = 'TAP N TXT DEMO UNIT (UNLICENSED)';
+			}
 
 			header_json();
 			json_encode_return($retval);
