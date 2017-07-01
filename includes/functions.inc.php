@@ -577,7 +577,10 @@ function check_utf8($string) {
 	//return iconv("UTF-8", "ISO-8859-1//IGNORE", $string);
 
 	if(function_exists('iconv')) {
-		return iconv("UTF-8", "ISO-8859-1//TRANSLIT", $string);
+		//return iconv("UTF-8", "ISO-8859-1//TRANSLIT", $string);
+		//return iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $string);
+		return iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+		//return iconv('Windows-1252', 'UTF-8//TRANSLIT', $string);
 	}
 
 	return $string;
@@ -639,6 +642,12 @@ function alphanumonly($str) {
 	if(empty($str)) return false;
 
 	return preg_replace("/[^a-zA-Z0-9]/", "", $str);
+}
+
+function numberonly($str) {
+	if(empty($str)) return false;
+
+	return preg_replace("/[^0-9]/", "", $str);
 }
 
 function clearcrlf($str) {
@@ -985,6 +994,38 @@ function readLicense() {
 	//pre(array('readLicense()'=>'done. reading license'));
 
 	return false;
+}
+
+function isServerLicense() {
+	if($license=readLicense()) {
+		//pre($license);
+		if(!empty($license['sr'])&&$license['sr']=='YES') {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function pingDomain($domain=false){
+
+	if(!empty($domain)&&trim($domain)!='') {
+	} else {
+		return false;
+	}
+
+  $starttime = microtime(true);
+  $file      = @fsockopen($domain, 80, $errno, $errstr, 10);
+  $stoptime  = microtime(true);
+  $status    = 0;
+
+  if (!$file) $status = -1;  // Site is down
+  else {
+      @fclose($file);
+      $status = ($stoptime - $starttime) * 1000;
+      $status = floor($status);
+  }
+  return $status;
 }
 
 /*

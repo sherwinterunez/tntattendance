@@ -84,13 +84,13 @@ if(!class_exists('APP_SimpleImage')) {
 			}
 		}
 
-		function output($image_type=IMAGETYPE_JPEG) {
+		function output($image_type=IMAGETYPE_JPEG, $file=NULL) {
 			if( $image_type == IMAGETYPE_JPEG ) {
-				imagejpeg($this->image);
+				imagejpeg($this->image, $file);
 			} elseif( $image_type == IMAGETYPE_GIF ) {
-				imagegif($this->image);
+				imagegif($this->image, $file);
 			} elseif( $image_type == IMAGETYPE_PNG ) {
-				imagepng($this->image);
+				imagepng($this->image, $file);
 			}
 		}
 

@@ -51,6 +51,8 @@ if(!empty(($license=checkLicense()))) {
 } else {
 	$license = array();
 }
+
+$settings_hidedb = getOption('$SETTINGS_HIDEDB',false);
 ?>
 </head>
 <body id="body" style="opacity:0">
@@ -458,8 +460,10 @@ if(!empty(($license=checkLicense()))) {
 	<div id="contentleft">
 		<div id="studentphotobg"><div id="studentphoto"></div></div>
 		<div id="info">
+			<?php if(!$settings_hidedb) { ?>
 			<div class="label">DB:</div>
 			<div id="db"><?php echo getTotalStudentCurrentSchoolYear(); ?></div>
+			<?php } ?>
 			<div class="label">IN:</div>
 			<div id="in">0</div>
 			<div class="label">OUT:</div>

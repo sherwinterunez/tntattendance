@@ -49,11 +49,55 @@ global $appdb;
 
 //$tb = $appdb->isTableExist('tbl_studentprofile');
 
-if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyear')) {
+/*if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyear')) {
 	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyear text DEFAULT ''::text NOT NULL");
 }
 
-pre(array('$appdb'=>$appdb));
+pre(array('$appdb'=>$appdb));*/
 
+/*$ch = new MyCurl;
+
+$ch->setopt(CURLOPT_ENCODING,"gzip");
+
+$cont = $ch->get('http://tntattendance.dev/app/getoutbox/waiting/10');
+
+$info = $ch->getinfo();
+
+pre(array('$cont'=>$cont,'$info'=>$info));*/
+
+//isServerLicense();
+
+
+/*$host = '10.1.2.6';
+$port = 80;
+$waitTimeoutInSeconds = 1;
+if($fp = @fsockopen($host,$port,$errCode,$errStr,$waitTimeoutInSeconds)){
+   // It worked
+	 echo "\nit worked!\n";
+} else {
+   // It didn't work
+	 echo "\nit didn't worked!\n";
+}
+@fclose($fp);*/
+
+//$host = '10.1.2.5';
+
+$host = 'tntattendance.dev';
+
+if(pingDomain($host)>0) {
+
+	$ch = new MyCurl;
+
+	$ch->setopt(CURLOPT_ENCODING,"gzip");
+
+	$cont = $ch->get('http://'.$host.'/app/getoutbox/waiting/10');
+
+	$info = $ch->getinfo();
+
+	//pre(array('$cont'=>$cont,'$info'=>$info));
+
+	pre('success!');
+
+}
 
 //

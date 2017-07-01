@@ -138,11 +138,11 @@
 					},'json');
 				}
 
-			} catch(e) { 
+			} catch(e) {
 
-				console.log('e => '+e); 
+				console.log('e => '+e);
 
-				$("#formdiv_%formval% #messagingmainsimgrid div.objbox").html('Data Not Available');
+				$("#formdiv_%formval% #messagingmainsimgrid div.objbox").html('<span style="display:block;width:200px;margin:0 auto;"><center>Data Not Available!</center></span>');
 
 				myTab.postData('/'+settings.router_id+'/json/', {
 					//odata: {rowid:rowId},

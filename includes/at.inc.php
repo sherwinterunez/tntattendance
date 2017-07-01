@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -29,6 +29,11 @@ function at_cmgs($sms=false,$bytesize=false,$msg=false) {
 	$simfunctions = array();
 
 	$simfunctions[] = array(
+				'command' => 'AT+CMGF=0',
+				'regx' => array("(.+?)\r\nOK\r\n"),
+		);
+
+	$simfunctions[] = array(
 				'command' => 'AT+CMGS='.$bytesize.'$CR',
 				'regx' => array(">\r\n"),
 		);
@@ -51,6 +56,11 @@ function at_cmgs1($sms=false,$bytesize=false,$msg=false) {
 	$simfunctions = array();
 
 	$simfunctions[] = array(
+				'command' => 'AT+CMGF=0',
+				'regx' => array("(.+?)\r\nOK\r\n"),
+		);
+
+	$simfunctions[] = array(
 				'command' => 'AT+CMGS='.$bytesize.'$CR'.$msg.'$CTRLZ',
 				'regx' => array("OK\r\n"),
 		);
@@ -69,6 +79,31 @@ function at_at($sms){
 				'regx' => array("OK\r\n"),
 				'timeout' => 2,
 		);
+
+	return $sms->modemFunction($simfunctions);
+}
+
+function at_atgt($sms){
+
+	$simfunctions = array();
+
+	$simfunctions[] = array(
+				'command' => 'AT',
+				'regx' => array("\>\r\n"),
+				'timeout' => 2,
+		);
+
+	if($sms->modemFunction($simfunctions)) {
+
+		$simfunctions = array();
+
+		$simfunctions[] = array(
+					'command' => '$CTRLZ',
+			);
+
+	} else {
+		return false;
+	}
 
 	return $sms->modemFunction($simfunctions);
 }
@@ -109,6 +144,11 @@ function at_cnum($sms) {
 function at_cmgl_4($sms) {
 
 	$simfunctions = array();
+
+	$simfunctions[] = array(
+				'command' => 'AT+CMGF=0',
+				'regx' => array("(.+?)\r\nOK\r\n"),
+		);
 
 	$simfunctions[] = array(
 				'command' => 'AT+CMGL=4',

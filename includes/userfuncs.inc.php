@@ -1447,7 +1447,8 @@ function doLog($str=false,$sim='') {
 
 	$str = trim($str)."\n";
 
-	return error_log($str,3,ABS_PATH.'log/'.$logfile);
+	//return error_log($str,3,ABS_PATH.'log/'.$logfile);
+	return error_log($str,3,'/var/log/nginx/'.$logfile);
 }
 
 function sendSMS($sms=false,$number=false,$message=false) {

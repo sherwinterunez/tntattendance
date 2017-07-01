@@ -309,9 +309,11 @@ if(!class_exists('APP_Db')) {
 				} else
 				if(preg_match("/^\#(.+)\#$/", $v, $m)) {
 					//pre(array('$m'=>$m));
-					$fields[] = $k."=".pg_escape_string(trim($m[1]));
+					$fields[] = $k."=".pg_escape_string(trim(check_utf8($m[1])));
+					//$fields[] = $k."=".pg_escape_string(trim($m[1]));
 				} else {
-					$fields[] = $k."='".pg_escape_string(trim($v))."'";
+					$fields[] = $k."='".pg_escape_string(trim(check_utf8($v)))."'";
+					//$fields[] = $k."='".pg_escape_string(trim($v))."'";
 				}
 			}
 

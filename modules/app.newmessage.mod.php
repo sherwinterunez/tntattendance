@@ -174,6 +174,18 @@ if(!class_exists('APP_app_newmessage')) {
 								}
 
 							}
+						} else {
+							foreach($contacts as $mobileno) {
+								//shuffle($asim);
+
+								//foreach($asim as $m=>$n) {
+									//pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$sms'=>$post['sms']));
+									//sendToOutBox($mobileno,$n['sim_number'],$post['sms']);
+									sendToOutBoxPush($mobileno,false,$post['sms'],$push);
+									//break;
+								//}
+
+							}
 						}
 					}
 

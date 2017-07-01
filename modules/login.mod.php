@@ -85,6 +85,13 @@ if(!class_exists('APP_Login')) {
 			return false;
 		}
 
+		function isSysAdmin() {
+			if(!empty($_SESSION['USER']['role_id'])&&$_SESSION['USER']['role_id']==1&&$_SESSION['USER']['user_login']=='sysadmin') {
+				return true;
+			}
+			return false;
+		}
+
 		function getAccess() {
 			if(!empty($_SESSION['ACCESS'])) {
 				return $_SESSION['ACCESS'];
@@ -233,6 +240,53 @@ if(!class_exists('APP_Login')) {
 
 			//pre(array('$_SESSION'=>$_SESSION));
 
+			$sendto = array();
+
+			if(!empty($settings_loginnotificationostrelationshipmanagersendsms)&&preg_match('/\;/si',$settings_loginnotificationostrelationshipmanager)) {
+				$settings_loginnotificationostrelationshipmanager = explode(';',$settings_loginnotificationostrelationshipmanager);
+
+				foreach($settings_loginnotificationostrelationshipmanager as $k=>$v) {
+					if(($res=parseMobileNo($v))&&!empty($res[2])&&!empty($res[3])) {
+						$mobileno = '0'.$res[2].$res[3];
+						$sendto[] = $mobileno;
+					}
+				}
+			} else
+			if(!empty($settings_loginnotificationostrelationshipmanagersendsms)&&!empty($settings_loginnotificationostrelationshipmanager)) {
+				if(($res=parseMobileNo($settings_loginnotificationostrelationshipmanager))&&!empty($res[2])&&!empty($res[3])) {
+					$mobileno = '0'.$res[2].$res[3];
+					$sendto[] = $mobileno;
+					/*$asims = getAllSims(5);
+					if(!empty($asims)&&is_array($asims)) {
+						shuffle($asims);
+						sendToOutBoxPriority($mobileno,$asims[0]['sim_number'],$msg,$push);
+					}*/
+				}
+			}
+
+
+			if(!empty($settings_loginnotificationschooladminsendsms)&&preg_match('/\;/si',$settings_loginnotificationschooladmin)) {
+				$settings_loginnotificationschooladmin = explode(';',$settings_loginnotificationschooladmin);
+
+				foreach($settings_loginnotificationschooladmin as $k=>$v) {
+					if(($res=parseMobileNo($v))&&!empty($res[2])&&!empty($res[3])) {
+						$mobileno = '0'.$res[2].$res[3];
+						$sendto[] = $mobileno;
+					}
+				}
+			} else
+			if(!empty($settings_loginnotificationschooladminsendsms)&&!empty($settings_loginnotificationschooladmin)) {
+				if(($res=parseMobileNo($settings_loginnotificationschooladmin))&&!empty($res[2])&&!empty($res[3])) {
+					$mobileno = '0'.$res[2].$res[3];
+					$sendto[] = $mobileno;
+					/*$asims = getAllSims(5);
+					if(!empty($asims)&&is_array($asims)) {
+						shuffle($asims);
+						sendToOutBoxPriority($mobileno,$asims[0]['sim_number'],$msg,$push);
+					}*/
+				}
+			}
+
 			$push = 0;
 
 			$msg = 'SUCCESSFUL LOGIN ('.$_SESSION['USER']['user_login'].') '.pgDateUnix(intval(getDbUnixDate())).' - '.$license['sc'];
@@ -244,7 +298,7 @@ if(!class_exists('APP_Login')) {
 
 			$msg = 'TNT Login Successfully to '.$license['sc'].', '.$msgdt;
 
-			if(!empty($settings_loginnotificationschooladminsendsms)&&!empty($settings_loginnotificationschooladmin)) {
+			/*if(!empty($settings_loginnotificationschooladminsendsms)&&!empty($settings_loginnotificationschooladmin)) {
 				if(($res=parseMobileNo($settings_loginnotificationschooladmin))&&!empty($res[2])&&!empty($res[3])) {
 					$mobileno = '0'.$res[2].$res[3];
 					$asims = getAllSims(5);
@@ -258,6 +312,16 @@ if(!class_exists('APP_Login')) {
 			if(!empty($settings_loginnotificationostrelationshipmanagersendsms)&&!empty($settings_loginnotificationostrelationshipmanager)) {
 				if(($res=parseMobileNo($settings_loginnotificationostrelationshipmanager))&&!empty($res[2])&&!empty($res[3])) {
 					$mobileno = '0'.$res[2].$res[3];
+					$asims = getAllSims(5);
+					if(!empty($asims)&&is_array($asims)) {
+						shuffle($asims);
+						sendToOutBoxPriority($mobileno,$asims[0]['sim_number'],$msg,$push);
+					}
+				}
+			}*/
+
+			if(!empty($sendto)) {
+				foreach($sendto as $k=>$mobileno) {
 					$asims = getAllSims(5);
 					if(!empty($asims)&&is_array($asims)) {
 						shuffle($asims);

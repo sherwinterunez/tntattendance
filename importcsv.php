@@ -127,8 +127,16 @@ foreach($lines as $k=>$v) {
   $content['studentprofile_firstname'] = !empty($data[2]) ? trim($data[2]) : '';
   $content['studentprofile_lastname'] = !empty($data[4]) ? trim($data[4]) : '';
   $content['studentprofile_middlename'] = !empty($data[3]) ? trim($data[3]) : '';
-  $content['studentprofile_guardianmobileno'] = !empty($data[10]) ? trim($data[10]) : '';
+  //$content['studentprofile_guardianmobileno'] = !empty($data[10]) ? trim($data[10]) : '';
   $content['studentprofile_active'] = !empty($data[12]) ? trim($data[12]) : '';
+
+	if(!empty($data[10])) {
+		$data[10] = numberonly($data[10]);
+
+		if(!empty($data[10])&&($res=parseMobileNo('0'.$data[10]))) {
+			$content['studentprofile_guardianmobileno'] = '0'.$res[2].$res[3];
+		}
+	}
 
 	$content['studentprofile_schoolyear'] = getCurrentSchoolYear();
 
@@ -157,15 +165,25 @@ foreach($lines as $k=>$v) {
 
   $content['studentprofile_guardianname'] = !empty($data[9]) ? trim($data[9]) : $guardianname;
 
-  $content['studentprofile_guardianemail'] = !empty($data[11]) ? trim($data[11]) : $email;
+  $content['studentprofile_guardianemail'] = !empty($data[11])&&trim($data[11])!='' ? trim($data[11]) : $email;
 
-  if(!empty($data[6])&&preg_match('/(\d+)\-(\d+)-(\d+)\s+.+?/si',trim($data[6]),$matches)) {
+  if(!empty($data[6])&&preg_match('/(\d+)\-(\d+)\-(\d+)\s+.+?/si',trim($data[6]),$matches)) {
     //pre(array('$matches'=>$matches));
     $content['studentprofile_birthdate'] = $matches[2].'-'.$matches[3].'-'.$matches[1];
-  }
+  } else
+	if(!empty($data[6])&&preg_match('/(\d+)\/(\d+)\/(\d+)/si',trim($data[6]),$matches)) {
+		$yr = intval($matches[3]);
+		if($yr<100) {
+			$matches[3] = $yr + 2000;
+		}
+		$content['studentprofile_birthdate'] = $matches[1].'-'.$matches[2].'-'.$matches[3];
+	}
 
   if(!empty($data[18])) {
-    $studentprofile_yearlevel = getGroupRefId(trim($data[18]));
+
+		$data[18] = strtoupper(trim($data[18]));
+
+    $studentprofile_yearlevel = getGroupRefId($data[18]);
 
     if(!empty($studentprofile_yearlevel)) {
       $content['studentprofile_yearlevel'] = $studentprofile_yearlevel;
@@ -179,7 +197,10 @@ foreach($lines as $k=>$v) {
 
   if(!empty($data[14])&&!empty($studentprofile_yearlevel)) {
     //$studentprofile_section = getGroupRefId(trim($data[14]));
-		$studentprofile_section = getSectionId(trim($data[14]),$studentprofile_yearlevel);
+
+		$data[14] = strtoupper(trim($data[14]));
+
+		$studentprofile_section = getSectionId($data[14],$studentprofile_yearlevel);
 
     if(!empty($studentprofile_section)) {
       $content['studentprofile_section'] = $studentprofile_section;
@@ -225,62 +246,88 @@ foreach($lines as $k=>$v) {
 
   $filepath = './studentphotos/';
 
-  if(!empty($studentprofile_id)&&!empty($data[13])&&file_exists($filepath.trim($data[13]))&&($hf=fopen($filepath.trim($data[13]),'r'))) {
+  if(!empty($studentprofile_id)&&!empty($data[13])) {
 
-    $filepath .= trim($data[13]);
+		$bypass = true;
 
-    $content['photoname'] = trim($data[13]);
-
-		$size = filesize($filepath);
-
-    $fcontent = fread($hf,$size);
-
-    fclose($hf);
-    //@unlink($filepath);
-
-		$img = new APP_SimpleImage;
-		$img->loadfromstring($fcontent);
-
-		pre(array('mimetype'=>$img->mimetype()));
-
-		if(preg_match('/gif|jpeg|png/si',$img->mimetype())) {
-		} else {
-			pre(array('error'=>'invalid image!'));
-			$appdb->rollback();
-			continue;
+		if(file_exists($filepath.trim($data[13]))&&($hf=fopen($filepath.trim($data[13]),'r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]);
+		} else
+		if(file_exists($filepath.trim($data[13]).'.jpg')&&($hf=fopen($filepath.trim($data[13]).'.jpg','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.jpg';
+		} else
+		if(file_exists($filepath.trim($data[13]).'.png')&&($hf=fopen($filepath.trim($data[13]).'.png','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.png';
+		} else
+		if(file_exists($filepath.trim($data[13]).'.JPG')&&($hf=fopen($filepath.trim($data[13]).'.JPG','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.JPG';
+		} else
+		if(file_exists($filepath.trim($data[13]).'.PNG')&&($hf=fopen($filepath.trim($data[13]).'.PNG','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.PNG';
 		}
 
-    $b64content = base64_encode($fcontent);
+		if(!$bypass) {
 
-    //pre(array('$b64content'=>$b64content)); die;
+	    $content['photoname'] = trim($data[13]);
 
-		if($b64content) {
-			$content = array();
-			$content['upload_sid'] = sha1($b64content);
-			$content['upload_type'] = $img->mimetype();
-			$content['upload_studentprofileid'] = $studentprofile_id;
-			$content['upload_content'] = $b64content;
-			$content['upload_size'] = $size;
-			$content['upload_name'] = 'customer_photo';
+			$size = filesize($filepath);
 
-			//pre(array('$content'=>$content));
+	    $fcontent = fread($hf,$size);
 
-			if(!($result = $appdb->insert("tbl_upload",$content,"upload_id"))) {
-				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+	    fclose($hf);
+	    //@unlink($filepath);
+
+			$img = new APP_SimpleImage;
+			$img->loadfromstring($fcontent);
+
+			pre(array('mimetype'=>$img->mimetype()));
+
+			if(preg_match('/gif|jpeg|png/si',$img->mimetype())) {
+			} else {
+				pre(array('error'=>'invalid image!'));
 				$appdb->rollback();
-				die;
+				continue;
 			}
 
-			$appdb->commit();
+	    $b64content = base64_encode($fcontent);
+
+	    //pre(array('$b64content'=>$b64content)); die;
+
+			if($b64content) {
+				$content = array();
+				$content['upload_sid'] = sha1($b64content);
+				$content['upload_type'] = $img->mimetype();
+				$content['upload_studentprofileid'] = $studentprofile_id;
+				$content['upload_content'] = $b64content;
+				$content['upload_size'] = $size;
+				$content['upload_name'] = 'customer_photo';
+
+				//pre(array('$content'=>$content));
+
+				if(!($result = $appdb->insert("tbl_upload",$content,"upload_id"))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					$appdb->rollback();
+					die;
+				}
+
+				//$appdb->commit();
+
+			}
 
 		}
 
-  } else
+  }
+
 	if(!empty($studentprofile_id)) {
 		$appdb->commit();
+	} else {
+		$appdb->rollback();
 	}
-
-	$appdb->rollback();
 
 }
 

@@ -749,7 +749,7 @@ $access = $applogin->getAccess();
 					//{id: "logs", text: "Logs", icon: "documents.png"},
 					<?php */ ?>
 					{type: "separator"},
-					<?php if(in_array('options',$access)) { ?>
+					<?php if($applogin->isSysAdmin()) { ?>
 					{id: "options", text: "Options", icon: "documents.png"},
 					<?php } ?>
 					<?php /* ?>

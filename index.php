@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -24,6 +24,8 @@ if(defined('ANNOUNCE')) {
 
 date_default_timezone_set('Asia/Manila');
 
+setlocale(LC_ALL,'en_US.UTF-8');
+
 require_once(ABS_PATH.'includes/index.php');
 //require_once(ABS_PATH.'includes.min/includes.inc.php');
 //require_once(ABS_PATH.'includes.min/includes.encoded.php');
@@ -39,11 +41,11 @@ require_once(ABS_PATH.'templates/default/index.php');
 	//if(!preg_match("#\/login(.+?)#si",$_SERVER['REQUEST_URI'])&&!$applogin->is_loggedin()) {
 
 	if(preg_match("#\/app(.+?)#si",$_SERVER['REQUEST_URI'])&&!$applogin->is_loggedin()) {
-	
+
 		//if(!empty($_POST)) {
 		//	json_return_error(255);
 		//}
-	
+
 		redirect301('/'.$applogin->pathid.'/');
 	}
 }*/
@@ -54,7 +56,7 @@ function index() {
 
 function defaultroute() {
 	global $approuter, $appindex;
-	
+
 	//$approuter->addroute(array('^/logout/$' => array('id'=>'logout','param'=>'action=logout', 'callback'=>'logout')));
 	//$approuter->addroute(array('^/\?(.*)$' => array('id'=>'index','param'=>'action=index', 'callback'=>'index')));
 	//$approuter->addroute(array('^/$' => array('id'=>'index','param'=>'action=index', 'callback'=>'index')));
@@ -85,8 +87,3 @@ $_SESSION['datestamp'] = date('l jS \of F Y h:i:s A',$_SESSION['timestamp']);
 add_action('routes','defaultroute',999);
 
 $approuter->route();
-
-
-
-
-

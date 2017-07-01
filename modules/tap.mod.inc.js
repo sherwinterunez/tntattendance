@@ -150,7 +150,8 @@ srt.etap = function() {
 
 			if(typeof data.image != 'undefined' ) {
 				//console.log(typeof(data.image));
-				jQuery('#studentphoto').html('<img src="'+data.image+'" />');
+				//jQuery('#studentphoto').html('<img src="'+data.image+'" />');
+				jQuery('#studentphoto').html('<img src="'+data.image+'" style="max-width:'+srt.studentphotobgHeight+'px;max-height:'+srt.studentphotobgHeight+'px" />');
 			}
 
 			if(typeof data.fullname != 'undefined' ) {
@@ -494,6 +495,8 @@ jQuery(document).ready(function($) {
 	srt.myForm.setItemValue('imagesize',studentphotobgHeight);
 
 	jQuery('#studentphoto').html('<img src="/obislogo.php?size='+studentphotobgHeight+'" style="max-width:'+studentphotobgHeight+'px;max-height:'+studentphotobgHeight+'px" />');
+
+	srt.studentphotobgHeight = studentphotobgHeight;
 
 	setInterval(function(){
 		jQuery("#body").css({opacity:1});

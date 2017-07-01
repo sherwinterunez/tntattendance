@@ -406,7 +406,47 @@ function simInit(dev,sim,ip) {
 
         //console.log("siminit.php "+dev+" "+sim+" "+ip+" done.");
 
-        if(output) console.log(output);
+        //if(output) console.log(output);
+
+        //setTimeout(doInit, (60*1000*2));
+
+        //processCount--;
+
+        if(output.match(/SIM_PAUSED/)) {
+          processCount--;
+          console.log('SIM PAUSED: '+sim+' '+dev+' '+ip+' '+processCount);
+          setTimeout(function(){
+            //retrieveSMS(dev,sim,ip);
+            simInit(dev,sim,ip);
+          }, TIMEOUT);
+          return;
+        }
+
+        setTimeout(function(){
+          //retrieveSMS(dev,sim,ip);
+          checkSignal(dev,sim,ip);
+        }, TIMEOUT);
+
+        if (phpErrors) console.error(phpErrors);
+    });
+
+}
+
+function checkSignal(dev,sim,ip) {
+
+    //processCount++;
+
+    if(debug) console.log("checksignal.php "+dev+" "+sim+" "+ip+" running...");
+
+    //console.log("checksignal.php "+dev+" "+sim+" "+ip+" running...");
+
+    phpfpm.run('checksignal.php?dev='+dev+'&sim='+sim+'&ip='+ip, function(err, output, phpErrors)
+    {
+        if (err == 99) console.error('PHPFPM server error');
+
+        if(debug) console.log("checksignal.php "+dev+" "+sim+" "+ip+" done.");
+
+        //console.log(output);
 
         //setTimeout(doInit, (60*1000*2));
 
@@ -414,6 +454,7 @@ function simInit(dev,sim,ip) {
 
         setTimeout(function(){
           retrieveSMS(dev,sim,ip);
+          //processOutbox(dev,sim);
         }, TIMEOUT);
 
         if (phpErrors) console.error(phpErrors);
@@ -565,6 +606,10 @@ function checkError(dev,sim,ip) {
 
         if(output.match(/STATUS_SIMERROR/)) {
           runPortCheck = true;
+        } else
+        if(output.match(/STATUS_AT_ERROR/)) {
+          console.log("checkerror.php / STATUS_AT_ERROR / "+dev+" "+sim+" "+ip);
+          //runPortCheck = true;
         }
 
         processCount--;

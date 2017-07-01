@@ -182,7 +182,7 @@ srt.init = function(){
 			return false;
 		}
 
-		if(id=='utilities'||id=='management'||id=='server'||id=='computer') {
+		if(id=='utilities'||id=='secure'||id=='management'||id=='server'||id=='computer') {
 			return false;
 		}
 

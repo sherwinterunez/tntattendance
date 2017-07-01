@@ -6572,7 +6572,8 @@ Indexes:
 
 							foreach($result['rows'] as $k=>$v) {
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array($v['smsoutbox_id'],$v['smsoutbox_fromnumber'],$v['smsoutbox_tonumber'],$v['smsoutbox_message'],$v['smsoutbox_network'],$v['smsoutbox_sentstamp']));
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getContactNickByID($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
+								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getContactNickByID($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getStudentFullName($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
 							}
 
 							$retval = array('rows'=>$rows);

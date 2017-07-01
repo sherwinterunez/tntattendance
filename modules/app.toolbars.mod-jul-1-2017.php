@@ -23,9 +23,8 @@ if(defined('ANNOUNCE')) {
 
 global $applogin;
 
-$toolbars['app']['main'] = array();
-
-$toolbars['app']['main'][] = array(	"id"=>"etap",
+$toolbars['app']['main'] = 	array(
+	array(	"id"=>"etap",
 			"type"=>"button",
 			"text"=>"eTap",
 			"img"=>"tap.png",
@@ -35,9 +34,8 @@ $toolbars['app']['main'][] = array(	"id"=>"etap",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "etap",
 			"window" => true,
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"newmessage",
+	),
+	array(	"id"=>"newmessage",
 			"type"=>"button",
 			"text"=>"New Message",
 			"img"=>"newmessage.png",
@@ -47,9 +45,8 @@ $toolbars['app']['main'][] = array(	"id"=>"newmessage",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "newmessage",
 			"window" => true,
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"messaging",
+	),
+	array(	"id"=>"messaging",
 			"type"=>"button",
 			"text"=>"Messages",
 			"img"=>"messages.png",
@@ -60,8 +57,7 @@ $toolbars['app']['main'][] = array(	"id"=>"messaging",
 			"tab_width" => 150,
 			"module" => "messaging",
 			"window" => true,
-	);
-
+	),
 	/*array(	"id"=>"message",
 			"type"=>"button",
 			"text"=>"Messages",
@@ -84,8 +80,7 @@ $toolbars['app']['main'][] = array(	"id"=>"messaging",
 			"module" => "survey",
 			"window" => true,
 	),*/
-
-$toolbars['app']['main'][] = array(	"id"=>"contact",
+	array(	"id"=>"contact",
 			"type"=>"button",
 			"text"=>"Contacts",
 			"img"=>"contacts.png",
@@ -95,9 +90,8 @@ $toolbars['app']['main'][] = array(	"id"=>"contact",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "contact",
 			"window" => true,
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"group",
+	),
+	array(	"id"=>"group",
 			"type"=>"button",
 			"text"=>"Group",
 			"img"=>"groups.png",
@@ -108,9 +102,8 @@ $toolbars['app']['main'][] = array(	"id"=>"group",
 			"module" => "group",
 			"window" => true,
 			//"action" => "formonly",
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"report",
+	),
+	array(	"id"=>"report",
 			"type"=>"button",
 			"text"=>"Reports",
 			"img"=>"reports.png",
@@ -120,9 +113,8 @@ $toolbars['app']['main'][] = array(	"id"=>"report",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "report",
 			"window" => true,
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"setting",
+	),
+	array(	"id"=>"setting",
 			"type"=>"button",
 			"text"=>"Settings",
 			"img"=>"settings.png",
@@ -132,33 +124,7 @@ $toolbars['app']['main'][] = array(	"id"=>"setting",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "setting",
 			"window" => true,
-	);
-
-if($applogin->isSysAdmin()&&checkLicense()&&isServerLicense()) {
-	$toolbars['app']['main'][] = array(	"id"=>"management",
-			"type"=>"buttonSelect",
-			"text"=>"Management",
-			"img"=>"security.png",
-			"imgdis"=>"security.png",
-			"title"=>"Tooltip here",
-			"opts"=>array(
-				array(	"id"=>"clients",
-						"type"=>"obj",
-						"text"=>"Clients",
-						"img"=>"copy.gif",
-						"imgdis"=>"copy.gif",
-						"title"=>"Tooltip here",
-						"func"=>";(function(obj,id){srt.toolbar_func(obj,id);})(this,id);",
-						"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
-						"tab_width" => 150,
-						"multiple" => false,
-						"module"=>"clients",
-						"window" => true,
-				),
-		)
-	);
-}
-
+	),
 	/*array(	"id"=>"backup",
 			"type"=>"button",
 			"text"=>"Backup",
@@ -243,8 +209,7 @@ if($applogin->isSysAdmin()&&checkLicense()&&isServerLicense()) {
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"module" => "referral",
 	),*/
-
-$toolbars['app']['main'][] = array(	"id"=>"secure",
+	array(	"id"=>"secure",
 			"type"=>"buttonSelect",
 			"text"=>"Security",
 			"img"=>"security.png",
@@ -264,13 +229,11 @@ $toolbars['app']['main'][] = array(	"id"=>"secure",
 						"module"=>"useraccount",
 				),
 		)
-	);
-
-$toolbars['app']['main'][] = array(
+	),
+	array(
 		"id"=>"secure",
 		"type"=>"spacer",
-	);
-
+	),
 	/*array(	"id"=>"utilities",
 			"type"=>"buttonSelect",
 			"text"=>"Utilities",
@@ -309,17 +272,14 @@ $toolbars['app']['main'][] = array(
 		"id"=>"utilities",
 		"type"=>"spacer",
 	),*/
-
-$toolbars['app']['main'][] = array(	"id"=>"title",
+	array(	"id"=>"title",
 			"type"=>"text",
 			"text"=>$applogin->fullname(),
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"status",
+	),
+	array(	"id"=>"status",
 			"type"=>"text",
 			"text"=>"Checking Server Status...",
-	);
-
+	),
 	/*array(	"id"=>"start",
 			"type"=>"button",
 			"text"=>"Run",
@@ -353,8 +313,7 @@ $toolbars['app']['main'][] = array(	"id"=>"status",
 			"tab_width" => 150,
 			"multiple" => false,
 	),*/
-
-$toolbars['app']['main'][] = array(	"id"=>"server",
+	array(	"id"=>"server",
 			"type"=>"buttonSelect",
 			"text"=>"Modem",
 			"img"=>"modem.png",
@@ -398,9 +357,8 @@ $toolbars['app']['main'][] = array(	"id"=>"server",
 						"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 				),
 		)
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"computer",
+	),
+	array(	"id"=>"computer",
 			"type"=>"buttonSelect",
 			"text"=>"Computer",
 			"img"=>"computer.png",
@@ -435,9 +393,8 @@ $toolbars['app']['main'][] = array(	"id"=>"computer",
 						"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 				),
 		)
-	);
-
-$toolbars['app']['main'][] = array(	"id"=>"logout",
+	),
+	array(	"id"=>"logout",
 			"type"=>"button",
 			"text"=>"Logout",
 			"img"=>"logout.png",
@@ -447,7 +404,32 @@ $toolbars['app']['main'][] = array(	"id"=>"logout",
 			"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
 			"tab_width" => 150,
 			"multiple" => false,
+	),
+);
+
+if($applogin->isSysAdmin()&&checkLicense()&&isServerLicense()) {
+	$toolbars['app']['main'][] = array(	"id"=>"management",
+			"type"=>"buttonSelect",
+			"text"=>"Management",
+			"img"=>"security.png",
+			"imgdis"=>"security.png",
+			"title"=>"Tooltip here",
+			"opts"=>array(
+				array(	"id"=>"clients",
+						"type"=>"obj",
+						"text"=>"Clients",
+						"img"=>"copy.gif",
+						"imgdis"=>"copy.gif",
+						"title"=>"Tooltip here",
+						"func"=>";(function(obj,id){srt.toolbar_func(obj,id);})(this,id);",
+						"func_tab_close"=>";(function(obj,id){srt.tabbar_close_func(obj,id);})(this,id);",
+						"tab_width" => 150,
+						"multiple" => false,
+						"module"=>"clients",
+				),
+		)
 	);
+}
 
 /*
 array(	"id"=>"management",

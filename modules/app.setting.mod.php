@@ -135,6 +135,10 @@ if(!class_exists('APP_app_setting')) {
 				$settings_timeoutmessage = getOption('$SETTINGS_TIMEOUTMESSAGE',$default_timeoutmessage);
 				$settings_latemessage = getOption('$SETTINGS_LATEMESSAGE',$default_latemessage);
 
+				$settings_hidedb = getOption('$SETTINGS_HIDEDB',false);
+
+				$settings_autodetectface = getOption('$SETTINGS_AUTODETECTFACE',false);
+
 				$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
 
 				$settings_electronicbulletindaily = getOption('$SETTINGS_ELECTRONICBULLETINDAILY',base64_encode(serialize(array())));
@@ -245,6 +249,10 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_TIMEOUTMESSAGE',!empty($post['settings_timeoutmessage'])?$post['settings_timeoutmessage']:$default_timeoutmessage);
 
 					setSetting('$SETTINGS_LATEMESSAGE',!empty($post['settings_latemessage'])?$post['settings_latemessage']:$default_latemessage);
+
+					setSetting('$SETTINGS_HIDEDB',!empty($post['settings_hidedb'])?$post['settings_hidedb']:false);
+
+					setSetting('$SETTINGS_AUTODETECTFACE',!empty($post['settings_autodetectface'])?$post['settings_autodetectface']:false);
 
 					setSetting('$SETTINGS_LICENSEKEY',!empty($post['settings_licensekey'])?$post['settings_licensekey']:'');
 
@@ -415,7 +423,7 @@ if(!class_exists('APP_app_setting')) {
 					'labelWidth' => 200,
 					'name' => 'settings_loginnotificationschooladmin',
 					'readonly' => $readonly,
-					'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
+					//'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
 					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_loginnotificationschooladmin) ? $settings_loginnotificationschooladmin : '',
@@ -454,7 +462,7 @@ if(!class_exists('APP_app_setting')) {
 					'labelWidth' => 200,
 					'name' => 'settings_loginnotificationostrelationshipmanager',
 					'readonly' => $readonly,
-					'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
+					//'inputMask' => array('mask'=>'9','placeholder'=>'_','repeat'=>11),
 					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_loginnotificationostrelationshipmanager) ? $settings_loginnotificationostrelationshipmanager : '',
@@ -721,6 +729,26 @@ if(!class_exists('APP_app_setting')) {
 					//'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_latemessage) ? $settings_latemessage : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'checkbox',
+					'label' => 'HIDE DB',
+					'labelWidth' => 360,
+					'name' => 'settings_hidedb',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_hidedb) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'checkbox',
+					'label' => 'AUTO DETECT FACE',
+					'labelWidth' => 360,
+					'name' => 'settings_autodetectface',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_autodetectface) ? true : false,
+					'position' => 'label-right',
 				);
 
 				$params['tbThreshold'][] = array(

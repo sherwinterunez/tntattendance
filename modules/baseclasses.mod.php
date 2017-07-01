@@ -214,6 +214,10 @@ if(!class_exists('APP_Base')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/api/(.+?)\/\?(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1&params2=$2', 'callback'=>array($this,'doapi2'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/export/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'export'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/print/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'doprint'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/setsmsstatus/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dosetsmsstatus'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/getstatus/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetstatus'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/getinbox/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetinbox'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/getoutbox/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetoutbox'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/(.+?)\/(.+?)\/(.+?)$' => array('id'=>$this->pathid,'param'=>'routerid='.$this->pathid.'&module=$1&action=$2&params=$3', 'callback'=>array($this,'doapi'))));
 
 			//$approuter->addroute(array('^/'.$this->pathid.'/rules/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'show_rules'))));
@@ -221,8 +225,6 @@ if(!class_exists('APP_Base')) {
 			//$approuter->addroute(array('^/'.$this->pathid.'/json/(.+)/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&path=$1', 'callback'=>array($this,'dojson'))));
 			//$approuter->addroute(array('^/'.$this->pathid.'/json/(.+)/\?(.*)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&path=$1', 'callback'=>array($this,'dojson'))));
 			//$approuter->addroute(array('^/'.$this->pathid.'/xml/(.+)/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&path=$1', 'callback'=>array($this,'doxml'))));
-
-
 
 			$this->add_route();
 		}
@@ -385,6 +387,22 @@ if(!class_exists('APP_Base')) {
 			json_return_error(4,array('vars'=>$vars));
 
 		} // ajax*/
+
+		function dosetsmsstatus($vars) {
+			global $approuter;
+		}
+
+		function dogetstatus($vars) {
+			global $approuter;
+		}
+
+		function dogetinbox($vars) {
+			global $approuter;
+		}
+
+		function dogetoutbox($vars) {
+			global $approuter;
+		}
 
 		function dojs($vars) {
 			header('Content-type: application/javascript');

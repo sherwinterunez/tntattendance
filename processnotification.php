@@ -300,14 +300,14 @@ if(!empty($notifications)) {
 				if(!empty($license['sc'])) {
 					$msgin .= ' '.$license['sc'];
 				}
-				pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
-				sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin,$push,1,$status,0,0,$studentprofile_id);
+				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
+				sendToOutBoxPriority($mobileno,false,$msgin,$push,1,$status,0,0,$studentprofile_id);
 			} else {
 				if(!empty($license['sc'])) {
 					$msgout .= ' '.$license['sc'];
 				}
-				pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
-				sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout,$push,1,$status,0,0,$studentprofile_id);
+				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
+				sendToOutBoxPriority($mobileno,false,$msgout,$push,1,$status,0,0,$studentprofile_id);
 			}
 
 		}

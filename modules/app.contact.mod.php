@@ -209,6 +209,7 @@ if(!class_exists('APP_app_contact')) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
+						$pid = $post['rowid'];
 					}
 
 					if(!empty($result['rows'][0]['upload_content'])) {
@@ -216,18 +217,59 @@ if(!class_exists('APP_app_contact')) {
 						$content = base64_decode($result['rows'][0]['upload_content']);
 					}
 
+					$size = 500;
+
+					$settings_autodetectface = getOption('$SETTINGS_AUTODETECTFACE',false);
+
 					if(!empty($content)) {
 
-						$detector = new FaceDetector;
-
-						$detector->faceDetectString($content);
-						//$detector->faceDetect('duterte101.jpg');
-
-						//$detector->cropFaceToJpeg();
-						$detector->cropFaceToJpeg2();
 						header("Content-Type: image/jpg");
-						$detector->output();
+
+						if($settings_autodetectface) {
+
+							$detector = new FaceDetector;
+
+							$detector->faceDetectString($content);
+							//$detector->faceDetect('duterte101.jpg');
+
+							//$detector->cropFaceToJpeg();
+							$detector->cropFaceToJpeg2();
+
+							$detector->resize($size,$size);
+
+							if(!empty($pid)) {
+
+								$imagefile = '/var/log/cache/'.$pid.'-'.$size.'.jpg';
+
+								@$detector->output(IMAGETYPE_JPEG, $imagefile);
+
+							}
+
+							$detector->output();
+
+						} else {
+
+							$img = new APP_SimpleImage;
+
+							$img->loadfromstring($content);
+
+							$wd = $img->getWidth();
+							$ht = $img->getHeight();
+
+							if($wd>$ht) {
+								$img->resizeToHeight($size);
+							} else {
+								$img->resizeToWidth($size);
+							}
+
+							//print_r($content);
+
+							$img->output();
+
+						}
+
 						//print_r($content);
+
 					} else {
 
 						define('TAP_PATH', ABS_PATH . 'templates/default/tap');
@@ -1044,6 +1086,8 @@ if(!class_exists('APP_app_contact')) {
 							die;
 						}
 
+						//pre(array('$result'=>$result));
+
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
 							$rows = array();
 
@@ -1057,6 +1101,8 @@ if(!class_exists('APP_app_contact')) {
 					}
 
 					$jsonval = json_encode($retval,JSON_OBJECT_AS_ARRAY);
+
+					//pre(array('$jsonval'=>$jsonval));
 
 					if($retflag===false) {
 						die($jsonval);

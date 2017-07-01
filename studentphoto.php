@@ -53,6 +53,8 @@ if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
 	$size = intval($_GET['size']);
 }
 
+$size = 500;
+
 if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 	$pid = intval($_GET['pid']);
@@ -60,6 +62,12 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 	if($size) {
 		$ssize = '-'.$size;
+	}
+
+	$settings_autodetectface = getOption('$SETTINGS_AUTODETECTFACE',false);
+
+	if($settings_autodetectface) {
+		$ssize = $ssize . '-autodetect';
 	}
 
 	$imagefile = '/var/log/cache/'.$pid.$ssize.'.jpg';
@@ -117,25 +125,56 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 		header("Content-Type: image/jpg");
 
-		$detector = new FaceDetector;
+		if($settings_autodetectface) {
 
-		$detector->faceDetectString($content);
-		//$detector->faceDetect('duterte101.jpg');
+			$detector = new FaceDetector;
 
-		$detector->cropFaceToJpeg2();
+			$detector->faceDetectString($content);
+			//$detector->faceDetect('duterte101.jpg');
 
-		if(!empty($size)) {
-			$detector->resize($size,$size);
+			$detector->cropFaceToJpeg2();
+
+			if(!empty($size)) {
+				$detector->resize($size,$size);
+			}
+
+			@$detector->output(IMAGETYPE_JPEG, $imagefile);
+
+			$detector->output();
+
+			//$detector->cropFaceToJpeg();
+			//$detector->cropFaceToJpeg2();
+
+			//print_r($content);
+
+		} else {
+
+			$img = new APP_SimpleImage;
+
+			$img->loadfromstring($content);
+
+			$wd = $img->getWidth();
+			$ht = $img->getHeight();
+
+			if($wd>$ht) {
+				$img->resizeToHeight($size);
+			} else {
+				$img->resizeToWidth($size);
+			}
+
+			$img->crop($size);
+
+			//print_r($content);
+
+			//pre($imagefile);
+
+			@$img->output(IMAGETYPE_JPEG, $imagefile);
+
+			$img->output();
+
 		}
 
-		@$detector->output(IMAGETYPE_JPEG, $imagefile);
 
-		$detector->output();
-
-		//$detector->cropFaceToJpeg();
-		//$detector->cropFaceToJpeg2();
-
-		//print_r($content);
 	}
 
 	die();
