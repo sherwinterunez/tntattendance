@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -90,12 +90,23 @@ function processSMSCommands($dev=false,$mobileNo=false,$ip='') {
 	}
 
 	if(!$sms->at()) {
+
 		$em = 'processSMSCommands failed (AT)';
 		atLog($em,'smscommands',$dev,$mobileNo,$ip,logdt());
 		trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
 
-		$sms->deviceClose();
-		return false;
+		if(!$sms->atgt()) {
+			$em = 'processSMSCommands failed (AT)';
+			atLog($em,'smscommands',$dev,$mobileNo,$ip,logdt());
+			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
+
+			$sms->deviceClose();
+			return false;
+		} else {
+			$em = 'processSMSCommands (ATGT) success!';
+			atLog($em,'smscommands',$dev,$mobileNo,$ip,logdt());
+			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
+		}
 	}
 
 	$sms->clearHistory();
@@ -143,8 +154,3 @@ if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled
 	}
 
 }
-
-
-
-
-

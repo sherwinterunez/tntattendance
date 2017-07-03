@@ -26,11 +26,14 @@ function at_cmgs($sms=false,$bytesize=false,$msg=false) {
 	if(!empty($sms)&&!empty($bytesize)&&!empty($msg)) {
 	} else return false;
 
+	at_atgt($sms);
+
 	$simfunctions = array();
 
 	$simfunctions[] = array(
 				'command' => 'AT+CMGF=0',
 				'regx' => array("(.+?)\r\nOK\r\n"),
+				'timeout' => 5
 		);
 
 	$simfunctions[] = array(

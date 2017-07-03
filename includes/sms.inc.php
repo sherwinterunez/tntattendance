@@ -622,8 +622,6 @@ if(!class_exists('SMS')) {
 					continue;
 				}
 
-				//if(strlen($this->buf)<1) continue;
-
 				if(preg_match("/\r\n\>\s/si",$this->buf)) {
 					$this->buf = str_replace("\r\n> ",">\r\n",$this->buf);
 				}

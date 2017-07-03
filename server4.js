@@ -423,8 +423,8 @@ function simInit(dev,sim,ip) {
         }
 
         setTimeout(function(){
-          //retrieveSMS(dev,sim,ip);
-          checkSignal(dev,sim,ip);
+          retrieveSMS(dev,sim,ip);
+          //checkSignal(dev,sim,ip);
         }, TIMEOUT);
 
         if (phpErrors) console.error(phpErrors);

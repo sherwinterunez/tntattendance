@@ -251,7 +251,7 @@ srt.doMarquee = function() {
 
 		if(typeof data.bulletin != 'undefined') {
 			jQuery('#marquee').html(data.bulletin);
-			jQuery('#marquee').marquee({duration: 10000});
+			jQuery('#marquee').marquee({duration: 10000, allowCss3Support:true});
 		}
 	},true);
 }

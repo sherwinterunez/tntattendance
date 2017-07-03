@@ -156,7 +156,7 @@ if(!class_exists('APP_App')) {
 
 					//smsoutbox_status
 
-					$sql = "select * from tbl_smsoutbox where $where smsoutbox_eload=0 and smsoutbox_sent=0 and smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc $limit";
+					$sql = "select * from tbl_smsoutbox where $where smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc $limit";
 
 					//pre(array('$params'=>$params,'$match'=>$match,'$sql'=>$sql));
 

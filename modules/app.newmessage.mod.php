@@ -623,7 +623,7 @@ if(!class_exists('APP_app_newmessage')) {
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['groupref_id'],'data'=>array(0,$v['groupref_id'],$v['groupref_name']));
+								$rows[] = array('id'=>$v['groupref_id'],'data'=>array(0,$v['groupref_id'],getGroupRefName($v['groupref_yearlevel']).' / '.$v['groupref_name']));
 							}
 
 							$retval = array('rows'=>$rows);

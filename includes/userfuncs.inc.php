@@ -1530,7 +1530,7 @@ function sendSMS($sms=false,$number=false,$message=false) {
 
 					$cntr++;
 
-				} while($cntr<5);
+				} while($cntr<2);
 
 				$ctr++;
 
@@ -1855,7 +1855,7 @@ function atLog($text='',$module='',$device='',$sim='',$ip='',$date='') {
 
 	//print_r(array('$text'=>$text));
 
-	$content = array();
+	/*$content = array();
 	$content['atlog_text'] = $text;
 	$content['atlog_module'] = $module;
 	$content['atlog_device'] = $device;
@@ -1871,7 +1871,9 @@ function atLog($text='',$module='',$device='',$sim='',$ip='',$date='') {
 		return $result['returning'][0]['atlog_id'];
 	}
 
-	return false;
+	return false;*/
+
+	return true;
 }
 
 function modemFunction2($sms=false,$simfunctions=false) {
@@ -2182,7 +2184,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 
 					} while($repeatCtr);
 
-					if($break) break;
+					if(!empty($break)) break;
 
 				} else {
 
@@ -2196,7 +2198,7 @@ function modemFunction($sms=false,$simfunctions=false,$debug=false) {
 
 	//print_r(array('history'=>$sms->getHistory()));
 
-	if($break) {
+	if(!empty($break)) {
 
 		//trigger_error($sms->dev.' '.$sms->mobileNo.' '.$sms->ip.' BREAK: '.$sms->getLastMessage(),E_USER_NOTICE);
 

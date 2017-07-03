@@ -92,12 +92,23 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 	}
 
 	if(!$sms->at()) {
+
 		$em = 'processOutbox failed (AT)';
 		atLog($em,'processoutbox',$dev,$mobileNo,$ip,logdt());
 		trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
 
-		$sms->deviceClose();
-		return false;
+		if(!$sms->atgt()) {
+			$em = 'processOutbox failed (ATGT)';
+			atLog($em,'processoutbox',$dev,$mobileNo,$ip,logdt());
+			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
+
+			$sms->deviceClose();
+			return false;
+		} else {
+			$em = 'processOutbox (ATGT) success!';
+			atLog($em,'processoutbox',$dev,$mobileNo,$ip,logdt());
+			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
+		}
 	}
 
 	$sms->clearHistory();
@@ -107,7 +118,9 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	$delaysms = false;
 
-	if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from smsoutbox_createstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay>0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
+	$limit = 1;
+
+	if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from smsoutbox_createstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay>0 and smsoutbox_status=1 order by smsoutbox_id asc limit $limit"))) {
 		//echo "\n0 message. processOutbox done.\n";
 		return false;
 	}
@@ -136,14 +149,14 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	$sendsms = false;
 
-	if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_priority=1 and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
+	if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_priority=1 and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit $limit"))) {
 		//echo "\n0 message. processOutbox done.\n";
 		return false;
 	}
 
 	if(!empty($result['rows'][0]['smsoutbox_id'])) {
 	} else {
-		if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 5"))) {
+		if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_simnumber='$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit $limit"))) {
 			//echo "\n0 message. processOutbox done.\n";
 			return false;
 		}

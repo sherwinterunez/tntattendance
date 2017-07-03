@@ -87,13 +87,22 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 	//atLog('retrieve started','retrievesms',$dev,$mobileNo,$ip,logdt());
 
 	if(!$sms->at()) {
+
+		$em = 'Retrieve failed (AT)';
+		atLog($em,'retrievesms',$dev,$mobileNo,$ip,logdt());
+		trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
+
 		if(!$sms->atgt()) {
-			$em = 'Retrieve failed (AT)';
+			$em = 'Retrieve failed (ATGT)';
 			atLog($em,'retrievesms',$dev,$mobileNo,$ip,logdt());
 			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
 
 			$sms->deviceClose();
 			return false;
+		} else {
+			$em = 'Retrieve (ATGT) success!';
+			atLog($em,'retrievesms',$dev,$mobileNo,$ip,logdt());
+			trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
 		}
 	}
 

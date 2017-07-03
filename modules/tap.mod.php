@@ -56,6 +56,7 @@ if(!class_exists('APP_Tap')) {
 
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/moment.min.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.marquee.min.js');
+			//$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.marquee.js?t='.time());
 			$apptemplate->add_script('/'.$this->pathid.'/js/');
 			//$apptemplate->add_script('/'.$this->pathid.'/js/?t='.time());
 			//$apptemplate->add_script($apptemplate->templates_urlpath().'js/login.js');
