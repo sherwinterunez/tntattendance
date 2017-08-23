@@ -363,7 +363,7 @@ $toolbars['app']['main'][] = array(	"id"=>"server",
 			"opts"=>array(
 				array(	"id"=>"start",
 						"type"=>"obj",
-						"text"=>"Run",
+						"text"=>"Run/Resume",
 						"img"=>"copy.gif",
 						"imgdis"=>"copy.gif",
 						"title"=>"Tooltip here",

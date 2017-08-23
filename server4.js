@@ -74,6 +74,8 @@ var ctr = 1;
 
 var http = require('http');
 
+var debug = false;
+
 var server = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
   //res.end('Hello World\n');
@@ -256,6 +258,18 @@ function doInit() {
 
 }
 
+function serverStarted() {
+
+  phpfpm.run('serverstarted.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      if(output) console.log(output);
+
+      if (phpErrors) console.error(phpErrors);
+  });
+}
+
 function syncToServer() {
 
   //console.log("synctoserver.php running...");
@@ -372,6 +386,8 @@ function portCheck() {
 
         //var sims = ['/dev/ttyUSB0','/dev/ttyUSB1'];
 
+        //serverStarted();
+
         sims = obj.devices;
 
         lastSim = sims[sims.length-1].port;
@@ -423,8 +439,8 @@ function simInit(dev,sim,ip) {
         }
 
         setTimeout(function(){
-          retrieveSMS(dev,sim,ip);
-          //checkSignal(dev,sim,ip);
+          //retrieveSMS(dev,sim,ip);
+          checkSignal(dev,sim,ip);
         }, TIMEOUT);
 
         if (phpErrors) console.error(phpErrors);
@@ -444,7 +460,7 @@ function checkSignal(dev,sim,ip) {
     {
         if (err == 99) console.error('PHPFPM server error');
 
-        if(debug) console.log("checksignal.php "+dev+" "+sim+" "+ip+" done.");
+        //if(debug) console.log("checksignal.php "+dev+" "+sim+" "+ip+" done.");
 
         //console.log(output);
 

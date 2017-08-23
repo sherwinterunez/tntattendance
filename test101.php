@@ -82,7 +82,7 @@ if($fp = @fsockopen($host,$port,$errCode,$errStr,$waitTimeoutInSeconds)){
 
 //$host = '10.1.2.5';
 
-$host = 'tntattendance.dev';
+/*$host = 'tntattendance.dev';
 
 if(pingDomain($host)>0) {
 
@@ -98,6 +98,16 @@ if(pingDomain($host)>0) {
 
 	pre('success!');
 
-}
+}*/
+
+//$test = 'hello';
+
+//$x = explode('|',$test);
+
+//pre(array('$x'=>$x));
+
+$r = pingDomain('10.1.2.231');
+
+pre(array('$r'=>$r));
 
 //

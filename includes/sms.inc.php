@@ -1017,6 +1017,8 @@ if(!class_exists('SMS')) {
 
 	    public function deviceOpen($mode = "r+b") {
 
+				echo "\ndeviceOpen\n";
+
 	        if ($this->state === DEVICE_OPENED) {
 	            trigger_error("The device is already opened", E_USER_NOTICE);
 
@@ -1041,11 +1043,13 @@ if(!class_exists('SMS')) {
 	            return false;
 	        }
 
-	        //echo "\nopening device: ".$this->device."\n";
+	        echo "\nopening device: ".$this->device."\n";
 
-	        $this->handle = fopen($this->device, $mode);
+	        //$this->handle = fopen($this->device, $mode);
 
-	        //echo "\nopening done.\n";
+					$this->handle = fopen($this->device, 'r');
+
+	        echo "\nopening done.\n";
 
 	        if ($this->handle !== false) {
 	            //var_dump($this->handle);
@@ -1079,6 +1083,8 @@ if(!class_exists('SMS')) {
 		}
 
 	    public function setBaudRate($rate) {
+
+				echo "\nsetBaudRate\n";
 
 	        if ($this->state !== DEVICE_OPENED) {
 	            trigger_error("Unable to set the baud rate : the device is " .
@@ -1136,6 +1142,8 @@ if(!class_exists('SMS')) {
 
 	                return false;
 	            }
+
+							//echo 'hello!';
 
             	$this->sendMessageOk("ATE1\r\n",1);
 

@@ -1007,7 +1007,7 @@ function isServerLicense() {
 	return false;
 }
 
-function pingDomain($domain=false){
+function pingDomain($domain=false,$port=80){
 
 	if(!empty($domain)&&trim($domain)!='') {
 	} else {
@@ -1015,7 +1015,7 @@ function pingDomain($domain=false){
 	}
 
   $starttime = microtime(true);
-  $file      = @fsockopen($domain, 80, $errno, $errstr, 10);
+  $file      = @fsockopen($domain, $port, $errno, $errstr, 10);
   $stoptime  = microtime(true);
   $status    = 0;
 
@@ -1087,6 +1087,20 @@ function checkLicense() {
 	return false;
 }
 */
+
+function log_notice($str=false) {
+	if(!empty($str)) {
+		return trigger_error(prebuf($str));
+	}
+
+	return false;
+}
+
+function tocrlf($str) {
+	$str = str_replace("\r", '\r', $str);
+	$str = str_replace("\n", '\n', $str);
+	return $str;
+}
 
 timer_start();
 

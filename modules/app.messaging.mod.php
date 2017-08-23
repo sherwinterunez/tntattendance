@@ -6333,7 +6333,8 @@ Indexes:
 							$rows = array();
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['sim_id'],'data'=>array(0,$v['sim_id'],$v['sim_name'],$v['sim_number'],$v['sim_network'],$v['sim_desc'],$v['sim_device'],$v['sim_ip'],$v['sim_disabled'],$v['sim_online']));
+								$signal = !empty($v['sim_device']) ? getOption('SIGNAL_'.$v['sim_number'],'') : '';
+								$rows[] = array('id'=>$v['sim_id'],'data'=>array(0,$v['sim_id'],$v['sim_name'],$v['sim_number'],$v['sim_network'],$signal,$v['sim_device'],$v['sim_ip'],$v['sim_disabled'],$v['sim_online']));
 							}
 
 							$retval = array('rows'=>$rows);
@@ -6497,7 +6498,7 @@ Indexes:
 
 							foreach($result['rows'] as $k=>$v) {
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getContactNickByID($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getStudentFullName($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getStudentFullName($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp'],'m-d-Y H:i:s'),pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);

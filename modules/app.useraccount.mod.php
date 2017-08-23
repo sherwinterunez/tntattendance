@@ -582,6 +582,7 @@ if(!class_exists('APP_app_useraccount')) {
 							$content['role_id'] = $ret['roleid'] = $this->vars['post']['user_role'];
 							$content['user_login'] = $this->vars['post']['user_login'];
 							$content['user_email'] = $this->vars['post']['user_email'];
+							$content['flag'] = 0;
 
 							if(!empty($this->vars['post']['new_hash'])) {
 								$content['user_hash'] = $this->vars['post']['new_hash'];

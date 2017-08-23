@@ -133,8 +133,6 @@ if(getOption('$MAINTENANCE',false)) {
 	die("\nchecksignal: Server under maintenance.\n");
 }
 
-//$_GET['dev'] = '/dev/ttyUSB1';
-//$_GET['dev'] = '/dev/ttyUSB0';
 
 //$_GET['dev'] = '/dev/ttyUSB1';
 //$_GET['dev'] = '/dev/ttyUSB8';

@@ -156,8 +156,9 @@ if(!class_exists('APP_App')) {
 
 					//smsoutbox_status
 
-					$sql = "select * from tbl_smsoutbox where $where smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc $limit";
+					$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where $where smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc $limit";
 
+					$sql = "select * from ($sql) as A order by elapsedtime desc";
 					//pre(array('$params'=>$params,'$match'=>$match,'$sql'=>$sql));
 
 					if(!($result = $appdb->query($sql))) {

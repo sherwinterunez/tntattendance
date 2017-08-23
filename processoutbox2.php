@@ -162,6 +162,8 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 		}
 	}
 
+	$failed = false;
+
 	if(!empty($result['rows'][0]['smsoutbox_id'])) {
 
 		//print_r(array('$result'=>$result['rows']));
@@ -181,6 +183,13 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 					//if(sendSMS($v['smsoutbox_portdevice'],$v['smsoutbox_contactnumber'],$v['smsoutbox_message'])) {
 
+					$unixtime = intval(getDbUnixDate());
+
+					//$absentnoticount = getOption('ABSENTNOTICOUNT_'.$studentprofile_id.'_'.date('Ymd', $unixtime),0);
+
+					$sentcount = getOption('SENTCOUNT_'.$mobileNo.'_'.date('Ymd', $unixtime),0);
+					$failedcount = getOption('FAILEDCOUNT_'.$mobileNo.'_'.date('Ymd', $unixtime),0);
+
 					$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>3,'smsoutbox_sentstamp'=>'now()'),'smsoutbox_status=1 and smsoutbox_id='.$v['smsoutbox_id']);
 
 					if(!empty($v['smsoutbox_promossentid'])) {
@@ -196,6 +205,10 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 					}
 
 					if(($count=sendSMS($sms,$v['smsoutbox_contactnumber'],$v['smsoutbox_message']))) {
+
+						setSetting('SENTCOUNT_'.$mobileNo.'_'.date('Ymd', $unixtime),($sentcount+1));
+
+						setSetting('SENTSTAMP_'.$mobileNo, $unixtime);
 
 						$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>4,'smsoutbox_sentstamp'=>'now()'),'smsoutbox_id='.$v['smsoutbox_id']);
 
@@ -218,6 +231,13 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 						}
 
 					} else {
+
+						setSetting('FAILEDCOUNT_'.$mobileNo.'_'.date('Ymd', $unixtime),($failedcount+1));
+
+						setSetting('FAILEDSTAMP_'.$mobileNo, $unixtime);
+
+						$failed = true;
+
 						$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>5,'smsoutbox_failedstamp'=>'now()'),'smsoutbox_id='.$v['smsoutbox_id']);
 
 						if(!empty($v['smsoutbox_promossentid'])) {
@@ -244,16 +264,47 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	}
 
-	if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1"))) {
-		//echo "\n0 message. processOutbox done.\n";
-		return false;
-	}
+	//log_notice(array('processOutbox'=>'processOutbox','$failed'=>$failed));
 
-	if(!empty($result['rows'][0]['smsoutbox_id'])&&!empty($result['rows'][0]['elapsedtime'])) {
-		if(intval($result['rows'][0]['elapsedtime'])>60) {
-			pre(array('$result'=>$result));
+	if(!$failed) {
 
-			$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1,'smsoutbox_simnumber'=>$mobileNo),'smsoutbox_id='.$result['rows'][0]['smsoutbox_id']);
+		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1";
+
+		//log_notice(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			//echo "\n0 message. processOutbox done.\n";
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['smsoutbox_id'])&&!empty($result['rows'][0]['elapsedtime'])) {
+			if(intval($result['rows'][0]['elapsedtime'])>60) {
+				//pre(array('$result'=>$result));
+
+				//log_notice(array('$result'=>$result));
+
+				$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1,'smsoutbox_simnumber'=>$mobileNo),'smsoutbox_id='.$result['rows'][0]['smsoutbox_id']);
+			}
+		}
+
+		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_simnumber<>'$mobileNo' and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=1 order by smsoutbox_id asc limit 10";
+
+		//log_notice(array('$sql'=>$sql));
+
+		if(!($result = $appdb->query($sql))) {
+			//echo "\n0 message. processOutbox done.\n";
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['smsoutbox_id'])&&!empty($result['rows'][0]['elapsedtime'])) {
+			foreach($result['rows'] as $k=>$v) {
+				if(intval($v['elapsedtime'])>180) {
+					//pre(array('waiting'=>$v));
+					//log_notice(array('waiting'=>$v));
+					$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>1,'smsoutbox_simnumber'=>$mobileNo,'smsoutbox_failedstamp'=>'now()'),'smsoutbox_id='.$v['smsoutbox_id']);
+					break;
+				}
+			}
 		}
 	}
 

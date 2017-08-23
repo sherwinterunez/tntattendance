@@ -78,13 +78,13 @@
 
 			myGrid.setImagePath("/codebase/imgs/")
 
-			myGrid.setHeader("#master_checkbox,ID, Name, Number, Network, Description, Device, IP, Status, Online");
+			myGrid.setHeader("#master_checkbox, ID, Name, Number, Network, Signal, Device, IP, Status, Online");
 
 			myGrid.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#combo_filter,#text_filter,#text_filter,#text_filter,#combo_filter,#combo_filter");
 
 			//myGrid.setInitWidths("50,70,150,150,150,150,*,90");
 
-			myGrid.setInitWidths("50,70,*,150,*,*,100,100,100,100");
+			myGrid.setInitWidths("50,70,150,120,150,120,100,100,100,100");
 
 			myGrid.setColAlign("center,center,left,left,left,left,left,left,left,left");
 

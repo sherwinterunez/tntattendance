@@ -43,7 +43,8 @@ function at_cmgs($sms=false,$bytesize=false,$msg=false) {
 
 	$simfunctions[] = array(
 				'command' => $msg . '$CTRLZ',
-				'regx' => array("OK\r\n"),
+				//'regx' => array("OK\r\n"),
+				'regx' => array("\+CMGS\:\s+\d+\r\n"),
 		);
 
 	return $sms->modemFunction($simfunctions);
@@ -65,7 +66,8 @@ function at_cmgs1($sms=false,$bytesize=false,$msg=false) {
 
 	$simfunctions[] = array(
 				'command' => 'AT+CMGS='.$bytesize.'$CR'.$msg.'$CTRLZ',
-				'regx' => array("OK\r\n"),
+				//'regx' => array("OK\r\n"),
+				'regx' => array("\+CMGS\:\s+\d+\r\n"),
 		);
 
 	print_r(array('$simfunctions'=>$simfunctions));
@@ -102,6 +104,8 @@ function at_atgt($sms){
 
 		$simfunctions[] = array(
 					'command' => '$CTRLZ',
+					'regx' => array("\+CMS\s+ERROR"),
+					'timeout' => 5,
 			);
 
 	} else {

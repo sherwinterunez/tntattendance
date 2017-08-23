@@ -482,7 +482,9 @@ if(!class_exists('APP_Tap')) {
 				} else {
 					$retval = array();
 					$retval['return_code'] = 4594;
-					$retval['return_message'] = 'RFID not found!';
+					$retval['return_message'] = 'RFID '.$post['rfid'].' not found!';
+
+					log_notice($retval);
 
 					header_json();
 					json_encode_return($retval);
@@ -516,6 +518,8 @@ if(!class_exists('APP_Tap')) {
 					$from = date2timestamp("$month/$day/$year 00:00:00",'m/d/Y H:i:s');
 					$to = date2timestamp("$month/$day/$year 23:59:59",'m/d/Y H:i:s');
 
+					$settings_tardinessgraceperiodminute = getOption('$SETTINGS_TARDINESSGRACEPERIODMINUTE',30) * 60;
+
 					$startTime = getSectionStartTime($vars['studentinfo']['studentprofile_section']);
 					$endTime = getSectionEndTime($vars['studentinfo']['studentprofile_section']);
 
@@ -534,7 +538,7 @@ if(!class_exists('APP_Tap')) {
 
 					$late = false;
 
-					if(!empty($startTimeStamp)&&$post['unixtime']>$startTimeStamp) {
+					if(!empty($startTimeStamp)&&$post['unixtime']>($startTimeStamp+$settings_tardinessgraceperiodminute)) {
 						$late = true;
 					}
 
@@ -568,9 +572,16 @@ if(!class_exists('APP_Tap')) {
 						if($interval>$settings_rfidinterval) {
 
 						} else {
-							$bypass = true;
 
-							$appdb->update("tbl_studentdtr",array('studentdtr_tappedstamp'=>'now()'),"studentdtr_id=".$studentdtr_id);
+							if($post['unixtime']>$endTimeStamp&&$type=='OUT') {
+
+							} else {
+
+								$bypass = true;
+
+								$appdb->update("tbl_studentdtr",array('studentdtr_tappedstamp'=>'now()'),"studentdtr_id=".$studentdtr_id);
+
+							}
 
 						}
 

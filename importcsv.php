@@ -113,6 +113,9 @@ $lines = file('tntimport.csv');
 
 //$appdb->begin();
 
+$studentprofile_rfid = 1;
+$studentprofile_number = 1;
+
 foreach($lines as $k=>$v) {
 
 	$appdb->begin();
@@ -128,7 +131,24 @@ foreach($lines as $k=>$v) {
   $content['studentprofile_lastname'] = !empty($data[4]) ? trim($data[4]) : '';
   $content['studentprofile_middlename'] = !empty($data[3]) ? trim($data[3]) : '';
   //$content['studentprofile_guardianmobileno'] = !empty($data[10]) ? trim($data[10]) : '';
-  $content['studentprofile_active'] = !empty($data[12]) ? trim($data[12]) : '';
+  $content['studentprofile_active'] = !empty($data[12]) ? trim($data[12]) : '1';
+
+	if(trim($content['studentprofile_rfid'])!='') {
+	} else {
+		$content['studentprofile_rfid'] = $studentprofile_rfid;
+		$studentprofile_rfid++;
+	}
+
+	if(trim($content['studentprofile_number'])!='') {
+	} else {
+		$content['studentprofile_number'] = $studentprofile_number;
+		$studentprofile_number++;
+	}
+
+	if(trim($content['studentprofile_firstname'])!='') {
+	} else {
+		continue;
+	}
 
 	if(!empty($data[10])) {
 		$data[10] = numberonly($data[10]);

@@ -75,6 +75,23 @@ function portCheck($dev=false,$localIP=false) {
 	if(!empty($dev)&&!empty($localIP)) {
 	} else return false;
 
+	$bypass = getOption('$TTY_BYPASS',false);
+
+	if(!empty($bypass)) {
+		$arr = explode('|',$bypass);
+
+		if(!empty($arr)&&is_array($arr)) {
+			foreach($arr as $k=>$v) {
+				$v = strtoupper(trim($v));
+				$x = strtoupper(trim($dev));
+
+				if(preg_match('/'.$v.'/si',$dev)) {
+					return false;
+				}
+			}
+		}
+	}
+
 	//echo "\nportCheck starting ($dev).\n";
 
 	$sms = new APP_SMS;
@@ -295,6 +312,28 @@ $localIP = getMyLocalIP();
 if(trim($localIP)=='') {
 	$localIP = '127.0.0.1';
 }
+
+$timeout = 120;
+
+$timeoutat = time() + $timeout;
+
+$flag = false;
+
+do {
+
+	$localIP = getMyLocalIP();
+
+	if(trim($localIP)=='') {
+		$localIP = '127.0.0.1';
+	} else
+	if(trim($localIP)=='0.0.0.0'||trim($localIP)=='127.0.0.1') {
+	} else {
+		break;
+	}
+
+	sleep(1);
+
+} while ($timeoutat > time());
 
 $appdb->query('delete from tbl_port');
 
