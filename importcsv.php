@@ -274,6 +274,10 @@ foreach($lines as $k=>$v) {
 			$bypass = false;
 			$filepath .= trim($data[13]);
 		} else
+		if(file_exists($filepath.trim($data[13]).'.jpeg')&&($hf=fopen($filepath.trim($data[13]).'.jpeg','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.jpeg';
+		} else
 		if(file_exists($filepath.trim($data[13]).'.jpg')&&($hf=fopen($filepath.trim($data[13]).'.jpg','r'))) {
 			$bypass = false;
 			$filepath .= trim($data[13]).'.jpg';
@@ -281,6 +285,10 @@ foreach($lines as $k=>$v) {
 		if(file_exists($filepath.trim($data[13]).'.png')&&($hf=fopen($filepath.trim($data[13]).'.png','r'))) {
 			$bypass = false;
 			$filepath .= trim($data[13]).'.png';
+		} else
+		if(file_exists($filepath.trim($data[13]).'.JPEG')&&($hf=fopen($filepath.trim($data[13]).'.JPEG','r'))) {
+			$bypass = false;
+			$filepath .= trim($data[13]).'.JPEG';
 		} else
 		if(file_exists($filepath.trim($data[13]).'.JPG')&&($hf=fopen($filepath.trim($data[13]).'.JPG','r'))) {
 			$bypass = false;

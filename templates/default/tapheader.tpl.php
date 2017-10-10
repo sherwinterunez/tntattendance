@@ -52,6 +52,8 @@ if(!empty(($license=checkLicense()))) {
 	$license = array();
 }
 
+//pre(array('$license'=>$license));
+
 $settings_hidedb = getOption('$SETTINGS_HIDEDB',false);
 ?>
 </head>
@@ -271,6 +273,7 @@ $settings_hidedb = getOption('$SETTINGS_HIDEDB',false);
 		width: 70%;
 		height: auto;
 		float: left;
+		overflow: hidden;
 		/*border-right: 1px solid #f00;*/
 	}
 
@@ -317,9 +320,12 @@ $settings_hidedb = getOption('$SETTINGS_HIDEDB',false);
 		font-size: 30px;
 		line-height: 100px;
 		/*margin-left: 20px;*/
+		width: 800px;
 		color: #fff;
 		opacity: 0.80;
 		float: left;
+		/*overflow: hidden;*/
+		white-space: nowrap;
 	}
 
 	#contentprevious {

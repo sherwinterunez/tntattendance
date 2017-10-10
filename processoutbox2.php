@@ -238,7 +238,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 						$failed = true;
 
-						$appdb->update("tbl_smsoutbox",array('smsoutbox_status'=>5,'smsoutbox_failedstamp'=>'now()'),'smsoutbox_id='.$v['smsoutbox_id']);
+						$appdb->update("tbl_smsoutbox",array('smsoutbox_failedcount'=>'#smsoutbox_failedcount+1#','smsoutbox_status'=>5,'smsoutbox_failedstamp'=>'now()'),'smsoutbox_id='.$v['smsoutbox_id']);
 
 						if(!empty($v['smsoutbox_promossentid'])) {
 							$appdb->update("tbl_promossent",array('promossent_status'=>5),'promossent_id='.$v['smsoutbox_promossentid']);
@@ -268,7 +268,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	if(!$failed) {
 
-		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1";
+		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_failedcount<5 and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1";
 
 		//log_notice(array('$sql'=>$sql));
 

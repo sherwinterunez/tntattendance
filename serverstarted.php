@@ -57,6 +57,8 @@ $timeoutat = time() + $timeout;
 
 $flag = false;
 
+$bypass = true;
+
 do {
 
 	$localIP = getMyLocalIP();
@@ -66,6 +68,7 @@ do {
 	} else
 	if(trim($localIP)=='0.0.0.0'||trim($localIP)=='127.0.0.1') {
 	} else {
+		$bypass = false;
 		break;
 	}
 
@@ -75,7 +78,9 @@ do {
 
 echo "My IP Address: \n$localIP\n";
 
-sleep(2);
+if(!$bypass) {
+	sleep(60);	
+}
 
 if(!empty(($license=checkLicense()))) {
 } else {

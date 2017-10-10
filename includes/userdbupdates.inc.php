@@ -45,6 +45,16 @@ if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_absentnoti')) {
 	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_absentnoti integer NOT NULL DEFAULT 0");
 }
 
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_failedcount')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_failedcount integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isTableExist('tbl_rfidqueue')) {
+	$appdb->query("CREATE SEQUENCE tbl_rfidqueue_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1");
+	$appdb->query("CREATE TABLE tbl_rfidqueue (rfidqueue_id bigint DEFAULT nextval(('tbl_rfidqueue_seq'::text)::regclass) NOT NULL,rfidqueue_rfid text DEFAULT ''::text NOT NULL,rfidqueue_active integer NOT NULL DEFAULT 0,rfidqueue_deleted integer NOT NULL DEFAULT 0,rfidqueue_flag integer NOT NULL DEFAULT 0,rfidqueue_createstamp timestamp with time zone DEFAULT now())");
+	$appdb->query("ALTER TABLE ONLY tbl_rfidqueue ADD CONSTRAINT tbl_rfidqueue_primary_key PRIMARY KEY (rfidqueue_id)");
+}
+
 /* INCLUDES_END */
 
 

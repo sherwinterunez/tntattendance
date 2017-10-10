@@ -842,6 +842,10 @@ function myExec($cmd, &$out = null) {
 	return $retVal;
 }
 
+function isValidIp($ip) {
+  return inet_pton($ip) !== false;
+}
+
 function getMacAddress() {
 	$out = false;
 	$mac = array();
@@ -944,6 +948,8 @@ function checkLicense() {
 
 				$currentDate = intval(getDbUnixDate());
 				$expireDate = intval($json['ex']);
+
+				//print_r(array('hello'=>'sherwin!','$json'=>$json,'$currentDate'=>$currentDate,'$expireDate'=>$expireDate));
 
 				if($currentDate>$expireDate) {
 					return false;

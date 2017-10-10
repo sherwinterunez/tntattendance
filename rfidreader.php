@@ -90,6 +90,12 @@ function RFIDRead($dev=false,$mobileNo=false,$ip='') {
 
 	//print_r(array('history'=>$sms->getHistory()));
 
+	$settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
+	$settings_uhfrfidreadinterval = getOption('$SETTINGS_UHFRFIDREADINTERVAL',60);
+
+	$sms->showbuf = true;
+	$sms->readRFIDPort('hello',$settings_uhfrfidreadinterval,true);
+
 	$history = $sms->getHistory();
 
 	if(!empty($history)) {
@@ -110,7 +116,7 @@ function RFIDRead($dev=false,$mobileNo=false,$ip='') {
 
 	//echo "\nretrieve done (".$tstop." secs) for $dev.\n";
 
-	atLog('retrieve done ('.$tstop.' secs)','retrievesms',$dev,$mobileNo,$ip,logdt());
+	atLog('RFIDRead ('.$tstop.' secs)','retrievesms',$dev,$mobileNo,$ip,logdt());
 
 	return true;
 }
@@ -125,8 +131,10 @@ if(getOption('$MAINTENANCE',false)) {
 //$_GET['dev'] = '/dev/ttyUSB1';
 //$_GET['dev'] = '/dev/ttyUSB8';
 
-$_GET['dev'] = '/dev/tty.usbserial';
-$_GET['ip'] = '192.168.1.200';
+//$_GET['dev'] = '/dev/tty.usbserial';
+
+//$_GET['dev'] = '/dev/ttyUSB0';
+//$_GET['ip'] = '192.168.1.200';
 $_GET['sim'] = '09493621618';
 
 

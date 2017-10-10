@@ -10,6 +10,7 @@ var PHPFPM = require('./node_modules/node-phpfpm');
 
 //var io     = require('./node_modules/socket.io');
 var spawn = require('child_process').spawn;
+const { exec } = require('child_process');
 //var http = require('http');
 
 //var PHPFPM = require('/usr/local/etc/node_modules/node-phpfpm');
@@ -70,6 +71,8 @@ var pauseFlag = false;
 
 var sims = false;
 
+var rfid = false;
+
 var ctr = 1;
 
 var http = require('http');
@@ -104,65 +107,47 @@ var server = http.createServer(function (req, res) {
     res.end('restarting kiosk.\n');
 
     return true;
-  }
-
-  if(req.url==='/poweroff') {
+  } else if(req.url==='/poweroff') {
     poweroffFlag = true;
     runPortCheck = true;
     res.end('powering off.\n');
 
     return true;
-  }
-
-  if(req.url==='/reboot') {
+  } else if(req.url==='/reboot') {
     rebootFlag = true;
     runPortCheck = true;
     res.end('rebooting.\n');
 
     return true;
-  }
-
-  if(req.url==='/terminate') {
+  } else if(req.url==='/terminate') {
     terminateFlag = true;
     runPortCheck = true;
     res.end('terminating.\n');
 
     return true;
-  }
-
-  if(req.url==='/process') {
+  } else if(req.url==='/process') {
     res.end('processCount: '+processCount+'\n');
     return true;
-  }
-
-  if(req.url==='/processcount') {
+  } else if(req.url==='/processcount') {
     res.end(''+processCount+'');
     return true;
-  }
-
-  if(req.url==='/portcheck') {
+  } else if(req.url==='/portcheck') {
     runPortCheck = true;
     pauseFlag = false;
     res.end('checking port.\n');
 
     return true;
-  }
-
-  if(req.url==='/pause') {
+  } else if(req.url==='/pause') {
     pauseFlag = true;
     res.end('paused.\n');
 
     return true;
-  }
-
-  if(req.url==='/resume') {
+  } else if(req.url==='/resume') {
     pauseFlag = false;
     res.end('resumed.\n');
 
     return true;
-  }
-
-  if(req.url==='/status') {
+  } else if(req.url==='/status') {
 
     if(portCheckRunning) {
       res.end('scanning');
@@ -174,6 +159,25 @@ var server = http.createServer(function (req, res) {
     }
 
     return true;
+  } else if(req.url==='/infrared') {
+    res.end('hello sherwin!');
+    return true;
+  } else {
+    var rid = req.url.match(/\/rfidreader\/(.*)\//gi);
+    if(rid) {
+      var sp = rid[0].split('/');
+      console.log('sp',sp);
+      console.log('sp[2]',sp[2]);
+      //spawn("export", ["DISPLAY=:0.0"]);
+      //spawn("xdotool", ["type",sp[2]]);
+      //spawn("xdotool", ["key","Return"]);
+      exec("export DISPLAY=:0.0 && xdotool type "+sp[2]+" && xdotool key Return", (err, stdout, stderr) => {
+        if (err) {
+          console.error(`exec error: ${err}`);
+          return;
+        }
+      });
+    }
   }
 
   res.end('end.\n');
@@ -255,6 +259,46 @@ function doInit() {
   portCheck();
 
   syncToServer();
+
+  adminSMS();
+
+}
+
+function adminSMS() {
+
+  phpfpm.run('adminsms.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      if(output) console.log(output);
+
+      setTimeout(function(){
+      //  processCommands(dev,sim,ip);
+        //processOutbox(dev,sim);
+        adminSMS();
+      }, 5000);
+
+      if (phpErrors) console.error(phpErrors);
+  });
+
+}
+
+function rfidProcess() {
+
+  phpfpm.run('rfidprocess.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      if(output) console.log(output);
+
+      setTimeout(function(){
+      //  processCommands(dev,sim,ip);
+        //processOutbox(dev,sim);
+        rfidProcess();
+      }, TIMEOUT);
+
+      if (phpErrors) console.error(phpErrors);
+  });
 
 }
 
@@ -398,7 +442,15 @@ function portCheck() {
 
           simInit(sims[i].port,sims[i].sim,sims[i].ip);
         }
+      } else if(obj&&obj.rfidreader&&obj.rfidreader.length>0) {
 
+        rfid = obj.rfidreader;
+
+        for(var i in rfid) {
+          rfidRead(rfid[i].port,rfid[i].ip);
+        }
+
+        rfidProcess();
       } else {
         setTimeout(function(){
           portCheck();
@@ -408,6 +460,33 @@ function portCheck() {
       if (phpErrors) console.error(phpErrors);
   });
 
+}
+
+function rfidRead(dev,ip) {
+  //if(debug)
+  console.log("rfidreader.php "+dev+" "+ip+" running...");
+
+  //console.log("checksignal.php "+dev+" "+sim+" "+ip+" running...");
+
+  phpfpm.run('rfidreader.php?dev='+dev+'&ip='+ip, function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      //if(debug) console.log("checksignal.php "+dev+" "+sim+" "+ip+" done.");
+
+      //console.log(output);
+
+      //setTimeout(doInit, (60*1000*2));
+
+      //processCount--;
+
+      setTimeout(function(){
+        rfidRead(dev,ip);
+        //processOutbox(dev,sim);
+      }, 1);
+
+      if (phpErrors) console.error(phpErrors);
+  });
 }
 
 function simInit(dev,sim,ip) {

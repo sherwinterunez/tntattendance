@@ -153,6 +153,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 		myTabbar.addTab("tbGeneral", "General");
 		myTabbar.addTab("tbThreshold", "Threshold");
 		myTabbar.addTab("tbServer", "Server");
+		myTabbar.addTab("tbUHFRFID", "UHF RFID & IR");
 		myTabbar.addTab("tbLicense", "License");
 
 		myTabbar.tabs("tbSchoolYear").setActive();
@@ -178,6 +179,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 			{type: "block", name: "tbGeneral", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbGeneral']) ? json_encode($params['tbGeneral']) : '[]'; ?>},
 			{type: "block", name: "tbThreshold", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbThreshold']) ? json_encode($params['tbThreshold']) : '[]'; ?>},
 			{type: "block", name: "tbServer", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbServer']) ? json_encode($params['tbServer']) : '[]'; ?>},
+			{type: "block", name: "tbUHFRFID", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbUHFRFID']) ? json_encode($params['tbUHFRFID']) : '[]'; ?>},
 			{type: "block", name: "tbLicense", hidden:false, width: 1150, blockOffset: 0, offsetTop:0, list:<?php echo !empty($params['tbLicense']) ? json_encode($params['tbLicense']) : '[]'; ?>},
 			{type: "label", label: ""}
 		];
@@ -201,6 +203,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 		myForm.hideItem('tbGeneral');
 		myForm.hideItem('tbThreshold');
 		myForm.hideItem('tbServer');
+		myForm.hideItem('tbUHFRFID');
 		myForm.hideItem('tbLicense');
 
 ///////////////////////////////////

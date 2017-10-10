@@ -120,6 +120,15 @@ if(!class_exists('SMS')) {
 			return $hex;
 		}
 
+		public function str2hex2($str) {
+			$hex = '';
+
+			for($j=0;$j<strlen($str);$j++) {
+			    $hex .= str_pad(dechex(ord($str[$j])), 2, '0', STR_PAD_LEFT);
+			}
+			return $hex;
+		}
+
 	    public function sendMessage($str, $waitForReply = 0) {
 
 	        if ($this->state !== DEVICE_OPENED) {
@@ -612,7 +621,9 @@ if(!class_exists('SMS')) {
 					//echo ".\r\n";
 					$echo = $this->tocrlf('$buf => '. $buffer)."\r\n";
 					$echo = str_replace(chr(26),'(0x26)',$echo);
+					$tohex = $this->str2hex($buffer)."\r\n";
 					echo $echo;
+					echo strtoupper($tohex);
 				}
 
 				$this->buf .= $buffer;
@@ -902,6 +913,156 @@ if(!class_exists('SMS')) {
 			return false;
 		}
 
+		public function readRFIDPort($expected_result=false, $timeout=0, $showbuffer=false, $commandstr='') {
+			global $appdb;
+
+			if(!empty($expected_result)&&is_numeric($expected_result)) {
+				$timeout = $expected_result;
+				$expected_result = false;
+			}
+
+			//$this->buffer = '';
+
+			$timeoutat = time() + $timeout;
+
+			$cmt = array();
+
+			if(empty($this->handle)) {
+				trigger_error("Invalid handle", E_USER_WARNING);
+				return false;
+			}
+
+			if(!is_resource($this->handle)) {
+				trigger_error("Invalid handle", E_USER_WARNING);
+				return false;
+			}
+
+			$rfid = array();
+
+			$curl = new MyCurl;
+
+			do {
+
+				$buffer = fread($this->handle, 1024);
+
+				if($buffer===false) {
+					trigger_error("An error has occured (".$this->getLastMessage().")", E_USER_WARNING);
+					return false;
+				}
+
+				//if($this->showbuf&&$buffer) {
+					//echo ".\r\n";
+					//$echo = $this->tocrlf('$buf => '. $buffer)."\r\n";
+					//$echo = str_replace(chr(26),'(0x26)',$echo);
+					//$tohex = $this->str2hex2($buffer)."\r\n";
+					//echo $echo;
+					//echo strtoupper($tohex);
+				//}
+
+				$this->buf .= $buffer;
+
+				if(strlen($this->buf)<1) {
+					usleep(10000); //0.02 sec
+					continue;
+				}
+
+				if((strlen($this->buf) % 8)==0) {
+					$len = strlen($this->buf);
+					//echo "\n(strlen = $len )\n";
+					log_notice("\n(strlen = $len )\n");
+					$tohex = strtoupper($this->str2hex2($buffer));
+					//echo '['.$tohex."]\r\n";
+					log_notice('['.$tohex."]\r\n");
+					$this->buf = '';
+
+					while(1) {
+						if(strlen($tohex)>16) {
+							$t = substr($tohex,0,16);
+							if(substr($tohex,0,8)=='0700EE00') {
+								if(!empty($rfid[$t])) {
+								} else {
+									$rfid[$t] = $t;
+
+									$content = array();
+									$content['rfidqueue_rfid'] = $t;
+
+									if(!($result = $appdb->insert("tbl_rfidqueue",$content,"rfidqueue_id"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									//$curl->get('http://127.0.0.1:8080/rfidreader/'.$t.'/');
+								}
+							}
+							$tohex = str_replace($t,'',$tohex);
+						} else {
+							if(strlen($tohex)==16) {
+								if(substr($tohex,0,8)=='0700EE00') {
+									if(!empty($rfid[$tohex])) {
+									} else {
+										$rfid[$tohex] = $tohex;
+										//$curl->get('http://127.0.0.1:8080/rfidreader/'.$tohex.'/');
+
+										$content = array();
+										$content['rfidqueue_rfid'] = $tohex;
+
+										if(!($result = $appdb->insert("tbl_rfidqueue",$content,"rfidqueue_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+
+									}
+								}
+							}
+							break;
+						}
+					}
+
+					//print_r(array('$rfid'=>$rfid));
+					log_notice(array('$rfid'=>$rfid));
+
+				}
+
+				usleep(200000);//0.2 sec
+
+			} while ($timeoutat > time());
+
+			$tbuf = $this->buffer;
+
+			$this->adata = $exp = explode("\r", $tbuf);
+
+			$history = array();
+
+			if(!empty($expected_result)) {
+				$history['regx'] = $this->tocrlf($expected_result);
+				$history['flat'] = $this->tocrlf($tbuf);
+				$history['timestamp'] = time();
+			}
+
+			foreach($exp as $v) {
+				$v = trim($v);
+				if(!empty($v)) {
+					$history[] = $this->tocrlf($v);
+				}
+			}
+
+			$history[] = 'Timed Out ('.$timeout.') ('.$commandstr.')! ('.$this->tocrlf($expected_result).')';
+
+			/*ob_start();
+
+			debug_print_backtrace();
+
+			$history[] = ob_get_contents();
+
+			ob_end_clean();*/
+
+			if(!empty($history)) {
+				$this->history[] = $this->current = $history;
+			}
+
+			return false;
+		}
+
 		public function process() {
 
 		}
@@ -1017,7 +1178,7 @@ if(!class_exists('SMS')) {
 
 	    public function deviceOpen($mode = "r+b") {
 
-				echo "\ndeviceOpen\n";
+				//echo "\ndeviceOpen\n";
 
 	        if ($this->state === DEVICE_OPENED) {
 	            trigger_error("The device is already opened", E_USER_NOTICE);
@@ -1043,13 +1204,11 @@ if(!class_exists('SMS')) {
 	            return false;
 	        }
 
-	        echo "\nopening device: ".$this->device."\n";
+	        //echo "\nopening device: ".$this->device."\n";
 
-	        //$this->handle = fopen($this->device, $mode);
+	        $this->handle = fopen($this->device, $mode);
 
-					$this->handle = fopen($this->device, 'r');
-
-	        echo "\nopening done.\n";
+	        //echo "\nopening done.\n";
 
 	        if ($this->handle !== false) {
 	            //var_dump($this->handle);
@@ -1084,7 +1243,7 @@ if(!class_exists('SMS')) {
 
 	    public function setBaudRate($rate) {
 
-				echo "\nsetBaudRate\n";
+				//echo "\nsetBaudRate\n";
 
 	        if ($this->state !== DEVICE_OPENED) {
 	            trigger_error("Unable to set the baud rate : the device is " .

@@ -18,6 +18,8 @@ error_reporting(E_ALL);
 
 ini_set("max_execution_time", 300);
 
+ini_set('precision',30);
+
 define('APPLICATION_RUNNING', true);
 
 define('ABS_PATH', dirname(__FILE__) . '/');
@@ -829,9 +831,11 @@ if(!empty($notifications)) {
 		if(!empty($retval['message_id'])) {
 
 			$content = array();
-			$content['smsoutbox_pushid'] = $retval['message_id'];
+			$content['smsoutbox_pushid'] = floatval($retval['message_id']);
 			$content['smsoutbox_pushstatus'] = 4;
 			$content['smsoutbox_pushsentstamp'] = 'now()';
+
+			print_r(array('$retval'=>$retval,'$content'=>$content));
 
 			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
 				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));

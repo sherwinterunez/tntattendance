@@ -67,6 +67,49 @@ class APP_SMS extends SMS {
 
 }
 
+function rfidReaderCheck($dev=false,$localIP=false) {
+	global $appdb;
+
+	//$dev = '/dev/ttyS3';
+
+	if(!empty($dev)&&!empty($localIP)) {
+	} else return false;
+
+	$bypass = getOption('$TTY_BYPASS',false);
+
+	if(!empty($bypass)) {
+		$arr = explode('|',$bypass);
+
+		if(!empty($arr)&&is_array($arr)) {
+			foreach($arr as $k=>$v) {
+				$v = strtoupper(trim($v));
+				$x = strtoupper(trim($dev));
+
+				if(preg_match('/'.$v.'/si',$dev)) {
+					return false;
+				}
+			}
+		}
+	}
+
+	//echo "\nportCheck starting ($dev).\n";
+
+	$sms = new APP_SMS;
+
+	//$portdevice = "/dev/cu.usbserial";
+
+	//echo "\nInitializing port ($dev).\n";
+
+	if(!@$sms->deviceInit($dev)) {
+		//echo "\nError initializing device ($dev)!\n";
+		return false;
+	}
+
+	$sms->deviceClose();
+
+	return true;
+}
+
 function portCheck($dev=false,$localIP=false) {
 	global $appdb;
 
@@ -340,8 +383,11 @@ $appdb->query('delete from tbl_port');
 $okport = array();
 $mobileNos = array();
 $devices = array();
+$rfidreader = array();
 
 $appdb->update('tbl_sim',array('sim_online'=>0,'sim_device'=>'','sim_ip'=>''));
+
+$settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
 
 foreach($ports as $dev) {
 	if($mno=portCheck($dev,$localIP)) {
@@ -351,6 +397,9 @@ foreach($ports as $dev) {
 		$devices[] = array('port'=>$dev,'sim'=>$mno,'ip'=>$localIP);
 		$mobileNos[] = "'".$mno."'";
 		$okport[] = $dev;
+	} else
+	if($settings_useuhfrfidreader&&rfidReaderCheck($dev,$localIP)) {
+		$rfidreader[] = array('port'=>$dev,'ip'=>$localIP);
 	}
 }
 
@@ -358,7 +407,7 @@ foreach($ports as $dev) {
 
 $tstop = timer_stop();
 
-echo json_encode(array('ports'=>$okport,'devices'=>$devices,'time'=>$tstop));
+echo json_encode(array('ports'=>$okport,'devices'=>$devices,'rfidreader'=>$rfidreader,'time'=>$tstop));
 
 //print_r(array('$okport '=>$okport ));
 

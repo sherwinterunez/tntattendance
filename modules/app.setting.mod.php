@@ -139,6 +139,10 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_autodetectface = getOption('$SETTINGS_AUTODETECTFACE',false);
 
+				$settings_bridgetoadmin = getOption('$SETTINGS_BRIDGETOADMIN',false);
+
+				$settings_bridgetoadminip = getOption('$SETTINGS_BRIDGETOADMINIP','');
+
 				$settings_licensekey = getOption('$SETTINGS_LICENSEKEY',false);
 
 				$settings_electronicbulletindaily = getOption('$SETTINGS_ELECTRONICBULLETINDAILY',base64_encode(serialize(array())));
@@ -146,6 +150,12 @@ if(!class_exists('APP_app_setting')) {
 				if(!empty($settings_electronicbulletindaily)) {
 					$settings_electronicbulletindaily = unserialize(base64_decode($settings_electronicbulletindaily));
 				}
+
+				$settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
+
+				$settings_uhfrfidreadinterval = getOption('$SETTINGS_UHFRFIDREADINTERVAL',60);
+
+				$settings_useinfraredbeam = getOption('$SETTINGS_USEINFRAREDBEAM',false);
 
 				//pre(array('$settings_electronicbulletindaily'=>$settings_electronicbulletindaily));
 
@@ -186,6 +196,16 @@ if(!class_exists('APP_app_setting')) {
 						$retval = array();
 						$retval['error_code'] = 4581;
 						$retval['error_message'] = 'Invalid school year!';
+
+						header_json();
+						json_encode_return($retval);
+						die;
+					}
+
+					if(!empty($post['settings_bridgetoadminip'])&&!isValidIp($post['settings_bridgetoadminip'])) {
+						$retval = array();
+						$retval['error_code'] = 4587;
+						$retval['error_message'] = 'Invalid Bridge Admin IP Address';
 
 						header_json();
 						json_encode_return($retval);
@@ -256,6 +276,16 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_LICENSEKEY',!empty($post['settings_licensekey'])?$post['settings_licensekey']:'');
 
+					setSetting('$SETTINGS_BRIDGETOADMIN',!empty($post['settings_bridgetoadmin'])?true:false);
+
+					setSetting('$SETTINGS_BRIDGETOADMINIP',!empty($post['settings_bridgetoadminip'])&&isValidIp($post['settings_bridgetoadminip'])?$post['settings_bridgetoadminip']:'');
+
+					setSetting('$SETTINGS_USEUHFRFIDREADER',!empty($post['settings_useuhfrfidreader'])?true:false);
+
+					setSetting('$SETTINGS_UHFRFIDREADINTERVAL',!empty($post['settings_uhfrfidreadinterval'])?$post['settings_uhfrfidreadinterval']:60);
+
+					setSetting('$SETTINGS_USEINFRAREDBEAM',!empty($post['settings_useinfraredbeam'])?true:false);
+
 					$settings_electronicbulletindaily = array();
 
 					if(!empty($post['settings_electronicbulletindailymsg'])&&is_array($post['settings_electronicbulletindailymsg'])) {
@@ -321,6 +351,7 @@ if(!class_exists('APP_app_setting')) {
 				$params['tbGeneral'] = array();
 				$params['tbThreshold'] = array();
 				$params['tbServer'] = array();
+				$params['tbUHFRFID'] = array();
 				$params['tbLicense'] = array();
 
 				$params['tbSchoolYear'][] = array(
@@ -751,6 +782,40 @@ if(!class_exists('APP_app_setting')) {
 					'position' => 'label-right',
 				);
 
+				$block = array();
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'BRIDGE TO ADMIN',
+					'labelWidth' => 150,
+					'name' => 'settings_bridgetoadmin',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_bridgetoadmin) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'IP',
+					'labelWidth' => 40,
+					'name' => 'settings_bridgetoadminip',
+					'readonly' => $readonly,
+					'value' => !empty($settings_bridgetoadminip) ? $settings_bridgetoadminip : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
 				$params['tbThreshold'][] = array(
 					'type' => 'input',
 					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
@@ -826,6 +891,39 @@ if(!class_exists('APP_app_setting')) {
 					'name' => 'settings_synctoserver',
 					'readonly' => $readonly,
 					'checked' => !empty($settings_synctoserver) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'checkbox',
+					'label' => 'UHF RFID READER',
+					'labelWidth' => 360,
+					'name' => 'settings_useuhfrfidreader',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_useuhfrfidreader) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'input',
+					'label' => 'UHF RFID READ INTERVAL (seconds)',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 250,
+					'name' => 'settings_uhfrfidreadinterval',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_uhfrfidreadinterval) ? $settings_uhfrfidreadinterval : '60',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'checkbox',
+					'label' => 'INFRARED BEAM',
+					'labelWidth' => 360,
+					'name' => 'settings_useinfraredbeam',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_useinfraredbeam) ? true : false,
 					'position' => 'label-right',
 				);
 

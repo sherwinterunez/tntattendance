@@ -406,6 +406,8 @@ if(!class_exists('APP_app_contact')) {
 
 					$license = checkLicense();
 
+					if(!empty($post['rowid'])&&is_numeric($post['rowid'])&&$post['rowid']>0&&!empty($license)&&!empty($license['ns'])&&intval($license['ns'])>0&&intval($license['ns'])>=getTotalStudentCurrentSchoolYear()) {
+					} else
 					if(!empty($license)&&!empty($license['ns'])&&intval($license['ns'])>0&&intval($license['ns'])>getTotalStudentCurrentSchoolYear()) {
 					} else {
 						$retval = array();
@@ -1091,8 +1093,11 @@ if(!class_exists('APP_app_contact')) {
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
 							$rows = array();
 
+							$seq = 1;
+
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_schoolyear'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
+								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$seq,$v['studentprofile_id'],$v['studentprofile_schoolyear'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
+								$seq++;
 							}
 
 							$retval = array('rows'=>$rows);
