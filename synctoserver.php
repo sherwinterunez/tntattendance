@@ -74,9 +74,9 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 
 		$ch = new MyCURL;
 
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, false);
+		//curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
 
 		$v['defaultpass'] = 'TAPNTXT143';
 
@@ -87,11 +87,13 @@ if(!empty($result['rows'][0]['studentprofile_id'])) {
 			print_r(array('error'=>$retcont));
 		}
 
-		//print_r(array('$retcont'=>$retcont));
+		print_r(array('$retcont'=>$retcont));
 
 		if(!empty($retcont['content'])) {
 			$retval = json_decode($retcont['content'],true);
 			print_r(array('$retval'=>$retval));
+		} else {
+			print_r(array('curlerror'=>curl_error($ch->ch)));
 		}
 
 		if(!empty($retval['userid'])) {

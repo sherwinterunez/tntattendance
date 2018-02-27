@@ -1,7 +1,7 @@
 
 
 //const TIMEOUT = 10000;
-const TIMEOUT = 1000;
+const TIMEOUT = 100;
 
 const PORT = 8080;
 const ADDRESS = '0.0.0.0';
@@ -103,7 +103,7 @@ var server = http.createServer(function (req, res) {
   if(req.url==='/restartkiosk') {
     //poweroffFlag = true;
     //runPortCheck = true;
-    spawn("killall", ["electron-quick-start"]);
+    spawn("killall", ["midori"]);
     res.end('restarting kiosk.\n');
 
     return true;
@@ -161,6 +161,13 @@ var server = http.createServer(function (req, res) {
     return true;
   } else if(req.url==='/infrared') {
     res.end('hello sherwin!');
+    return true;
+  } else if(req.url==='/rfidalarm') {
+    // /usr/bin/mpg123 /root/alarm1.mp3
+
+    spawn("mpg123", ["/root/alarm1.mp3"]);
+
+    res.end('rfidalarm');
     return true;
   } else {
     var rid = req.url.match(/\/rfidreader\/(.*)\//gi);
@@ -256,11 +263,30 @@ function doInit() {
 
   console.log('doInit started.');
 
-  portCheck();
+  //portCheck();
 
-  syncToServer();
+  monitoring();
 
-  adminSMS();
+  //syncToServer();
+
+  //adminSMS();
+
+}
+
+function monitoring() {
+
+  phpfpm.run('monitor.php', function(err, output, phpErrors)
+  {
+      if (err == 99) console.error('PHPFPM server error');
+
+      if(output) console.log(output);
+
+      setTimeout(function(){
+        monitoring();
+      }, 1000*60*5);
+
+      if (phpErrors) console.error(phpErrors);
+  });
 
 }
 
@@ -442,19 +468,6 @@ function portCheck() {
 
           simInit(sims[i].port,sims[i].sim,sims[i].ip);
         }
-
-        /*if(obj.rfidreader&&obj.rfidreader.length>0) {
-
-          rfid = obj.rfidreader;
-
-          for(var j in rfid) {
-            rfidRead(rfid[j].port,rfid[j].ip);
-          }
-
-          rfidProcess();
-
-        }*/
-
       } else if(obj&&obj.rfidreader&&obj.rfidreader.length>0) {
 
         rfid = obj.rfidreader;

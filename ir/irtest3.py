@@ -54,7 +54,8 @@ while True:
 	if value == 0:
 		ones = 0
 		print startTime, ctr, pulseLength.microseconds
-		r = requests.get('http://127.0.0.1/infrared.php')
+		r = requests.get('http://127.0.0.1/rfidprocess2.php')
+		#r = requests.get('http://127.0.0.1/infrared.php')
 		#r = requests.get('http://127.0.0.1:8080/infrared')
 		#r.json()
 		print r.text

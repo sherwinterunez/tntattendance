@@ -4,7 +4,7 @@
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
-* Date Created: February 23, 2011
+* Date Created: September 23, 2017
 *
 * Description:
 *
@@ -16,7 +16,7 @@
 
 error_reporting(E_ALL);
 
-ini_set("max_execution_time", 300);
+ini_set("max_execution_time", 0);
 
 define('APPLICATION_RUNNING', true);
 
@@ -51,9 +51,16 @@ define ("DEVICE_OPENED", 2);
 
 class APP_SMS extends SMS {
 
-	public function deviceInit($device=false,$baudrate=57600) {
 
-		if(!($this->deviceSet($device)&&$this->deviceOpen('w+')&&$this->setBaudRate($baudrate))) {
+	public function deviceInit($device=false,$baudrate=115200,$validParams=false) {
+
+		//$validParams = 'ignbrk -icanon -isig -iexten -echo -icrnl ixon -ixany -imaxbel -brkint -opost -onlcr -igncr -inlcr -echoe -echok -echoctl -echoke time 5';
+
+		//$validParams = 'ignbrk time 5';
+
+		$validParams = 'raw ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke time 5';
+
+		if(!($this->deviceSet($device)&&$this->deviceOpen('rb')&&$this->setBaudRate($baudrate,$validParams))) {
 			return false;
 		}
 
@@ -90,7 +97,6 @@ function RFIDRead($dev=false,$mobileNo=false,$ip='') {
 
 	//print_r(array('history'=>$sms->getHistory()));
 
-	$settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
 	$settings_uhfrfidreadinterval = getOption('$SETTINGS_UHFRFIDREADINTERVAL',60);
 
 	$sms->showbuf = true;
@@ -125,6 +131,8 @@ if(getOption('$MAINTENANCE',false)) {
 	die("\nretrieve: Server under maintenance.\n");
 }
 
+$settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
+
 //$_GET['dev'] = '/dev/ttyUSB1';
 //$_GET['dev'] = '/dev/ttyUSB0';
 
@@ -141,7 +149,7 @@ $_GET['sim'] = '09493621618';
 //if(!empty($_GET['dev'])&&!empty($_GET['sim'])&&!empty($_GET['ip'])&&isSimEnabled($_GET['sim'])) {
 	//setSetting('STATUS_RETRIEVESMS_'.$_GET['sim'],'1');
 
-	if(RFIDRead($_GET['dev'],$_GET['sim'],$_GET['ip'])) {
+	if($settings_useuhfrfidreader&&RFIDRead($_GET['dev'],$_GET['sim'],$_GET['ip'])) {
 		//setSetting('STATUS_RETRIEVESMS_'.$_GET['sim'],'0');
 	}
 //}

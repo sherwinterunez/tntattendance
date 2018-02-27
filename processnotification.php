@@ -97,9 +97,12 @@ if(!empty($notifications)) {
 
 		$ch = new MyCURL;
 
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		//curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, false);
 
 		//$msgin = getOption('$SETTINGS_TIMEINNOTIFICATION');
 		//$msgout = getOption('$SETTINGS_TIMEOUTNOTIFICATION');
@@ -288,7 +291,20 @@ if(!empty($notifications)) {
 
 			shuffle($asim);
 
+			$unixtime = intval(getDbUnixDate());
+
 			foreach($asim as $m=>$n) {
+
+				$failed_stamp = getOption('FAILEDSTAMP_'.$n['sim_number'],false);
+
+				if(!empty($failed_stamp)) {
+
+					$tm = $unixtime - $failed_stamp;
+
+					if($tm<300) {
+						continue;
+					}
+				}
 
 				if($v['studentdtr_type']=='IN') {
 					if(!empty($license['sc'])) {
@@ -757,15 +773,18 @@ if(!empty($result['rows'][0]['smsoutbox_id'])) {
 
 if(!empty($notifications)) {
 
-	//print_r(array('outbox notifications'=>$notifications));
+	print_r(array('outbox notifications'=>$notifications));
 
 	foreach($notifications as $k=>$v) {
 
 		$ch = new MyCURL;
 
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
+		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		//curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
+
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, false);
 
 		$smsoutbox_message = $v['smsoutbox_message'];
 
@@ -822,7 +841,7 @@ if(!empty($notifications)) {
 			print_r(array('error'=>$retcont));
 		}
 
-		//print_r(array('$retcont'=>$retcont));
+		//print_r(array('$retcont'=>$retcont,'$post'=>$post));
 
 		if(!empty($retcont['content'])) {
 			$retval = json_decode($retcont['content'],true);
@@ -835,7 +854,7 @@ if(!empty($notifications)) {
 			$content['smsoutbox_pushstatus'] = 4;
 			$content['smsoutbox_pushsentstamp'] = 'now()';
 
-			print_r(array('$retval'=>$retval,'$content'=>$content));
+			//print_r(array('$retval'=>$retval,'$content'=>$content));
 
 			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
 				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));

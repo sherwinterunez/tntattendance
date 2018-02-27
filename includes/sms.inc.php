@@ -941,6 +941,9 @@ if(!class_exists('SMS')) {
 
 			$curl = new MyCurl;
 
+			$oldbuf = '';
+			$oldtime = 0;
+
 			do {
 
 				$buffer = fread($this->handle, 1024);
@@ -962,23 +965,54 @@ if(!class_exists('SMS')) {
 				$this->buf .= $buffer;
 
 				if(strlen($this->buf)<1) {
-					usleep(10000); //0.02 sec
+					//usleep(10000); //0.02 sec
+					//usleep(5000); //0.02 sec
+					usleep(100); //0.02 sec
 					continue;
 				}
 
-				if((strlen($this->buf) % 8)==0) {
+				//log_notice('['.$this->buf.", ".strlen($this->buf)."]\r\n");
+
+				//log_notice('['.strlen($this->buf)."]\r\n");
+
+				/*$len = strlen($this->buf);
+				//echo "\n(strlen = $len )\n";
+				log_notice("\n(strlen = $len )\n");
+				$tohex = strtoupper($this->str2hex2($buffer));
+				//echo '['.$tohex."]\r\n";
+				log_notice('['.$tohex."]\r\n");*/
+
+				$mod = (strlen($this->buf) % 18);
+
+				log_notice('mod: ['.$mod."]\r\n");
+
+				if(md5($oldbuf)!=md5($this->buf)) {
+					$oldbuf = $this->buf;
+					$oldtime = time();
+				} else {
+					$elapsed = time() - $oldtime;
+
+					if($elapsed>60) {
+						$tohex = strtoupper($this->str2hex2($this->buf));
+						log_notice('$elapsed: ['.$elapsed.' | '.$tohex."]\r\n");
+						break;
+					}
+				}
+
+				if((strlen($this->buf) % 18)==0) {
 					$len = strlen($this->buf);
 					//echo "\n(strlen = $len )\n";
-					log_notice("\n(strlen = $len )\n");
-					$tohex = strtoupper($this->str2hex2($buffer));
+					log_notice("\n(strlen1 = $len )\n");
+					$tohex = strtoupper($this->str2hex2($this->buf));
 					//echo '['.$tohex."]\r\n";
 					log_notice('['.$tohex."]\r\n");
 					$this->buf = '';
 
 					while(1) {
-						if(strlen($tohex)>16) {
-							$t = substr($tohex,0,16);
-							if(substr($tohex,0,8)=='0700EE00') {
+						if(strlen($tohex)>=36) {
+							$t = substr($tohex,0,36);
+							//if(substr($tohex,0,8)=='0700EE00') {
+							if(substr($tohex,0,8)=='1100EE00') {
 								if(!empty($rfid[$t])) {
 								} else {
 									$rfid[$t] = $t;
@@ -995,9 +1029,11 @@ if(!class_exists('SMS')) {
 								}
 							}
 							$tohex = str_replace($t,'',$tohex);
+							log_notice('['.$tohex."]\r\n");
 						} else {
-							if(strlen($tohex)==16) {
-								if(substr($tohex,0,8)=='0700EE00') {
+							if(strlen($tohex)==36) {
+								//if(substr($tohex,0,8)=='0700EE00') {
+								if(substr($tohex,0,8)=='1100EE00') {
 									if(!empty($rfid[$tohex])) {
 									} else {
 										$rfid[$tohex] = $tohex;
@@ -1020,6 +1056,16 @@ if(!class_exists('SMS')) {
 
 					//print_r(array('$rfid'=>$rfid));
 					log_notice(array('$rfid'=>$rfid));
+
+				} else {
+
+					$len = strlen($this->buf);
+					//echo "\n(strlen = $len )\n";
+					log_notice("\n(strlen2 = $len )\n");
+					$tohex = strtoupper($this->str2hex2($this->buf));
+					//echo '['.$tohex."]\r\n";
+					log_notice('[$tohex = '.$tohex."]\r\n");
+					//log_notice('[$this->buf = '.$this->buf."]\r\n");
 
 				}
 
@@ -1241,7 +1287,7 @@ if(!class_exists('SMS')) {
 	        return false;
 		}
 
-	    public function setBaudRate($rate) {
+	    public function setBaudRate($rate,$validParams=false) {
 
 				//echo "\nsetBaudRate\n";
 
@@ -1256,7 +1302,16 @@ if(!class_exists('SMS')) {
 
 	        //$validParams = '-icanon -isig -iexten -echo -icrnl ixon -ixany -imaxbel -brkint -opost -onlcr -igncr -inlcr';
 
-	        $validParams = '-icanon -isig -iexten -echo -icrnl ixon -ixany -imaxbel -brkint -opost -onlcr -igncr -inlcr';
+					if(!empty($validParams)) {
+					} else {
+						//$validParams = 'ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke time 5';
+
+						//$validParams = 'ignbrk time 5';
+
+						$validParams = '-icanon -isig -iexten -echo -icrnl ixon -ixany -imaxbel -brkint -opost -onlcr -igncr -inlcr';
+
+						//$validParams = '';
+					}
 
 	        $validBauds = array (
 	            110    => 11,

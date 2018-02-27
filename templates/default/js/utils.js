@@ -188,6 +188,7 @@ dhtmlXToolbarObject.prototype.resetAll = function() {
 	this.forEachItem(function(id){
 		var tdata = this.getToolbarData(id);
 		tdata.onClick = null;
+    tdata.me = this;
 		//this.disableItem(id);
 	});
 }
@@ -472,6 +473,8 @@ dhtmlXCellObject.prototype.attachFORMFromPostURL = function(turl,param) {
 			obj.toolbar.toolbardata = d.toolbar;
 
 			obj.toolbar.tbRender(d.toolbar);
+
+      obj.toolbar.resetAll();
 
 			if(first) {
 				obj.toolbar.attachEvent("onClick", function(id){

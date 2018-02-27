@@ -22,6 +22,7 @@ if(defined('ANNOUNCE')) {
 define('INCLUDE_PATH', ABS_PATH . 'includes/');
 
 require_once(INCLUDE_PATH.'config.inc.php');
+require_once(INCLUDE_PATH.'constants.inc.php');
 require_once(INCLUDE_PATH.'phpseclib/Math/BigInteger.php');
 require_once(INCLUDE_PATH.'phpseclib/Crypt/RSA.php');
 require_once(INCLUDE_PATH.'array2xml.inc.php');

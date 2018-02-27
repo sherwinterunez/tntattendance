@@ -273,6 +273,11 @@ if(!class_exists('APP_Db')) {
 
 				$tables[] = $k;
 
+				if(preg_match("/^\#(.+)\#$/", $v, $m)) {
+					//pre(array('$m'=>$m));
+					$values[] = pg_escape_string(trim(check_utf8($m[1])));
+					//$fields[] = $k."=".pg_escape_string(trim($m[1]));
+				} else
 				if(is_numeric($v)) {
 					if($v===0) {
 						$values[] = "'0'";

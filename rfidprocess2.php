@@ -65,7 +65,7 @@ class APP_SMS extends SMS {
 function RFIDProcess() {
 	global $appdb;
 
-	if(!($result = $appdb->query("select * from tbl_rfidqueue where rfidqueue_deleted=0 order by rfidqueue_id asc"))) {
+	if(!($result = $appdb->query("select * from tbl_rfidqueue where rfidqueue_deleted=0 order by rfidqueue_id asc limit 1"))) {
 		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 		die;
 	}
@@ -97,9 +97,14 @@ function RFIDProcess() {
 			}
 
 			//sleep($settings_uhfrfidprocessdelay);
+			break;
 		}
-	}
+	} else {
+		/// we will play the alarm sound here.
 
+		$curl->get($settings_uhfrfidprocessurl.'rfidalarm');
+
+	}
 
 	return true;
 }
@@ -110,9 +115,7 @@ if(getOption('$MAINTENANCE',false)) {
 
 $settings_useuhfrfidreader = getOption('$SETTINGS_USEUHFRFIDREADER',false);
 
-$settings_useinfraredbeam = getOption('$SETTINGS_USEINFRAREDBEAM',false);
-
-if($settings_useuhfrfidreader&&!$settings_useinfraredbeam) {
+if($settings_useuhfrfidreader) {
 	RFIDProcess();
 }
 

@@ -55,7 +55,9 @@ if(!empty($_GET['size'])&&is_numeric($_GET['size'])&&intval($_GET['size'])>0) {
 
 		$img = new APP_SimpleImage;
 
-		$img->load('./templates/default/tap/ostlogo.jpg');
+		//$img->load('./templates/default/tap/ostlogo.jpg');
+
+		$img->load('./templates/default/tap/apptopuslogo.jpg');
 
 		if(!empty($size)) {
 			$width = $img->getWidth();

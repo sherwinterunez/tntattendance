@@ -85,6 +85,7 @@ if(!class_exists('APP_app_setting')) {
 				$default_absentgraceperiodminute1 = 40;
 				$default_absentgraceperiodminute2 = 0;
 				$default_absentgraceperiodminute3 = 0;
+				$default_titlefontsize = 30;
 
 				$default_bulletin = 'DEMO UNIT... OBIS SOFTWARE TECHNOLOGY... OBIS SOFTWARE TECHNOLOGY... DEMO UNIT...';
 				$default_timeinnotification = '%STUDENTFULLNAME% has timed-in at %DATETIME%';
@@ -94,6 +95,11 @@ if(!class_exists('APP_app_setting')) {
 				$default_timeinmessage = 'Welcome to School! Nice to see you again!';
 				$default_timeoutmessage = 'Goodbye! Keep safe!';
 				$default_latemessage = 'Welcome to School! You are encourage to come on time!';
+				$default_uhfrfidprocessurl = 'http://127.0.0.1:8080/';
+				$default_uhfrfidprocessdelay = 2;
+				$default_verticaldisplaynumberofprevious = 10;
+				$default_uhfrfidserverip = '127.0.0.1';
+				$default_smsresendcount = 5;
 
 				$settings_schoolyear = getOption('$SETTINGS_SCHOOLYEAR',$default_schoolyear);
 
@@ -156,6 +162,24 @@ if(!class_exists('APP_app_setting')) {
 				$settings_uhfrfidreadinterval = getOption('$SETTINGS_UHFRFIDREADINTERVAL',60);
 
 				$settings_useinfraredbeam = getOption('$SETTINGS_USEINFRAREDBEAM',false);
+
+				$settings_pageautorefresh = getOption('$SETTINGS_PAGEAUTOREFRESH',false);
+
+				$settings_pageautorefreshinterval = getOption('$SETTINGS_PAGEAUTOREFRESHINTERVAL',5);
+
+				$settings_titlefontsize = getOption('$SETTINGS_TITLEFONTSIZE',$default_titlefontsize);
+
+				$settings_verticaldisplay = getOption('$SETTINGS_VERTICALDISPLAY',false);
+
+				$settings_uhfrfidprocessurl = getOption('$SETTINGS_UHFRFIDPROCESSURL',$default_uhfrfidprocessurl);
+
+				$settings_uhfrfidprocessdelay = getOption('$SETTINGS_UHFRFIDPROCESSDELAY',$default_uhfrfidprocessdelay);
+
+				$settings_uhfrfidserverip = getOption('$SETTINGS_UHFRFIDSERVERIP',$default_uhfrfidserverip);
+
+				$settings_verticaldisplaynumberofprevious = getOption('$SETTINGS_VERTICALDISPLAYNUMBEROFPREVIOUS',$default_verticaldisplaynumberofprevious);
+
+				$settings_smsresendcount = getOption('$SETTINGS_SMSRESENDCOUNT',$default_smsresendcount);
 
 				//pre(array('$settings_electronicbulletindaily'=>$settings_electronicbulletindaily));
 
@@ -285,6 +309,24 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_UHFRFIDREADINTERVAL',!empty($post['settings_uhfrfidreadinterval'])?$post['settings_uhfrfidreadinterval']:60);
 
 					setSetting('$SETTINGS_USEINFRAREDBEAM',!empty($post['settings_useinfraredbeam'])?true:false);
+
+					setSetting('$SETTINGS_PAGEAUTOREFRESH',!empty($post['settings_pageautorefresh'])?true:false);
+
+					setSetting('$SETTINGS_PAGEAUTOREFRESHINTERVAL',!empty($post['settings_pageautorefreshinterval'])?$post['settings_pageautorefreshinterval']:5);
+
+					setSetting('$SETTINGS_TITLEFONTSIZE',!empty($post['settings_titlefontsize'])?$post['settings_titlefontsize']:$default_titlefontsize);
+
+					setSetting('$SETTINGS_VERTICALDISPLAY',!empty($post['settings_verticaldisplay'])?true:false);
+
+					setSetting('$SETTINGS_UHFRFIDPROCESSURL',!empty($post['settings_uhfrfidprocessurl'])?trim($post['settings_uhfrfidprocessurl']):$default_uhfrfidprocessurl);
+
+					setSetting('$SETTINGS_UHFRFIDPROCESSDELAY',!empty($post['settings_uhfrfidprocessdelay'])?trim($post['settings_uhfrfidprocessdelay']):$default_uhfrfidprocessdelay);
+
+					setSetting('$SETTINGS_UHFRFIDSERVERIP',!empty($post['settings_uhfrfidserverip'])?trim($post['settings_uhfrfidserverip']):$default_uhfrfidserverip);
+
+					setSetting('$SETTINGS_VERTICALDISPLAYNUMBEROFPREVIOUS',!empty($post['settings_verticaldisplaynumberofprevious'])?$post['settings_verticaldisplaynumberofprevious']:$default_verticaldisplaynumberofprevious);
+
+					setSetting('$SETTINGS_SMSRESENDCOUNT',!empty($post['settings_smsresendcount'])?$post['settings_smsresendcount']:$default_smsresendcount);
 
 					$settings_electronicbulletindaily = array();
 
@@ -816,6 +858,55 @@ if(!class_exists('APP_app_setting')) {
 					'list' => $block,
 				);
 
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'TITLE FONT SIZE',
+					'inputWidth' => 100,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_titlefontsize',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_titlefontsize) ? $settings_titlefontsize : '30',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'checkbox',
+					'label' => 'VERTICAL DISPLAY ORIENTATION',
+					'labelWidth' => 360,
+					'name' => 'settings_verticaldisplay',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_verticaldisplay) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'VERTICAL NUMBER OF PREVIOUS',
+					'inputWidth' => 100,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_verticaldisplaynumberofprevious',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_verticaldisplaynumberofprevious) ? $settings_verticaldisplaynumberofprevious : $default_verticaldisplaynumberofprevious,
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'SMS RESEND COUNT',
+					'inputWidth' => 100,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_smsresendcount',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_smsresendcount) ? $settings_smsresendcount : $default_smsresendcount,
+				);
+
 				$params['tbThreshold'][] = array(
 					'type' => 'input',
 					'label' => 'TARDINESS GRACE PERIOD (MINUTE)',
@@ -905,6 +996,39 @@ if(!class_exists('APP_app_setting')) {
 				);
 
 				$params['tbUHFRFID'][] = array(
+					'type' => 'checkbox',
+					'label' => 'INFRARED BEAM',
+					'labelWidth' => 360,
+					'name' => 'settings_useinfraredbeam',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_useinfraredbeam) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'checkbox',
+					'label' => 'PAGE AUTO REFRESH',
+					'labelWidth' => 360,
+					'name' => 'settings_pageautorefresh',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_pageautorefresh) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'input',
+					'label' => 'AUTO REFRESH INTERVAL (seconds)',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 250,
+					'name' => 'settings_pageautorefreshinterval',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_pageautorefreshinterval) ? $settings_pageautorefreshinterval : '5',
+				);
+
+				$params['tbUHFRFID'][] = array(
 					'type' => 'input',
 					'label' => 'UHF RFID READ INTERVAL (seconds)',
 					//'inputWidth' => 500,
@@ -918,13 +1042,42 @@ if(!class_exists('APP_app_setting')) {
 				);
 
 				$params['tbUHFRFID'][] = array(
-					'type' => 'checkbox',
-					'label' => 'INFRARED BEAM',
-					'labelWidth' => 360,
-					'name' => 'settings_useinfraredbeam',
+					'type' => 'input',
+					'label' => 'UHF RFID PROCESS URL',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 250,
+					'name' => 'settings_uhfrfidprocessurl',
 					'readonly' => $readonly,
-					'checked' => !empty($settings_useinfraredbeam) ? true : false,
-					'position' => 'label-right',
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_uhfrfidprocessurl) ? $settings_uhfrfidprocessurl : $default_uhfrfidprocessurl,
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'input',
+					'label' => 'UHF RFID PROCESS DELAY (seconds)',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 250,
+					'name' => 'settings_uhfrfidprocessdelay',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_uhfrfidprocessdelay) ? $settings_uhfrfidprocessdelay : $default_uhfrfidprocessdelay,
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'input',
+					'label' => 'UHF RFID SERVER IP',
+					//'inputWidth' => 500,
+					//'rows' => 5,
+					'labelWidth' => 250,
+					'name' => 'settings_uhfrfidserverip',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_uhfrfidserverip) ? $settings_uhfrfidserverip : $default_uhfrfidserverip,
 				);
 
 				$params['tbLicense'][] = array(

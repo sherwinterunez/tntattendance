@@ -576,6 +576,8 @@ function calculateAge($birthday) {
 function check_utf8($string) {
 	//return iconv("UTF-8", "ISO-8859-1//IGNORE", $string);
 
+	//pre(array('$string'=>$string));
+
 	if(function_exists('iconv')) {
 		//return iconv("UTF-8", "ISO-8859-1//TRANSLIT", $string);
 		//return iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $string);
@@ -1106,6 +1108,22 @@ function tocrlf($str) {
 	$str = str_replace("\r", '\r', $str);
 	$str = str_replace("\n", '\n', $str);
 	return $str;
+}
+
+function getStatusString($status=0) {
+	global $_CONSTANTS;
+
+	if(!empty($status)&&!empty($_CONSTANTS['STATUS'][$status])) {
+		return $_CONSTANTS['STATUS'][$status];
+	}
+
+	return 'UNKNOWN';
+}
+
+function getAllStatus() {
+	global $_CONSTANTS;
+
+	return $_CONSTANTS['STATUS'];
 }
 
 timer_start();

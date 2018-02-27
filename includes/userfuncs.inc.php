@@ -125,6 +125,46 @@ function getAllContacts($contactsonly=false) {
 	return false;
 }
 
+function getAllClients() {
+	global $appdb;
+
+	$sql = "select * from tbl_client where client_deleted=0 order by client_name asc";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['client_id'])) {
+		//if(!empty($id)) {
+			//return $result['rows'][0];
+		//}
+		return $result['rows'];
+	}
+
+	return false;
+}
+
+function getClient($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&intval($id)>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_client where client_deleted=0 and client_id=$id";
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['client_id'])) {
+		return $result['rows'][0];
+	}
+
+	return false;
+}
+
 function getGroup($id=false) {
 	global $appdb;
 
@@ -460,7 +500,11 @@ function getContactNumber($contactid=false) {
 	if(!empty($contactid)&&is_numeric($contactid)) {
 	} else return false;
 
-	$sql = "select contact_number from tbl_contact where contact_id=".$contactid;
+	//$sql = "select contact_number from tbl_contact where contact_id=".$contactid;
+
+	$sql = "select studentprofile_guardianmobileno from tbl_studentprofile where studentprofile_id=".$contactid;
+
+	// studentprofile_guardianmobileno
 
 	//pre(array('$sql'=>$sql));
 
@@ -468,8 +512,8 @@ function getContactNumber($contactid=false) {
 		return false;
 	}
 
-	if(!empty($result['rows'][0]['contact_number'])) {
-		return $result['rows'][0]['contact_number'];
+	if(!empty($result['rows'][0]['studentprofile_guardianmobileno'])) {
+		return $result['rows'][0]['studentprofile_guardianmobileno'];
 	}
 	return false;
 }
@@ -2656,6 +2700,8 @@ function  smsCommandMatched($content=false){
 }
 
 function processSMS($content=false) {
+
+	//print_r(array('processSMS$content'=>$content));
 
 	if(!empty($content)) {
 	} else return false;

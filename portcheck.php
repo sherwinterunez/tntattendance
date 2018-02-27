@@ -268,7 +268,7 @@ function portCheck($dev=false,$localIP=false) {
 		return false;
 	}
 
-	trigger_error($sql,E_USER_NOTICE);
+	//trigger_error($sql,E_USER_NOTICE);
 
 	if(!empty($result['rows'][0]['sim_id'])) {
 		$content = array();

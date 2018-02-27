@@ -159,7 +159,8 @@ function at_cmgl_4($sms) {
 
 	$simfunctions[] = array(
 				'command' => 'AT+CMGL=4',
-				'regx' => array("(.+?)\r\nOK\r\n","\+CMGL\:\s+.+?\r\nOK\r\n"),
+				'regx' => array("(.+?)\r\nOK\r\n"),
+				//'regx' => array("(.+?)\r\nOK\r\n","\+CMGL\:\s+.+?\r\nOK\r\n"),
 		);
 
 	return $sms->modemFunction($simfunctions);

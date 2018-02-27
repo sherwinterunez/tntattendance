@@ -122,7 +122,7 @@ foreach($lines as $k=>$v) {
 
   $data = explode(',',$v);
 
-  pre(array('$data'=>$data));
+  //pre(array('$data'=>$data));
 
   $content = array();
   $content['studentprofile_number'] = !empty($data[1]) ? trim($data[1]) : '';
@@ -132,6 +132,9 @@ foreach($lines as $k=>$v) {
   $content['studentprofile_middlename'] = !empty($data[3]) ? trim($data[3]) : '';
   //$content['studentprofile_guardianmobileno'] = !empty($data[10]) ? trim($data[10]) : '';
   $content['studentprofile_active'] = !empty($data[12]) ? trim($data[12]) : '1';
+
+	$content['studentprofile_rfid'] = str_replace(' ','',$content['studentprofile_rfid']);
+	$content['studentprofile_rfid'] = str_replace('-','',$content['studentprofile_rfid']);
 
 	if(trim($content['studentprofile_rfid'])!='') {
 	} else {
@@ -244,10 +247,11 @@ foreach($lines as $k=>$v) {
     }
   }
 
-	pre(array('$content'=>$content));
+	//pre(array('$content'=>$content));
 
 	if(!($result = $appdb->insert("tbl_studentprofile",$content,"studentprofile_id"))) {
 		if(preg_match('/duplicate key value violates unique constraint/si',$appdb->lasterror)) {
+			pre(array('duplicate'=>$content));
 			$appdb->rollback();
 			continue;
 		}
@@ -261,7 +265,7 @@ foreach($lines as $k=>$v) {
 
 		$studentprofile_id = $result['returning'][0]['studentprofile_id'];
 
-		pre(array('studentprofile_id'=>$result['returning'][0]['studentprofile_id']));
+		//pre(array('studentprofile_id'=>$result['returning'][0]['studentprofile_id']));
 	}
 
   $filepath = './studentphotos/';

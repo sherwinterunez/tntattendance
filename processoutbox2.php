@@ -116,6 +116,46 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 /////
 
+	$unixtime = intval(getDbUnixDate());
+
+	$settings_smsresendcount = getOption('$SETTINGS_SMSRESENDCOUNT',5);
+
+	$failed_stamp = getOption('FAILEDSTAMP_'.$mobileNo,false);
+
+	if(!empty($failed_stamp)) {
+
+		$tm = $unixtime - $failed_stamp;
+
+		if($tm<300) {
+
+			$history = $sms->getHistory();
+
+			if(!empty($history)) {
+				foreach($history as $a=>$b) {
+					foreach($b as $k=>$v) {
+						if($k=='timestamp') continue;
+						$dt = logdt($b['timestamp']);
+						trigger_error("$dev $mobileNo $ip $v",E_USER_NOTICE);
+						doLog("$dt $dev $mobileNo $ip $v",$mobileNo);
+						//atLog($v,'processoutbox',$dev,$mobileNo,$ip,$dt);
+					}
+				}
+			}
+
+			$sms->deviceClose();
+
+			$tstop = timer_stop();
+
+			//print_r(array('$mobileNo'=>$mobileNo));
+
+			//echo "\nprocessOutbox (".$tstop." secs).\n";
+
+			atLog('processOutbox done ('.$tstop.' secs)','processoutbox',$dev,$mobileNo,$ip,logdt());
+
+			return false;
+		}
+	}
+
 	$delaysms = false;
 
 	$limit = 1;
@@ -268,7 +308,7 @@ function processOutbox($dev=false,$mobileNo=false,$ip='') {
 
 	if(!$failed) {
 
-		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_failedcount<5 and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1";
+		$sql = "select *,(extract(epoch from now()) - extract(epoch from smsoutbox_failedstamp)) as elapsedtime from tbl_smsoutbox where smsoutbox_failedcount<".$settings_smsresendcount." and smsoutbox_deleted=0 and smsoutbox_delay=0 and smsoutbox_status=5 order by smsoutbox_id asc limit 1";
 
 		//log_notice(array('$sql'=>$sql));
 

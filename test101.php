@@ -106,8 +106,44 @@ if(pingDomain($host)>0) {
 
 //pre(array('$x'=>$x));
 
-$r = pingDomain('10.1.2.231');
+//$r = pingDomain('10.1.2.86');
 
-pre(array('$r'=>$r));
+//pre(array('$r'=>$r));
+
+
+/*
+$url = 'http://172.16.170.20/tap/tapped/';
+
+$vars = array();
+$vars['rfid'] = 1;
+$vars['unixtime'] = time();
+$vars['imagesize'] = 350;
+
+$ch = new MyCurl;
+
+$cont = $ch->post($url,$vars);
+
+pre(array('$cont'=>$cont));
+
+
+$url = 'http://172.16.170.20/tap/refresh/';
+
+$vars = array();
+$vars['unixtime'] = time();
+$vars['imagesize'] = 350;
+
+$ch = new MyCurl;
+
+$cont = $ch->post($url,$vars);
+
+pre(array('$cont'=>$cont));
+*/
+
+$str = '1100EE00E2001620040111909FB7E100EE00E200001604017911909F16E11100EE000016200401791190B716E11100EE0000001620040179909FB716E111EE00E200001620017911909FB716E11100EE00E2001620040111909FB716E100EE00E200162001791190B716E11100EEE20000162001791190B716E11100EEE2001620040179909FB7E11100EEE2001620040179909FB716E100EEE2000020040179909F16E11100EE0000001604017911909F16E11100EEE2000016040179909FB7E11100EE00E2000016200111909FB716E111EE00E200001620017911909FB716E1';
+
+$out = explode('1100EE',$str);
+
+pre(array('$out'=>$out));
+
 
 //

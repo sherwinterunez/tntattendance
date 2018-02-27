@@ -1,7 +1,7 @@
 
 
 //const TIMEOUT = 10000;
-const TIMEOUT = 1000;
+const TIMEOUT = 100;
 
 const PORT = 8080;
 const ADDRESS = '0.0.0.0';
@@ -117,7 +117,7 @@ var server = http.createServer(function (req, res) {
     rebootFlag = true;
     runPortCheck = true;
     res.end('rebooting.\n');
-
+    spawn("reboot");
     return true;
   } else if(req.url==='/terminate') {
     terminateFlag = true;
@@ -256,11 +256,11 @@ function doInit() {
 
   console.log('doInit started.');
 
-  portCheck();
+  //portCheck();
 
-  syncToServer();
+  //syncToServer();
 
-  adminSMS();
+  //adminSMS();
 
 }
 
@@ -442,19 +442,6 @@ function portCheck() {
 
           simInit(sims[i].port,sims[i].sim,sims[i].ip);
         }
-
-        /*if(obj.rfidreader&&obj.rfidreader.length>0) {
-
-          rfid = obj.rfidreader;
-
-          for(var j in rfid) {
-            rfidRead(rfid[j].port,rfid[j].ip);
-          }
-
-          rfidProcess();
-
-        }*/
-
       } else if(obj&&obj.rfidreader&&obj.rfidreader.length>0) {
 
         rfid = obj.rfidreader;

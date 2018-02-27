@@ -1,7 +1,7 @@
 
 
 //const TIMEOUT = 10000;
-const TIMEOUT = 1000;
+const TIMEOUT = 100;
 
 const PORT = 8080;
 const ADDRESS = '0.0.0.0';
@@ -443,7 +443,7 @@ function portCheck() {
           simInit(sims[i].port,sims[i].sim,sims[i].ip);
         }
 
-        /*if(obj.rfidreader&&obj.rfidreader.length>0) {
+        if(obj.rfidreader&&obj.rfidreader.length>0) {
 
           rfid = obj.rfidreader;
 
@@ -453,7 +453,7 @@ function portCheck() {
 
           rfidProcess();
 
-        }*/
+        }
 
       } else if(obj&&obj.rfidreader&&obj.rfidreader.length>0) {
 

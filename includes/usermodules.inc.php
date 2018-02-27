@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -27,23 +27,23 @@ function _SendSMS($vars=array()) {
 	if(!empty($vars)) {
 	} else return false;
 
-	//print_r(array('$vars'=>$vars));
+	print_r(array('$vars'=>$vars));
 
 	if(preg_match('/'.$vars['regx'].'/si',$vars['smsinbox']['smsinbox_message'],$match)) {
 
-		//print_r(array('$match'=>$match));
+		print_r(array('$match'=>$match));
 
-		$nickname = trim($match[1]);
+		//$nickname = trim($match[1]);
 
 		for($i=0;$i<10;$i++) {
 
 			//print_r(array('$i'=>$i));
 
 			if(!empty($vars['smscommands']['smscommands_sendsms'.$i])) {
-	
+
 				$msg = $vars['smscommands']['smscommands_sendsms'.$i];
 
-				$msg = str_replace('%nickname%',$nickname,$msg);
+				//$msg = str_replace('%nickname%',$nickname,$msg);
 
 				//print_r(array('$msg'=>$msg));
 
@@ -73,7 +73,7 @@ function _SendSMStoMobileNumber($vars=array()) {
 			//print_r(array('$i'=>$i));
 
 			if(!empty($vars['smscommands']['smscommands_sendsms'.$i])) {
-	
+
 				$msg = $vars['smscommands']['smscommands_sendsms'.$i];
 
 				//$msg = str_replace('%nickname%',$nickname,$msg);
@@ -151,11 +151,11 @@ function _ReferSMSCommand($vars=array()) {
 
 						// long sms
 
-						$smsparts = str_split($textmsg,152); 
+						$smsparts = str_split($textmsg,152);
 
-						$smsoutbox_udhref = dechex_str(mt_rand(100,250)); 
+						$smsoutbox_udhref = dechex_str(mt_rand(100,250));
 
-						$smsoutbox_total = count($smsparts); 
+						$smsoutbox_total = count($smsparts);
 
 						$content = array();
 						//$content['referralsent_contactid'] = getContactIDByNumber($contactnumber);
@@ -168,7 +168,7 @@ function _ReferSMSCommand($vars=array()) {
 
 						if(!($result = $appdb->insert("tbl_referralsent",$content,"referralsent_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['returning'][0]['referralsent_id'])) {
@@ -184,11 +184,11 @@ function _ReferSMSCommand($vars=array()) {
 							$content['smsoutbox_simnumber'] = $simnumber;
 							$content['smsoutbox_type'] = 1;
 							$content['smsoutbox_referralsentid'] = $smsoutbox_referralsentid;
-							$content['smsoutbox_status'] = 1;										
+							$content['smsoutbox_status'] = 1;
 
 							if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$content = array();
@@ -197,7 +197,7 @@ function _ReferSMSCommand($vars=array()) {
 
 							if(!($result = $appdb->update("tbl_referralcode",$content,"referralcode_referralcode='$referralcode_referralcode'"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 						}
@@ -217,7 +217,7 @@ function _ReferSMSCommand($vars=array()) {
 
 						if(!($result = $appdb->insert("tbl_referralsent",$content,"referralsent_id"))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-							die;				
+							die;
 						}
 
 						if(!empty($result['returning'][0]['referralsent_id'])) {
@@ -231,11 +231,11 @@ function _ReferSMSCommand($vars=array()) {
 							$content['smsoutbox_part'] = 1;
 							$content['smsoutbox_total'] = 1;
 							$content['smsoutbox_referralsentid'] = $smsoutbox_referralsentid;
-							$content['smsoutbox_status'] = 1;										
+							$content['smsoutbox_status'] = 1;
 
 							if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 
 							$content = array();
@@ -244,7 +244,7 @@ function _ReferSMSCommand($vars=array()) {
 
 							if(!($result = $appdb->update("tbl_referralcode",$content,"referralcode_referralcode='$referralcode_referralcode'"))) {
 								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;				
+								die;
 							}
 						}
 					}
@@ -262,7 +262,7 @@ function _ReferSMSCommand($vars=array()) {
 			//print_r(array('$i'=>$i));
 
 			if(!empty($vars['smscommands']['smscommands_sendsms'.$i])) {
-	
+
 				$msg = $vars['smscommands']['smscommands_sendsms'.$i];
 
 				//$msg = str_replace('%nickname%',$nickname,$msg);
@@ -547,7 +547,7 @@ function _LoadWalletProcessSMS($vars=array()) {
 			if(trim($content['loadtransaction_confirmation'])=='') {
 				$content['loadtransaction_confirmation'] = $match[0];
 			} else {
-				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $match[0];				
+				$content['loadtransaction_confirmation'] = $content['loadtransaction_confirmation'] . ' ' . $match[0];
 			}
 
 			if(!empty($match['loadtransaction_ref'])) {
@@ -663,7 +663,7 @@ function _OverLoadProcessSMS2($vars=array()) {
 			if(trim($content['eloadtransaction_confirmation'])=='') {
 				$content['eloadtransaction_confirmation'] = $match[0];
 			} else {
-				$content['eloadtransaction_confirmation'] = $content['eloadtransaction_confirmation'] . ' ' . $match[0];				
+				$content['eloadtransaction_confirmation'] = $content['eloadtransaction_confirmation'] . ' ' . $match[0];
 			}
 
 			if(!empty($match['cost'])) {
@@ -864,5 +864,3 @@ function _OverLoadBalanceProcessSMS($vars=array()) {
 
 
 #eof ./includes/functions/index.php
-
-

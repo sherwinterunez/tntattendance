@@ -751,25 +751,33 @@ $access = $applogin->getAccess();
 					{type: "separator"},
 					<?php if($applogin->isSysAdmin()) { ?>
 					{id: "options", text: "Options", icon: "documents.png"},
-					<?php } ?>
-					<?php /* ?>
-					<?php if(in_array('autoreply',$access)) { ?>
 					{id: "autoreply", text: "Auto Reply", icon: "documents.png"},
-					<?php } */ ?>
-					<?php /*if($applogin->isSystemAdministrator()) { ?>
 					{id: "smscommands", text: "SMS Commands", icon: "documents.png"},
+					<?php /*{id: "modemcommands", text: "MODEM Commands", icon: "documents.png"}, */ ?>
+					<?php /*{id: "phpinfo", text: "PHP Info", icon: "documents.png"}, */ ?>
+					<?php /*{id: "session", text: "$_SESSION", icon: "documents.png"}, */ ?>
 					<?php } ?>
-					<?php if($applogin->isSystemAdministrator()) { ?>
-					{id: "modemcommands", text: "MODEM Commands", icon: "documents.png"},
-					<?php } ?>
-					<?php if($applogin->isSystemAdministrator()) { ?>
-					{id: "phpinfo", text: "PHP Info", icon: "documents.png"},
-					<?php } ?>
-					<?php if($applogin->isSystemAdministrator()) { ?>
-					{id: "session", text: "$_SESSION", icon: "documents.png"},
-					<?php }*/ ?>
 				]
 		});
+
+		<?php /*if($applogin->isSysAdmin()) { ?>
+		{id: "options", text: "Options", icon: "documents.png"},
+		<?php } ?>
+		<?php if(in_array('autoreply',$access)) { ?>
+		{id: "autoreply", text: "Auto Reply", icon: "documents.png"},
+		<?php } ?>
+		<?php if($applogin->isSystemAdministrator()) { ?>
+		{id: "smscommands", text: "SMS Commands", icon: "documents.png"},
+		<?php } ?>
+		<?php if($applogin->isSystemAdministrator()) { ?>
+		{id: "modemcommands", text: "MODEM Commands", icon: "documents.png"},
+		<?php } ?>
+		<?php if($applogin->isSystemAdministrator()) { ?>
+		{id: "phpinfo", text: "PHP Info", icon: "documents.png"},
+		<?php } ?>
+		<?php if($applogin->isSystemAdministrator()) { ?>
+		{id: "session", text: "$_SESSION", icon: "documents.png"},
+		<?php }*/ ?>
 
 		myTab.layout.cells('c').hideHeader();
 

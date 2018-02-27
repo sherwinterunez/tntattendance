@@ -800,7 +800,7 @@ $myToolbar = array($moduleid.'refresh',$moduleid.'print',$moduleid.'sep1',$modul
 				}
 			});
 
-			if(contact.length>0||yearlevel.length>0||yearlevel.length>0) {
+			if(contact.length>0||yearlevel.length>0||section.length>0) {
 			} else {
 				showAlertError('Please specify parameters to generate report.');
 				return false;
