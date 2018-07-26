@@ -165,11 +165,7 @@ var server = http.createServer(function (req, res) {
   } else if(req.url==='/rfidalarm') {
     // /usr/bin/mpg123 /root/alarm1.mp3
 
-    const child = spawn("mpg123", ["/root/alarm1.mp3"]);
-
-    child.stdout.on("data", function (data) {
-      console.log(data.toString('utf-8'))
-    });
+    spawn("mpg123", ["/root/alarm1.mp3"]);
 
     res.end('rfidalarm');
     return true;
@@ -475,11 +471,11 @@ function portCheck() {
 
 function rfidRead(dev,ip) {
   //if(debug)
-  console.log("rfidreader.php "+dev+" "+ip+" running...");
+  console.log("rfidreader2.php "+dev+" "+ip+" running...");
 
   //console.log("checksignal.php "+dev+" "+sim+" "+ip+" running...");
 
-  phpfpm.run('rfidreader.php?dev='+dev+'&ip='+ip, function(err, output, phpErrors)
+  phpfpm.run('rfidreader2.php?dev='+dev+'&ip='+ip, function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
 

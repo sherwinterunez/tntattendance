@@ -1109,6 +1109,202 @@ if(!class_exists('SMS')) {
 			return false;
 		}
 
+		public function readRFIDPort2($expected_result=false, $timeout=0, $showbuffer=false, $commandstr='') {
+			global $appdb;
+
+			if(!empty($expected_result)&&is_numeric($expected_result)) {
+				$timeout = $expected_result;
+				$expected_result = false;
+			}
+
+			//$this->buffer = '';
+
+			$timeoutat = time() + $timeout;
+
+			$cmt = array();
+
+			if(empty($this->handle)) {
+				trigger_error("Invalid handle", E_USER_WARNING);
+				return false;
+			}
+
+			if(!is_resource($this->handle)) {
+				trigger_error("Invalid handle", E_USER_WARNING);
+				return false;
+			}
+
+			$rfid = array();
+
+			$curl = new MyCurl;
+
+			$oldbuf = '';
+			$oldtime = 0;
+
+			do {
+
+				$buffer = fread($this->handle, 1024);
+
+				if($buffer===false) {
+					trigger_error("An error has occured (".$this->getLastMessage().")", E_USER_WARNING);
+					return false;
+				}
+
+				//if($this->showbuf&&$buffer) {
+					//echo ".\r\n";
+					//$echo = $this->tocrlf('$buf => '. $buffer)."\r\n";
+					//$echo = str_replace(chr(26),'(0x26)',$echo);
+					//$tohex = $this->str2hex2($buffer)."\r\n";
+					//echo $echo;
+					//echo strtoupper($tohex);
+				//}
+
+				$this->buf .= $buffer;
+
+				if(strlen($this->buf)<1) {
+					//usleep(10000); //0.02 sec
+					//usleep(5000); //0.02 sec
+					usleep(100); //0.02 sec
+					continue;
+				}
+
+				//log_notice('['.$this->buf.", ".strlen($this->buf)."]\r\n");
+
+				//log_notice('['.strlen($this->buf)."]\r\n");
+
+				/*$len = strlen($this->buf);
+				//echo "\n(strlen = $len )\n";
+				log_notice("\n(strlen = $len )\n");
+				$tohex = strtoupper($this->str2hex2($buffer));
+				//echo '['.$tohex."]\r\n";
+				log_notice('['.$tohex."]\r\n");*/
+
+				$mod = (strlen($this->buf) % 18);
+
+				log_notice('mod: ['.$mod."]\r\n");
+
+				if(md5($oldbuf)!=md5($this->buf)) {
+					$oldbuf = $this->buf;
+					$oldtime = time();
+				} else {
+					$elapsed = time() - $oldtime;
+
+					if($elapsed>60) {
+						$tohex = strtoupper($this->str2hex2($this->buf));
+						log_notice('$elapsed: ['.$elapsed.' | '.$tohex."]\r\n");
+						break;
+					}
+				}
+
+				if((strlen($this->buf) % 18)==0) {
+					$len = strlen($this->buf);
+					//echo "\n(strlen = $len )\n";
+					log_notice("\n(strlen1 = $len )\n");
+					$tohex = strtoupper($this->str2hex2($this->buf));
+					//echo '['.$tohex."]\r\n";
+					log_notice('['.$tohex."]\r\n");
+					$this->buf = '';
+
+					while(1) {
+						if(strlen($tohex)>=36) {
+							$t = substr($tohex,0,36);
+							//if(substr($tohex,0,8)=='0700EE00') {
+							if(substr($tohex,0,8)=='1100EE00') {
+								if(!empty($rfid[$t])) {
+								} else {
+									$rfid[$t] = $t;
+
+									$content = array();
+									$content['rfidqueue_rfid'] = $t;
+
+									if(!($result = $appdb->insert("tbl_rfidqueue",$content,"rfidqueue_id"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									//$curl->get('http://127.0.0.1:8080/rfidreader/'.$t.'/');
+								}
+							}
+							$tohex = str_replace($t,'',$tohex);
+							log_notice('['.$tohex."]\r\n");
+						} else {
+							if(strlen($tohex)==36) {
+								//if(substr($tohex,0,8)=='0700EE00') {
+								if(substr($tohex,0,8)=='1100EE00') {
+									if(!empty($rfid[$tohex])) {
+									} else {
+										$rfid[$tohex] = $tohex;
+										//$curl->get('http://127.0.0.1:8080/rfidreader/'.$tohex.'/');
+
+										$content = array();
+										$content['rfidqueue_rfid'] = $tohex;
+
+										if(!($result = $appdb->insert("tbl_rfidqueue",$content,"rfidqueue_id"))) {
+											json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+											die;
+										}
+
+									}
+								}
+							}
+							break;
+						}
+					}
+
+					//print_r(array('$rfid'=>$rfid));
+					log_notice(array('$rfid'=>$rfid));
+
+				} else {
+
+					$len = strlen($this->buf);
+					//echo "\n(strlen = $len )\n";
+					log_notice("\n(strlen2 = $len )\n");
+					$tohex = strtoupper($this->str2hex2($this->buf));
+					//echo '['.$tohex."]\r\n";
+					log_notice('[$tohex = '.$tohex."]\r\n");
+					//log_notice('[$this->buf = '.$this->buf."]\r\n");
+
+				}
+
+				usleep(200000);//0.2 sec
+
+			} while ($timeoutat > time());
+
+			$tbuf = $this->buffer;
+
+			$this->adata = $exp = explode("\r", $tbuf);
+
+			$history = array();
+
+			if(!empty($expected_result)) {
+				$history['regx'] = $this->tocrlf($expected_result);
+				$history['flat'] = $this->tocrlf($tbuf);
+				$history['timestamp'] = time();
+			}
+
+			foreach($exp as $v) {
+				$v = trim($v);
+				if(!empty($v)) {
+					$history[] = $this->tocrlf($v);
+				}
+			}
+
+			$history[] = 'Timed Out ('.$timeout.') ('.$commandstr.')! ('.$this->tocrlf($expected_result).')';
+
+			/*ob_start();
+
+			debug_print_backtrace();
+
+			$history[] = ob_get_contents();
+
+			ob_end_clean();*/
+
+			if(!empty($history)) {
+				$this->history[] = $this->current = $history;
+			}
+
+			return false;
+		}
+
 		public function process() {
 
 		}

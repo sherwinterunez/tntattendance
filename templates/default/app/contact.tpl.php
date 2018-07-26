@@ -22,7 +22,7 @@ if(!empty($vars['post']['wid'])) {
 	die('Invalid Window ID');
 }
 
-$myToolbar = array($moduleid.'new',$moduleid.'refresh');
+$myToolbar = array($moduleid.'new',$moduleid.'delete',$moduleid.'refresh');
 
 //$myToolbar = array($moduleid.'new',$moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$moduleid.'refresh');
 
@@ -728,6 +728,79 @@ $myToolbar = array($moduleid.'new',$moduleid.'refresh');
 					jQuery("#formdiv_%formval% #<?php echo $wid; ?>").parent().html(ddata.html);
 				}
 			});
+		};
+
+		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>delete').onClick = function(id,formval) {
+			showMessage("toolbar: "+id,5000);
+
+			this.formval = formval;
+
+			var thisObj = this;
+			var winObj = this.parentobj;
+			var myForm = winObj.form;
+
+			var wid = winObj.getId();
+
+			var grid = winObj.myGridContacts
+
+			var rowid = grid.getSelectedRowId();
+
+			var rowids = [];
+
+			grid.forEachRow(function(id){
+				var val = parseInt(grid.cells(id,0).getValue());
+				if(val) {
+					rowids.push(id);
+				}
+			});
+
+			console.log('rowid',rowid);
+			console.log('rowids',rowids);
+
+			console.log('id: '+id);
+			console.log('formval: '+formval);
+			console.log('wid: '+wid);
+
+			//console.log(this.parentobj.getId());
+			console.log(this.parentobj);
+			console.log(this.parentobj.form);
+
+			console.log('method: '+myForm.getItemValue('method'));
+
+			if(rowids.length>0||rowid) {
+				showConfirmWarning('Are you sure you want to delete this record(s)?',function(val){
+
+					if(val) {
+
+						myTab.postData('/'+settings.router_id+'/json/', {
+							odata: {wid:wid, obj:thisObj},
+							pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $moduleid; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid+"&rowids="+rowids+"&rowid="+rowid,
+						}, function(ddata,odata){
+							//if(ddata.html) {
+								//jQuery("#formdiv_%formval% #<?php echo $wid; ?>").parent().html(ddata.html);
+							//}
+							if(ddata&&ddata.return_code&&ddata.return_code=='SUCCESS') {
+								myWinToolbar.getToolbarData('<?php echo $moduleid; ?>refresh').onClick.apply(odata.obj,['<?php echo $moduleid; ?>refresh',odata.obj.formval]);
+								showAlert(ddata.return_message);
+							}
+						});
+
+						/*myTab.postData('/'+settings.router_id+'/json/', {
+							odata: {rowid:rowid},
+							pdata: "routerid="+settings.router_id+"&action=formonly&formid=messagingdetailsoutbox&module=messaging&method="+id+"&rowid="+rowid+"&rowids="+rowids+"&formval=%formval%",
+						}, function(ddata,odata){
+							if(ddata.return_code) {
+								if(ddata.return_code=='SUCCESS') {
+									messagingmainoutboxgrid_%formval%();
+									showAlert(ddata.return_message);
+								}
+							}
+						});*/
+					}
+
+				});
+			}
+
 		};
 
 		myWinToolbar.getToolbarData('<?php echo $moduleid; ?>save').onClick = function(id,formval,wid) {

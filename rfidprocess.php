@@ -89,7 +89,18 @@ function RFIDProcess() {
 			$vars['unixtime'] = time();
 			$vars['imagesize'] = 350;
 
+			$mtime = explode( ' ', microtime() );
+			$start = $mtime[1] + $mtime[0];
+
 			$cont = $curl->post($url,$vars);
+
+			$mtime = explode( ' ', microtime() );
+			$end = $mtime[1] + $mtime[0];
+			$total = $end - $start;
+
+			$vars['time'] = $total;
+
+			pre(array('$vars'=>$vars));
 
 			if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>1),"rfidqueue_id=".$id))) {
 				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));

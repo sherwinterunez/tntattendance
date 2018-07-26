@@ -100,7 +100,12 @@ var server = http.createServer(function (req, res) {
     return true;
   }*/
 
-  if(req.url==='/restartkiosk') {
+  if(req.url==='/relay') {
+    spawn("python", ["/srv/www/tnt.dev/ir/relay.py"]);
+    res.end('relay restarted.\n');
+
+    return true;
+  } else if(req.url==='/restartkiosk') {
     //poweroffFlag = true;
     //runPortCheck = true;
     spawn("killall", ["midori"]);
@@ -165,11 +170,7 @@ var server = http.createServer(function (req, res) {
   } else if(req.url==='/rfidalarm') {
     // /usr/bin/mpg123 /root/alarm1.mp3
 
-    const child = spawn("mpg123", ["/root/alarm1.mp3"]);
-
-    child.stdout.on("data", function (data) {
-      console.log(data.toString('utf-8'))
-    });
+    spawn("mpg123", ["/root/alarm1.mp3"]);
 
     res.end('rfidalarm');
     return true;
@@ -212,7 +213,7 @@ server.listen(PORT, ADDRESS, function () {
     console.log('Server running at http://%s:%d/', ADDRESS, PORT);
     console.log('Press CTRL+C to exit');
 
-    doInit();
+    //doInit();
 });
 
 //var filename = '/var/log/messages';
@@ -475,11 +476,11 @@ function portCheck() {
 
 function rfidRead(dev,ip) {
   //if(debug)
-  console.log("rfidreader.php "+dev+" "+ip+" running...");
+  console.log("rfidreader2.php "+dev+" "+ip+" running...");
 
   //console.log("checksignal.php "+dev+" "+sim+" "+ip+" running...");
 
-  phpfpm.run('rfidreader.php?dev='+dev+'&ip='+ip, function(err, output, phpErrors)
+  phpfpm.run('rfidreader2.php?dev='+dev+'&ip='+ip, function(err, output, phpErrors)
   {
       if (err == 99) console.error('PHPFPM server error');
 
