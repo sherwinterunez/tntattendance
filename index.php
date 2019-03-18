@@ -26,6 +26,80 @@ date_default_timezone_set('Asia/Manila');
 
 setlocale(LC_ALL,'en_US.UTF-8');
 
+require_once(ABS_PATH.'includes/memcached.inc.php');
+
+function _pre($data) {
+	echo "\n\n<pre>\n\n";
+	print_r($data);
+	echo "\n\n</pre>\n\n";
+}
+
+function _prebuf($data) {
+	ob_start();
+	_pre($data);
+	$output = ob_get_contents();
+	ob_end_clean();
+	return $output;
+}
+
+function _log_notice($str=false) {
+	if(!empty($str)) {
+		return trigger_error(_prebuf($str));
+	}
+
+	return false;
+}
+
+if(!empty($memcached)&&!empty($_SERVER['REMOTE_ADDR'])&&!empty($_SERVER['REQUEST_URI'])&&$_SERVER['REQUEST_URI']=='/tap/refresh/') {
+
+	//require_once(ABS_PATH.'includes/functions.inc.php');
+
+	$var = 'DISPLAY_'.$_SERVER['REMOTE_ADDR'];
+
+	$data = $memcached->get($var);
+
+	if(!empty($data)) {
+
+		//_log_notice(array('/tap/refresh/'=>$data));
+
+		$retval = json_decode($data, true);
+
+		if(!empty($retval)&&is_array($retval)) {
+
+			//$data['db'] = intval($studentprofile_db);
+
+			$timein = $memcached->get('STATSTIMEIN');
+
+			if(!empty($timein)) {
+				$retval['in'] = intval($timein);
+			}
+
+			$timeout = $memcached->get('STATSTIMEOUT');
+
+			if(!empty($timeout)) {
+				$retval['out'] = intval($timeout);
+			}
+
+			$timelate = $memcached->get('STATSTIMEINLATE');
+
+			if(!empty($timelate)) {
+				$retval['late'] = intval($timelate);
+			}
+
+			//$retval['out'] = intval($memcached->get('STATSTIMEOUT'));
+			//$retval['late'] = intval($memcached->get('STATSTIMEINLATE'));
+
+			if(!empty($retval)) {
+				header('Content-type: application/json');
+				die(json_encode($retval));
+			}
+
+		}
+
+	}
+
+}
+
 require_once(ABS_PATH.'includes/index.php');
 //require_once(ABS_PATH.'includes.min/includes.inc.php');
 //require_once(ABS_PATH.'includes.min/includes.encoded.php');
@@ -76,6 +150,8 @@ function logout() {
 
 //add_action('router','check_login');
 
+//pre(array('$_SERVER'=>$_SERVER));
+
 $appsession->start();
 
 //$_SESSION['timestamp'] = time();
@@ -83,6 +159,8 @@ $appsession->start();
 $_SESSION['timestamp'] = getTimeFromServer();
 
 $_SESSION['datestamp'] = date('l jS \of F Y h:i:s A',$_SESSION['timestamp']);
+
+//log_notice(array('$_SESSION'=>$_SESSION));
 
 add_action('routes','defaultroute',999);
 

@@ -6488,7 +6488,7 @@ Indexes:
 						}
 /////
 
-						if(!($result = $appdb->query("select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_simnumber,smsoutbox_part,smsoutbox_total,case when smsoutbox_type=0 then 'short' when smsoutbox_type=1 then 'long' end as smsoutbox_type,smsoutbox_message,case when smsoutbox_status=0 then 'queued' when smsoutbox_status=1 then 'waiting' when smsoutbox_status=3 then 'sending' when smsoutbox_status=4 then 'sent' when smsoutbox_status=5 then 'failed' end as smsoutbox_status,smsoutbox_createstamp,smsoutbox_sentstamp from tbl_smsoutbox where smsoutbox_eload=0 and smsoutbox_sent=0 and smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc limit ".getOption('$OUTBOX_MAX_RESULT',1000)))) {
+						if(!($result = $appdb->query("select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactname,smsoutbox_contactnumber,smsoutbox_simnumber,smsoutbox_part,smsoutbox_total,case when smsoutbox_type=0 then 'short' when smsoutbox_type=1 then 'long' end as smsoutbox_type,smsoutbox_message,case when smsoutbox_status=0 then 'queued' when smsoutbox_status=1 then 'waiting' when smsoutbox_status=3 then 'sending' when smsoutbox_status=4 then 'sent' when smsoutbox_status=5 then 'failed' end as smsoutbox_status,smsoutbox_createstamp,smsoutbox_sentstamp from tbl_smsoutbox where smsoutbox_eload=0 and smsoutbox_sent=0 and smsoutbox_deleted=0 and smsoutbox_delay=0 order by smsoutbox_id desc limit ".getOption('$OUTBOX_MAX_RESULT',1000)))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -6498,7 +6498,14 @@ Indexes:
 
 							foreach($result['rows'] as $k=>$v) {
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getContactNickByID($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getStudentFullName($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp'],'m-d-Y H:i:s'),pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
+
+								if(!empty($v['smsoutbox_contactname'])) {
+									$fullname = $v['smsoutbox_contactname'];
+								} else {
+									$fullname = getStudentFullName($v['smsoutbox_contactid']);
+								}
+
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$fullname,$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],$v['smsoutbox_status'],pgDate($v['smsoutbox_createstamp'],'m-d-Y H:i:s'),pgDate($v['smsoutbox_sentstamp'],'m-d-Y H:i:s')));
 							}
 
 							$retval = array('rows'=>$rows);
@@ -6563,7 +6570,7 @@ Indexes:
 						}
 /////
 
-						if(!($result = $appdb->query("select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactnumber,smsoutbox_simnumber,smsoutbox_part,smsoutbox_total,case when smsoutbox_type=0 then 'short' when smsoutbox_type=1 then 'long' end as smsoutbox_type,smsoutbox_message,smsoutbox_status,smsoutbox_createstamp,smsoutbox_sentstamp from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc limit ".getOption('$SENT_MAX_RESULT',1000)))) {
+						if(!($result = $appdb->query("select smsoutbox_id,smsoutbox_contactid,smsoutbox_contactname,smsoutbox_contactnumber,smsoutbox_simnumber,smsoutbox_part,smsoutbox_total,case when smsoutbox_type=0 then 'short' when smsoutbox_type=1 then 'long' end as smsoutbox_type,smsoutbox_message,smsoutbox_status,smsoutbox_createstamp,smsoutbox_sentstamp from tbl_smsoutbox where smsoutbox_sent!=0 and smsoutbox_deleted=0 order by smsoutbox_id desc limit ".getOption('$SENT_MAX_RESULT',1000)))) {
 							json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 							die;
 						}
@@ -6574,7 +6581,14 @@ Indexes:
 							foreach($result['rows'] as $k=>$v) {
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array($v['smsoutbox_id'],$v['smsoutbox_fromnumber'],$v['smsoutbox_tonumber'],$v['smsoutbox_message'],$v['smsoutbox_network'],$v['smsoutbox_sentstamp']));
 								//$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getContactNickByID($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
-								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],getStudentFullName($v['smsoutbox_contactid']),$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
+
+								if(!empty($v['smsoutbox_contactname'])) {
+									$fullname = $v['smsoutbox_contactname'];
+								} else {
+									$fullname = getStudentFullName($v['smsoutbox_contactid']);
+								}
+
+								$rows[] = array('id'=>$v['smsoutbox_id'],'data'=>array(0,$v['smsoutbox_id'],$fullname,$v['smsoutbox_contactnumber'],$this->getSimNameByNumber($v['smsoutbox_simnumber']),$v['smsoutbox_total'],$v['smsoutbox_type'],$v['smsoutbox_message'],'sent',pgDate($v['smsoutbox_createstamp']),pgDate($v['smsoutbox_sentstamp'])));
 							}
 
 							$retval = array('rows'=>$rows);

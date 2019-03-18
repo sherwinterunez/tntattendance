@@ -65,29 +65,63 @@ class APP_SMS extends SMS {
 function RFIDProcess() {
 	global $appdb;
 
-	if(!($result = $appdb->query("select * from tbl_rfidqueue where rfidqueue_deleted=0 order by rfidqueue_id asc"))) {
+	if(!($result = $appdb->query("select * from tbl_rfidqueue where rfidqueue_deleted=0 order by rfidqueue_id asc limit 10"))) {
 		json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 		die;
 	}
 
+	//print_r(array('$result'=>$result));
+
 	$settings_uhfrfidprocessdelay = getOption('$SETTINGS_UHFRFIDPROCESSDELAY',2);
 	$settings_uhfrfidprocessurl = getOption('$SETTINGS_UHFRFIDPROCESSURL','http://127.0.0.1:8080/');
 	$settings_uhfrfidserverip = getOption('$SETTINGS_UHFRFIDSERVERIP','127.0.0.1');
+	$settings_globaldisplay = getOption('$SETTINGS_GLOBALDISPLAY',false);
+	$settings_breakalarm = getOption('$SETTINGS_BREAKALARM',false);
+	$settings_maxinoutalarm = getOption('$SETTINGS_MAXINOUTALARM',false);
+	$settings_breakalarmip = getOption('$SETTINGS_BREAKALARMIP','127.0.0.1');
+	$settings_maxinoutalarmip = getOption('$SETTINGS_MAXINOUTALARMIP','127.0.0.1');
+	$settings_kioskname = getOption('$SETTINGS_KIOSKNAME','KIOSK');
 
 	$curl = new MyCurl;
 
-	if(!empty($result['rows'][0]['rfidqueue_rfid'])) {
+	if(!empty($result['rows'][0]['rfidqueue_id'])) {
 		foreach($result['rows'] as $k=>$v) {
+
 			$id = $v['rfidqueue_id'];
+
+			if(!empty($v['rfidqueue_rfid'])) {
+			} else {
+				if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>1),"rfidqueue_id=".$id))) {
+					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+					die;
+				}
+				continue;
+			}
+
+			//print_r(array('$v'=>$v));
 
 			//$curl->get($settings_uhfrfidprocessurl.'rfidreader/'.$v['rfidqueue_rfid'].'/');
 
 			$url = 'http://'.$settings_uhfrfidserverip.'/tap/tapped/';
 
 			$vars = array();
-			$vars['rfid'] = $v['rfidqueue_rfid'];
+			$vars['rfid'] = $rfid = $v['rfidqueue_rfid'];
 			$vars['unixtime'] = time();
 			$vars['imagesize'] = 350;
+			$vars['xbypass'] = 1;
+			$vars['kiosk'] = $settings_kioskname;
+
+			if(!empty($settings_globaldisplay)) {
+				$vars['globaldisplay'] = 1;
+			}
+
+			if(!empty($settings_maxinoutalarm)) {
+				$vars['maxinoutalarm'] = 1;
+			}
+
+			if(!empty($settings_breakalarm)) {
+				$vars['breakalarm'] = 1;
+			}
 
 			$mtime = explode( ' ', microtime() );
 			$start = $mtime[1] + $mtime[0];
@@ -99,10 +133,65 @@ function RFIDProcess() {
 			$total = $end - $start;
 
 			$vars['time'] = $total;
+			$vars['id'] = $id;
 
-			pre(array('$vars'=>$vars));
+			log_notice(array('$cont'=>$cont));
 
-			if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>1),"rfidqueue_id=".$id))) {
+			log_notice(array('$vars'=>$vars));
+
+			//pre(array('$vars'=>$vars));
+
+			$rfidqueue_deleted = 1;
+
+			if(!empty($cont['content'])) {
+				$content = @json_decode($cont['content'],true);
+				if(!empty($content)&&is_array($content)&&!empty($content['success'])) {
+					$rfidqueue_deleted = 2;
+
+					if(!empty($content['maxinoutalarm'])) {
+						$url = 'http://'.$settings_maxinoutalarmip.':8080/rfidalarm';
+						$cont = $curl->get($url);
+
+						log_notice(array('alarm'=>'maxinoutalarm','url'=>$url));
+					}
+
+					if(!empty($content['breakalarm'])) {
+						$url = 'http://'.$settings_breakalarmip.':8080/rfidalarm';
+						$cont = $curl->get($url);
+
+						log_notice(array('alarm'=>'breakalarm','url'=>$url));
+					}
+				} else
+				if(!empty($content)&&is_array($content)&&!empty($content['notfound'])) {
+
+					if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>321),"rfidqueue_rfid='".$rfid."' and rfidqueue_deleted=0"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					$url = 'http://127.0.0.1:8080/rfidnotfound/'.urlencode($content['return_message']).'/';
+					$cont = $curl->get($url);
+
+					//return false;
+					continue;
+				} else
+				if(!empty($content)&&is_array($content)&&!empty($content['return_message'])) {
+
+					if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>421),"rfidqueue_rfid='".$rfid."' and rfidqueue_deleted=0"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					$url = 'http://127.0.0.1:8080/rfidnotfound/'.urlencode($content['return_message']).'/';
+					$cont = $curl->get($url);
+
+					//return false;
+					continue;
+				}
+
+			}
+
+			if(!($res = $appdb->update("tbl_rfidqueue",array('rfidqueue_deleted'=>$rfidqueue_deleted),"rfidqueue_id=".$id))) {
 				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 				die;
 			}

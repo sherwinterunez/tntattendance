@@ -200,7 +200,9 @@ function portCheck($dev=false,$localIP=false) {
 
 	//if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+.+?(\d+).+?\r\nOK\r\n")) {
 
-	if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\nOK\r\n")) {
+	//if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\nOK\r\n")) {
+
+	if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\n")) {
 		$result = $sms->getResult();
 		//print_r(array('$result'=>$result));
 		$sms->clearHistory();
@@ -324,6 +326,35 @@ function portCheck($dev=false,$localIP=false) {
 	return $mobileNo;
 }
 
+function updateSimcards($textassistips) {
+
+	$gas = getGroupAssignedSim(0);
+
+	if(!empty($gas)&&is_array($gas)) {
+
+		$ch = new MyCURL;
+
+		foreach($textassistips as $k=>$ip) {
+			$dt = array();
+			$dt['sims'] = base64_encode(serialize($gas));
+
+			$url = 'http://'.$ip.'/app/simcards/';
+
+			$ret = $ch->post($url,$dt);
+		}
+	}
+
+}
+
+$settings_disableportcheck = getOption('$SETTINGS_DISABLEPORTCHECK',false);
+
+if(!empty($settings_disableportcheck)) {
+	$arr = array();
+	$arr['disable'] = true;
+	echo json_encode($arr);
+	die;
+}
+
 $ports = array();
 /*$ports[] = '/dev/ttyS0';
 $ports[] = '/dev/ttyS1';
@@ -405,9 +436,61 @@ foreach($ports as $dev) {
 
 //$appdb->update('tbl_sim',array('sim_online'=>0),'sim_number not in ('.implode(',', $mobileNos).')');
 
+$settings_textassist = getOption('$SETTINGS_TEXTASSIST',false);
+
+$settings_textassistip = getOption('$SETTINGS_TEXTASSISTIP','');
+
+//print_r(array('$settings_textassist'=>$settings_textassist,'$settings_textassistip'=>$settings_textassistip));
+
+if(!empty($settings_textassist)&&!empty($settings_textassistip)) {
+	$textassistip = isValidIps($settings_textassistip,true);
+	//print_r(array('$textassistip'=>$textassistip));
+	if(!empty($textassistip)) {
+		$textassistips = explode(',',$textassistip);
+		//print_r(array('$textassistips'=>$textassistips));
+	}
+}
+
+$settings_relay = getOption('$SETTINGS_RELAY',false);
+
+$settings_relayip = getOption('$SETTINGS_RELAYIP','');
+
+if(!empty($settings_relay)&&!empty($settings_relayip)) {
+	$relayip = isValidIps($settings_relayip,true);
+	//print_r(array('$textassistip'=>$textassistip));
+	if(!empty($relayip)) {
+		//$relayipx = explode(',',$relayip);
+		//$relayips = array();
+		//$relayips[] = $relayipx[0];
+		//print_r(array('$textassistips'=>$textassistips));
+		$relayips = array($relayip);
+	}
+}
+
+$settings_sendmessenger  = getOption('$SETTINGS_SENDMESSENGER',false);
+
+$settings_messengertoken = getOption('$SETTINGS_MESSENGERTOKEN',false);
+
 $tstop = timer_stop();
 
-echo json_encode(array('ports'=>$okport,'devices'=>$devices,'rfidreader'=>$rfidreader,'time'=>$tstop));
+$arr = array('ports'=>$okport,'devices'=>$devices,'rfidreader'=>$rfidreader,'time'=>$tstop);
+
+if(!empty($textassistips)&&is_array($textassistips)) {
+	@updateSimcards($textassistips);
+	$arr['textassistips'] = $textassistips;
+}
+
+if(!empty($relayips)&&is_array($relayips)) {
+	$arr['relayips'] = $relayips;
+}
+
+if(!empty($settings_sendmessenger)&&!empty($settings_messengertoken)) {
+	$arr['fb'] = 1;
+} else {
+	$arr['fb'] = 0;
+}
+
+echo json_encode($arr);
 
 //print_r(array('$okport '=>$okport ));
 

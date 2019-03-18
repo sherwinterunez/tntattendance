@@ -21,7 +21,7 @@ if(defined('ANNOUNCE')) {
 	echo "\n<!-- loaded: ".__FILE__." -->\n";
 }
 
-global $apptemplate;
+global $apptemplate, $appsession;
 
 //echo '/* ';
 //echo "app.mod.inc.js";
@@ -40,6 +40,8 @@ $settings_showadsintervalenable = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0)
 $settings_pageautorefresh = getOption('$SETTINGS_PAGEAUTOREFRESH',false);
 
 $settings_pageautorefreshinterval = getOption('$SETTINGS_PAGEAUTOREFRESHINTERVAL',5);
+
+$settings_kioskname = getOption('$SETTINGS_KIOSKNAME','KIOSK');
 
 if(intval($settings_pageautorefreshinterval)>0) {
 	$settings_pageautorefreshintervalmilli = $settings_pageautorefreshinterval * 1000;
@@ -70,6 +72,7 @@ var loginForm = [
 	{type: "hidden", value: "350", name:"imagesize"},
 	{type: "hidden", value: "<?php echo $settings_showadsinterval; ?>", name:"showadsinterval"},
 	{type: "hidden", value: "<?php echo $settings_showadsintervalenable; ?>", name:"showadsintervalenable"},
+	{type: "hidden", value: "<?php echo $settings_kioskname; ?>", name:"kioskname"},
 ];
 
 srt.checkFocus = function() {
@@ -89,6 +92,33 @@ srt.checkFocus = function() {
 //		srt.checkTime();
 //	},1000);
 //}
+
+srt.checkError = function() {
+
+	//var socket = io.connect('http://<?php echo $_SERVER['SERVER_ADDR']; ?>:8080/',{
+  var socket = io.connect('http://127.0.0.1:8080/',{
+    'reconnection': true,
+    'reconnectionDelay': 10,
+    'reconnectionAttempts': 999999
+  });
+
+	socket.emit('start', '<?php echo $appsession->id(); ?>', function(resp, data) {
+			console.log('server sent resp code ' + resp, data);
+	});
+
+  socket.on('connect', function() {
+    console.log('Connected to:', socket);
+  });
+
+  socket.on('message', function(message) {
+    //console.log('Received message:', message);
+
+		if(message.msg) {
+			showErrorMessage(message.msg,5000);
+		}
+  });
+
+}
 
 srt.refresh = function() {
 
@@ -121,6 +151,22 @@ srt.refresh = function() {
 			return false;
 		}
 
+		if(typeof data.db != 'undefined' ) {
+			jQuery('#db').html(data.db);
+		}
+
+		if(typeof data.in != 'undefined' ) {
+			jQuery('#in').html(data.in);
+		}
+
+		if(typeof data.out != 'undefined' ) {
+			jQuery('#out').html(data.out);
+		}
+
+		if(typeof data.late != 'undefined' ) {
+			jQuery('#late').html(data.late);
+		}
+
 		if(typeof data.recordid != 'undefined' ) {
 			//jQuery('#showadsinterval').html(data.showadsinterval);
 
@@ -142,22 +188,6 @@ srt.refresh = function() {
 
 		if(typeof data.showadsintervalenable != 'undefined' ) {
 			myForm.setItemValue("showadsintervalenable",data.showadsintervalenable);
-		}
-
-		if(typeof data.db != 'undefined' ) {
-			jQuery('#db').html(data.db);
-		}
-
-		if(typeof data.in != 'undefined' ) {
-			jQuery('#in').html(data.in);
-		}
-
-		if(typeof data.out != 'undefined' ) {
-			jQuery('#out').html(data.out);
-		}
-
-		if(typeof data.late != 'undefined' ) {
-			jQuery('#late').html(data.late);
 		}
 
 		if(typeof data.type != 'undefined' ) {
@@ -254,6 +284,15 @@ srt.etap = function() {
 		var showadsinterval = parseInt(myForm.getItemValue("showadsinterval"));
 		var unixtime = myForm.getItemValue("unixtime");
 		var imagesize = myForm.getItemValue("imagesize");
+		var kioskname = myForm.getItemValue("kioskname");
+
+		var kname = $("#kioskname").val();
+
+		if(kname) {
+			//alert(kname);
+			kioskname = kname;
+		}
+
 	    //console.log("Enter key has been pressed!");
 	    //console.log("Value: "+rfid);
 	    myForm.setItemValue("rfid","");
@@ -268,7 +307,7 @@ srt.etap = function() {
 				studentprevTotal++;
 			});
 
-		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize+'&total='+studentprevTotal,function(data){
+		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize+'&total='+studentprevTotal+'&kiosk='+kioskname,function(data){
 
 			//if(data) {
 
@@ -793,5 +832,7 @@ jQuery(document).ready(function($) {
 		srt.refresh();
 	},<?php echo $settings_pageautorefreshintervalmilli; ?>);
 	<?php } ?>
+
+	srt.checkError();
 
 });

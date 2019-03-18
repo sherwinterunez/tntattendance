@@ -103,7 +103,7 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .newmessage_section_%formval% .dhxform_container").height((dim[1]/2)-80);
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .newmessage_section_%formval% .dhxform_container").width((dim[0]/3)-10);
 
-		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% textarea[name='newmessage_sms']").height(dim[1]-258);
+		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% textarea[name='newmessage_sms']").height(dim[1]-288);
 
 		$("#<?php echo $wid.$templatedetailid.$submod; ?>detailsform_%formval% .newmessage_blockcontacts_%formval%").height(dim[1]-140);
 
@@ -237,17 +237,17 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 			myGridNewMessageContacts.setImagePath("/codebase/imgs/")
 
-			myGridNewMessageContacts.setHeader("#master_checkbox, ID, Mobile No, Student Name");
+			myGridNewMessageContacts.setHeader("#master_checkbox, ID, Guardian Mobile No, Student Mobile No, Student Name");
 
-			myGridNewMessageContacts.setInitWidths("35,50,100,*");
+			myGridNewMessageContacts.setInitWidths("35,50,80,80,*");
 
-			myGridNewMessageContacts.setColAlign("center,center,left,left");
+			myGridNewMessageContacts.setColAlign("center,center,center,left,left");
 
-			myGridNewMessageContacts.setColTypes("ch,ro,ro,ro");
+			myGridNewMessageContacts.setColTypes("ch,ro,ro,ro,ro");
 
-			myGridNewMessageContacts.setColSorting("int,int,str,str");
+			myGridNewMessageContacts.setColSorting("int,int,str,str,str");
 
-			myGridNewMessageContacts.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter");
+			myGridNewMessageContacts.attachHeader("&nbsp;,&nbsp;,#text_filter,#text_filter,#text_filter");
 
 			myGridNewMessageContacts.init();
 
@@ -856,6 +856,8 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 			var newmessage_sendpushnotification = 0;
 
+			var newmessage_sendopt = myForm.getItemValue('newmessage_sendopt');
+
 			if(myForm.isItemChecked('newmessage_sendpushnotification')) {
 				newmessage_sendpushnotification = 1;
 			}
@@ -891,7 +893,7 @@ $myToolbar = array($moduleid.'now',$moduleid.'refresh');
 
 			myTab.postData('/'+settings.router_id+'/json/', {
 				odata: {wid:wid},
-				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $moduleid; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid+"&sms="+encodeURIComponent(newmessage_sms)+"&contacts="+encodeURIComponent(newmessage_contacts)+"&yearlevel="+encodeURIComponent(newmessage_yearlevel)+"&section="+encodeURIComponent(newmessage_section)+"&sendto="+encodeURIComponent(newmessage_sendto)+"&sendpushnotification="+newmessage_sendpushnotification,
+				pdata: "routerid="+settings.router_id+"&action=formonly&formid=<?php echo $moduleid; ?>&module=<?php echo $moduleid; ?>&method="+id+"&formval="+formval+"&wid="+wid+"&sms="+encodeURIComponent(newmessage_sms)+"&contacts="+encodeURIComponent(newmessage_contacts)+"&yearlevel="+encodeURIComponent(newmessage_yearlevel)+"&section="+encodeURIComponent(newmessage_section)+"&sendopt="+encodeURIComponent(newmessage_sendopt)+"&sendto="+encodeURIComponent(newmessage_sendto)+"&sendpushnotification="+newmessage_sendpushnotification,
 			}, function(ddata,odata){
 				//if(ddata.html) {
 				//	jQuery("#formdiv_%formval% #<?php echo $wid; ?>").parent().html(ddata.html);

@@ -101,6 +101,8 @@ if(!class_exists('APP_app_setting')) {
 				$default_uhfrfidserverip = '127.0.0.1';
 				$default_smsresendcount = 5;
 
+				$default_messengertoken = '';
+
 				$settings_schoolyear = getOption('$SETTINGS_SCHOOLYEAR',$default_schoolyear);
 
 				$settings_electronicbulletin = getOption('$SETTINGS_ELECTRONICBULLETIN',$default_bulletin);
@@ -131,6 +133,9 @@ if(!class_exists('APP_app_setting')) {
 				$settings_sendabsentnotification  = getOption('$SETTINGS_SENDABSENTNOTIFICATION',false);
 				$settings_sendpushnotification  = getOption('$SETTINGS_SENDPUSHNOTIFICATION',false);
 				$settings_sendsmsnotification  = getOption('$SETTINGS_SENDSMSNOTIFICATION',true);
+				//MESSENGER - PAU
+				$settings_sendmessenger  = getOption('$SETTINGS_SENDMESSENGER',true);
+				$settings_messengertoken = getOption('$SETTINGS_MESSENGERTOKEN',$default_messengertoken);
 
 				$settings_timeinnotification = getOption('$SETTINGS_TIMEINNOTIFICATION',$default_timeinnotification);
 				$settings_timeoutnotification = getOption('$SETTINGS_TIMEOUTNOTIFICATION',$default_timeoutnotification);
@@ -165,11 +170,15 @@ if(!class_exists('APP_app_setting')) {
 
 				$settings_pageautorefresh = getOption('$SETTINGS_PAGEAUTOREFRESH',false);
 
+				$settings_usev2rfidreader = getOption('$SETTINGS_USERV2RFIDREADER',false);
+
 				$settings_pageautorefreshinterval = getOption('$SETTINGS_PAGEAUTOREFRESHINTERVAL',5);
 
 				$settings_titlefontsize = getOption('$SETTINGS_TITLEFONTSIZE',$default_titlefontsize);
 
 				$settings_verticaldisplay = getOption('$SETTINGS_VERTICALDISPLAY',false);
+
+				$settings_globaldisplay = getOption('$SETTINGS_GLOBALDISPLAY',false);
 
 				$settings_uhfrfidprocessurl = getOption('$SETTINGS_UHFRFIDPROCESSURL',$default_uhfrfidprocessurl);
 
@@ -180,6 +189,32 @@ if(!class_exists('APP_app_setting')) {
 				$settings_verticaldisplaynumberofprevious = getOption('$SETTINGS_VERTICALDISPLAYNUMBEROFPREVIOUS',$default_verticaldisplaynumberofprevious);
 
 				$settings_smsresendcount = getOption('$SETTINGS_SMSRESENDCOUNT',$default_smsresendcount);
+
+				$settings_breakalarm = getOption('$SETTINGS_BREAKALARM',false);
+
+				$settings_maxinoutalarm = getOption('$SETTINGS_MAXINOUTALARM',false);
+
+				$settings_breakalarmip = getOption('$SETTINGS_BREAKALARMIP','127.0.0.1');
+
+				$settings_maxinoutalarmip = getOption('$SETTINGS_MAXINOUTALARMIP','127.0.0.1');
+
+				$settings_textassist = getOption('$SETTINGS_TEXTASSIST',false);
+
+				$settings_textassistip = getOption('$SETTINGS_TEXTASSISTIP','');
+
+				$settings_relay = getOption('$SETTINGS_RELAY',false);
+
+				$settings_relayip = getOption('$SETTINGS_RELAYIP','');
+
+				$settings_relaytimer = getOption('$SETTINGS_RELAYTIMER',1800) / 60;
+
+				$settings_disableportcheck = getOption('$SETTINGS_DISABLEPORTCHECK',false);
+
+				$settings_disablepushnoti = getOption('$SETTINGS_DISABLEPUSHNOTI',false);
+
+				$settings_uhfrfidreaderbaudrate = getOption('$SETTINGS_UHFRFIDREADERBAUDRATE',115200);
+
+				$settings_kioskname = getOption('$SETTINGS_KIOSKNAME','KIOSK');
 
 				//pre(array('$settings_electronicbulletindaily'=>$settings_electronicbulletindaily));
 
@@ -236,6 +271,36 @@ if(!class_exists('APP_app_setting')) {
 						die;
 					}
 
+					if(!empty($post['settings_breakalarmip'])&&!isValidIp($post['settings_breakalarmip'])) {
+						$retval = array();
+						$retval['error_code'] = 4587;
+						$retval['error_message'] = 'Invalid Break Alarm IP Address';
+
+						header_json();
+						json_encode_return($retval);
+						die;
+					}
+
+					if(!empty($post['settings_maxinoutalarmip'])&&!isValidIp($post['settings_maxinoutalarmip'])) {
+						$retval = array();
+						$retval['error_code'] = 4587;
+						$retval['error_message'] = 'Invalid Max In/Out Alarm IP Address';
+
+						header_json();
+						json_encode_return($retval);
+						die;
+					}
+
+					if(!empty($post['settings_textassistip'])&&!isValidIps($post['settings_textassistip'])) {
+						$retval = array();
+						$retval['error_code'] = 4587;
+						$retval['error_message'] = 'Invalid Text Assist IP Address';
+
+						header_json();
+						json_encode_return($retval);
+						die;
+					}
+
 					setSetting('$SETTINGS_SCHOOLYEAR',!empty($post['settings_schoolyear'])?$post['settings_schoolyear']:$default_schoolyear);
 
 					setSetting('$SETTINGS_ELECTRONICBULLETIN',!empty($post['settings_electronicbulletin'])?$post['settings_electronicbulletin']:$default_bulletin);
@@ -279,6 +344,8 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_SENDPUSHNOTIFICATION',!empty($post['settings_sendpushnotification'])?true:false);
 
 					setSetting('$SETTINGS_SENDSMSNOTIFICATION',!empty($post['settings_sendsmsnotification'])?true:false);
+					//MESSENGER - PAU
+					setSetting('$SETTINGS_SENDMESSENGER',!empty($post['settings_sendmessenger'])?true:false);
 
 					setSetting('$SETTINGS_SENDTIMEINNOTIFICATION',!empty($post['settings_sendtimeinnotification'])?true:false);
 
@@ -312,11 +379,15 @@ if(!class_exists('APP_app_setting')) {
 
 					setSetting('$SETTINGS_PAGEAUTOREFRESH',!empty($post['settings_pageautorefresh'])?true:false);
 
+					setSetting('$SETTINGS_USERV2RFIDREADER',!empty($post['settings_usev2rfidreader'])?true:false);
+
 					setSetting('$SETTINGS_PAGEAUTOREFRESHINTERVAL',!empty($post['settings_pageautorefreshinterval'])?$post['settings_pageautorefreshinterval']:5);
 
 					setSetting('$SETTINGS_TITLEFONTSIZE',!empty($post['settings_titlefontsize'])?$post['settings_titlefontsize']:$default_titlefontsize);
 
 					setSetting('$SETTINGS_VERTICALDISPLAY',!empty($post['settings_verticaldisplay'])?true:false);
+
+					setSetting('$SETTINGS_GLOBALDISPLAY',!empty($post['settings_globaldisplay'])?true:false);
 
 					setSetting('$SETTINGS_UHFRFIDPROCESSURL',!empty($post['settings_uhfrfidprocessurl'])?trim($post['settings_uhfrfidprocessurl']):$default_uhfrfidprocessurl);
 
@@ -327,6 +398,34 @@ if(!class_exists('APP_app_setting')) {
 					setSetting('$SETTINGS_VERTICALDISPLAYNUMBEROFPREVIOUS',!empty($post['settings_verticaldisplaynumberofprevious'])?$post['settings_verticaldisplaynumberofprevious']:$default_verticaldisplaynumberofprevious);
 
 					setSetting('$SETTINGS_SMSRESENDCOUNT',!empty($post['settings_smsresendcount'])?$post['settings_smsresendcount']:$default_smsresendcount);
+
+					setSetting('$SETTINGS_BREAKALARM',!empty($post['settings_breakalarm'])?true:false);
+
+					setSetting('$SETTINGS_MAXINOUTALARM',!empty($post['settings_maxinoutalarm'])?true:false);
+
+					setSetting('$SETTINGS_BREAKALARMIP',!empty($post['settings_breakalarmip'])&&isValidIp($post['settings_breakalarmip'])?$post['settings_breakalarmip']:'127.0.0.1');
+
+					setSetting('$SETTINGS_MAXINOUTALARMIP',!empty($post['settings_maxinoutalarmip'])&&isValidIp($post['settings_maxinoutalarmip'])?$post['settings_maxinoutalarmip']:'127.0.0.1');
+
+					setSetting('$SETTINGS_TEXTASSIST',!empty($post['settings_textassist'])?true:false);
+
+					setSetting('$SETTINGS_TEXTASSISTIP',!empty($post['settings_textassistip'])&&isValidIps($post['settings_textassistip'])?isValidIps($post['settings_textassistip'],true):'');
+					//MESSENGER - PAU
+					setSetting('$SETTINGS_MESSENGERTOKEN',!empty($post['settings_messengertoken'])?$post['settings_messengertoken']:$default_messengertoken);
+
+					setSetting('$SETTINGS_RELAY',!empty($post['settings_relay'])?true:false);
+
+					setSetting('$SETTINGS_RELAYIP',!empty($post['settings_relayip'])&&isValidIps($post['settings_relayip'])?isValidIps($post['settings_relayip'],true):'');
+
+					setSetting('$SETTINGS_RELAYTIMER',!empty($post['settings_relaytimer'])&&intval($post['settings_relaytimer'])>=30?intval($post['settings_relaytimer'])*60:1800);
+
+					setSetting('$SETTINGS_DISABLEPORTCHECK',!empty($post['settings_disableportcheck'])?true:false);
+
+					setSetting('$SETTINGS_DISABLEPUSHNOTI',!empty($post['settings_disablepushnoti'])?true:false);
+
+					setSetting('$SETTINGS_UHFRFIDREADERBAUDRATE',!empty($post['settings_uhfrfidreaderbaudrate'])?$post['settings_uhfrfidreaderbaudrate']:115200);
+
+					setSetting('$SETTINGS_KIOSKNAME',!empty($post['settings_kioskname'])?$post['settings_kioskname']:'KIOSK');
 
 					$settings_electronicbulletindaily = array();
 
@@ -676,6 +775,30 @@ if(!class_exists('APP_app_setting')) {
 					'position' => 'label-right',
 				);
 
+				//MESSENGER - PAU
+				$params['tbNotifications'][] = array(
+					'type' => 'checkbox',
+					'label' => 'SEND TO MESSENGER',
+					'labelWidth' => 360,
+					'name' => 'settings_sendmessenger',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_sendmessenger) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'KIOSK NAME',
+					'inputWidth' => 100,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_kioskname',
+					'readonly' => $readonly,
+					//'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_kioskname) ? $settings_kioskname : 'KIOSK',
+				);
+
 				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'RFID TAP INTERVAL (minutes)',
@@ -804,6 +927,19 @@ if(!class_exists('APP_app_setting')) {
 					'value' => !empty($settings_latemessage) ? $settings_latemessage : '',
 				);
 
+				//MESSENGER - PAU
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'MESSENGER FB PAGE TOKEN',
+					'inputWidth' => 900,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_messengertoken',
+					'readonly' => $readonly,
+					//'required' => !$readonly,
+					'value' => !empty($settings_messengertoken) ? $settings_messengertoken : $default_messengertoken,
+				);
+
 				$params['tbGeneral'][] = array(
 					'type' => 'checkbox',
 					'label' => 'HIDE DB',
@@ -895,6 +1031,16 @@ if(!class_exists('APP_app_setting')) {
 				);
 
 				$params['tbGeneral'][] = array(
+					'type' => 'checkbox',
+					'label' => 'GLOBAL DISPLAY',
+					'labelWidth' => 360,
+					'name' => 'settings_globaldisplay',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_globaldisplay) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbGeneral'][] = array(
 					'type' => 'input',
 					'label' => 'SMS RESEND COUNT',
 					'inputWidth' => 100,
@@ -905,6 +1051,167 @@ if(!class_exists('APP_app_setting')) {
 					'numeric' => true,
 					//'required' => !$readonly,
 					'value' => !empty($settings_smsresendcount) ? $settings_smsresendcount : $default_smsresendcount,
+				);
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'BREAK ALARM',
+					'labelWidth' => 150,
+					'name' => 'settings_breakalarm',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_breakalarm) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'IP',
+					'labelWidth' => 40,
+					'name' => 'settings_breakalarmip',
+					'readonly' => $readonly,
+					'value' => !empty($settings_breakalarmip) ? $settings_breakalarmip : '127.0.0.1',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'MAX IN/OUT ALARM',
+					'labelWidth' => 150,
+					'name' => 'settings_maxinoutalarm',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_maxinoutalarm) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'IP',
+					'labelWidth' => 40,
+					'name' => 'settings_maxinoutalarmip',
+					'readonly' => $readonly,
+					'value' => !empty($settings_maxinoutalarmip) ? $settings_maxinoutalarmip : '127.0.0.1',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+/*
+setSetting('$SETTINGS_TEXTASSIST',!empty($post['settings_textassist'])?true:false);
+
+setSetting('$SETTINGS_TEXTASSISTIP',!empty($post['settings_textassistip'])&&isValidIps($post['settings_textassistip'])?$post['settings_textassistip']:'');
+*/
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'TEXT ASSIST',
+					'labelWidth' => 150,
+					'name' => 'settings_textassist',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_textassist) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'IP',
+					'labelWidth' => 40,
+					'name' => 'settings_textassistip',
+					'readonly' => $readonly,
+					'value' => !empty($settings_textassistip) ? $settings_textassistip : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+/*
+$settings_relay = getOption('$SETTINGS_RELAY',false);
+
+$settings_relayip = getOption('$SETTINGS_RELAYIP','');
+*/
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'checkbox',
+					'label' => 'RELAY RESTART',
+					'labelWidth' => 150,
+					'name' => 'settings_relay',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_relay) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 5,
+				);
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'IP',
+					'labelWidth' => 40,
+					'name' => 'settings_relayip',
+					'readonly' => $readonly,
+					'value' => !empty($settings_relayip) ? $settings_relayip : '',
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'block',
+					'width' => 1000,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+				$params['tbGeneral'][] = array(
+					'type' => 'input',
+					'label' => 'RELAY TIMER (minutes)',
+					'inputWidth' => 100,
+					//'rows' => 2,
+					'labelWidth' => 220,
+					'name' => 'settings_relaytimer',
+					'readonly' => $readonly,
+					'numeric' => true,
+					//'required' => !$readonly,
+					'value' => !empty($settings_relaytimer) ? $settings_relaytimer : 30,
 				);
 
 				$params['tbThreshold'][] = array(
@@ -985,6 +1292,26 @@ if(!class_exists('APP_app_setting')) {
 					'position' => 'label-right',
 				);
 
+				$params['tbServer'][] = array(
+					'type' => 'checkbox',
+					'label' => 'DISABLE PORT CHECK',
+					'labelWidth' => 360,
+					'name' => 'settings_disableportcheck',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_disableportcheck) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbServer'][] = array(
+					'type' => 'checkbox',
+					'label' => 'DISABLE PUSH NOTIFICATION',
+					'labelWidth' => 360,
+					'name' => 'settings_disablepushnoti',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_disablepushnoti) ? true : false,
+					'position' => 'label-right',
+				);
+
 				$params['tbUHFRFID'][] = array(
 					'type' => 'checkbox',
 					'label' => 'UHF RFID READER',
@@ -1012,6 +1339,16 @@ if(!class_exists('APP_app_setting')) {
 					'name' => 'settings_pageautorefresh',
 					'readonly' => $readonly,
 					'checked' => !empty($settings_pageautorefresh) ? true : false,
+					'position' => 'label-right',
+				);
+
+				$params['tbUHFRFID'][] = array(
+					'type' => 'checkbox',
+					'label' => 'USE V2 RFID READER',
+					'labelWidth' => 360,
+					'name' => 'settings_usev2rfidreader',
+					'readonly' => $readonly,
+					'checked' => !empty($settings_usev2rfidreader) ? true : false,
 					'position' => 'label-right',
 				);
 
@@ -1079,6 +1416,45 @@ if(!class_exists('APP_app_setting')) {
 					//'required' => !$readonly,
 					'value' => !empty($settings_uhfrfidserverip) ? $settings_uhfrfidserverip : $default_uhfrfidserverip,
 				);
+
+				if($readonly) {
+					$params['tbUHFRFID'][] = array(
+						'type' => 'input',
+						'label' => 'UHF RFID BAUD RATE',
+						//'inputWidth' => 500,
+						//'rows' => 5,
+						'labelWidth' => 250,
+						'name' => 'settings_rfidreaderbaudrate',
+						'readonly' => $readonly,
+						//'numeric' => true,
+						//'required' => !$readonly,
+						'value' => !empty($settings_uhfrfidreaderbaudrate) ? $settings_uhfrfidreaderbaudrate : 115200,
+					);
+				} else {
+					$opt = array();
+
+					$baudrates = array(9600,14400,19200,28800,38400,56000,57600,115200);
+
+					foreach($baudrates as $v) {
+						$selected = false;
+						if(!empty($settings_uhfrfidreaderbaudrate)&&$settings_uhfrfidreaderbaudrate==$v) {
+							$selected = true;
+						}
+						$opt[] = array('text'=>$v,'value'=>$v,'selected'=>$selected);
+					}
+
+					$params['tbUHFRFID'][] = array(
+						'type' => 'combo',
+						'label' => 'UHF RFID BAUD RATE',
+						'labelWidth' => 250,
+						'name' => 'settings_uhfrfidreaderbaudrate',
+						'readonly' => $readonly,
+						//'required' => ($i===0 ? !$readonly : false),
+						//'inputWidth' => 250,
+						//'value' => !empty($params['smscommandsinfo']['smscommands_key'.$i]) ? $params['smscommandsinfo']['smscommands_key'.$i] : '',
+						'options' => $opt,
+					);
+				}
 
 				$params['tbLicense'][] = array(
 					'type' => 'input',

@@ -1,6 +1,6 @@
 <?php
 /*
-* 
+*
 * Author: Sherwin R. Terunez
 * Contact: sherwinterunez@yahoo.com
 *
@@ -41,6 +41,7 @@ require_once(INCLUDE_PATH.'db.inc.php');
 
 //pre(array('time'=>microtime()));
 
+/*
 if(!($result = $appdb->query("select * from tbl_smsinbox"))) {
 	//return false;
 }
@@ -62,8 +63,30 @@ $retval['ctr'] = $ctr;
 $retval['timer'] = $tstop;
 
 die(json_encode($retval));
+*/
+
+/*function IsInternet2() {
+	$out = false;
+
+	myExec('/sbin/ifconfig tun0 | grep netmask | awk \'{print $2}\'| cut -f2 -d:',$out);
+
+	print_r(array('$out'=>$out));
+
+	if(!empty($out[0])&&isValidIp(trim($out[0]))) {
+		return true;
+	}
+
+
+	return false;
+}
+
+if(IsInternet2()) {
+	print_r(array('online'=>'yes'));
+} else {
+	print_r(array('online'=>'no'));
+}
+*/
 
 
 
-
-
+##

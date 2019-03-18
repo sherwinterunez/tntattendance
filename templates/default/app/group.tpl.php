@@ -147,8 +147,8 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 		myTabbar.addTab("tbStudentSection", "Student Section");
 		myTabbar.addTab("tbStudentYearlevel", "Student Year Level");
-		myTabbar.addTab("tbEmployeeDepartment", "Employee Department");
-		myTabbar.addTab("tbEmployeePosition", "Employee Position");
+		//myTabbar.addTab("tbEmployeeDepartment", "Employee Department");
+		//myTabbar.addTab("tbEmployeePosition", "Employee Position");
 		//myTabbar.addTab("tbThreshold", "Threshold");
 
 		myTabbar.tabs("tbStudentSection").setActive();
@@ -220,15 +220,15 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 			myGridStudentSection.setImagePath("/codebase/imgs/")
 
-			myGridStudentSection.setHeader("ID, Seq, Section Name, Year Level, Start Time, End Time, &nbsp;");
+			myGridStudentSection.setHeader("ID, Seq, Section Name, Year Level, Start Time, End Time, Max In/Out, Break Start, Break End, &nbsp;");
 
-			myGridStudentSection.setInitWidths("50,50,200,200,200,200,*");
+			myGridStudentSection.setInitWidths("50,50,250,250,100,100,100,100,100,*");
 
-			myGridStudentSection.setColAlign("center,center,left,left,left,left,left");
+			myGridStudentSection.setColAlign("center,center,left,left,left,left,center,left,left,left");
 
-			myGridStudentSection.setColTypes("ro,ro,edtxt,combo,edtxt,edtxt,ro");
+			myGridStudentSection.setColTypes("ro,ro,edtxt,combo,edtxt,edtxt,edn,edtxt,edtxt,ro");
 
-			myGridStudentSection.setColSorting("int,int,str,str,str,str,str");
+			myGridStudentSection.setColSorting("int,int,str,str,str,str,str,str,str,str");
 
 			myGridStudentSection.setColumnHidden(0,true);
 
@@ -244,7 +244,10 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 					//jQuery(myGridStudentSection.cells(rId,cInd).cell).first().numeric();
 					//jQuery(myGridStudentSection.cells(rId,cInd).cell).first().attr('maxlength', 11);
 				//} else
-				if(stage==1&&(cInd==4||cInd==5)) {
+				if(stage==1&&cInd==6) {
+					myGridStudentSection.cells(rId,cInd).numeric();
+				} else
+				if(stage==1&&(cInd==4||cInd==5||cInd==7||cInd==8)) {
 					myGridStudentSection.cells(rId,cInd).inputMask({alias:'hh:mm:ss',prefix:'',placeholder:'',allowMinus:true,allowPlus:false,autoUnmask:false});
 				} //else
 				//if(stage==1&&(cInd==7||cInd==8)) {
@@ -265,6 +268,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 						myGridStudentSection.cells(id,3).setDisabled(true);
 						myGridStudentSection.cells(id,4).setDisabled(true);
 						myGridStudentSection.cells(id,5).setDisabled(true);
+						myGridStudentSection.cells(id,6).setDisabled(true);
+						myGridStudentSection.cells(id,7).setDisabled(true);
+						myGridStudentSection.cells(id,8).setDisabled(true);
 					});
 
 					<?php } ?>
@@ -343,13 +349,13 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 			myGridStudentYearlevel.setImagePath("/codebase/imgs/")
 
-			myGridStudentYearlevel.setHeader("ID, Seq, Year Level Name, &nbsp;");
+			myGridStudentYearlevel.setHeader("ID, Seq, Year Level Name, SIM Assignment");
 
 			myGridStudentYearlevel.setInitWidths("50,50,200,*");
 
 			myGridStudentYearlevel.setColAlign("center,center,left,left");
 
-			myGridStudentYearlevel.setColTypes("ro,ro,edtxt,ro");
+			myGridStudentYearlevel.setColTypes("ro,ro,edtxt,clist");
 
 			myGridStudentYearlevel.setColSorting("int,int,str,str");
 
@@ -364,7 +370,7 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 					myGridStudentYearlevel.forEachRow(function(id){
 						myGridStudentYearlevel.cells(id,2).setDisabled(true);
-						//myGridStudentYearlevel.cells(id,2).setDisabled(true);
+						myGridStudentYearlevel.cells(id,3).setDisabled(true);
 						//myGridStudentYearlevel.cells(id,3).setDisabled(true);
 						//myGridStudentYearlevel.cells(id,4).setDisabled(true);
 					});
@@ -373,8 +379,13 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 
 					var x;
 
+					if(ddata.sims&&ddata.sims.length>0) {
+						myGridStudentYearlevel.registerCList(3,ddata.sims);
+					}
+
 					if(ddata.rows&&ddata.rows.length>0) {
 						for(x in ddata.rows) {
+
 							if(ddata.rows[x].loadcommands) {
 								//alert(JSON.stringify(ddata.rows[x].type));
 								var myCombo = myGridStudentYearlevel.getColumnCombo(1);
@@ -989,6 +1000,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				var n = winObj.myGridStudentSection.cells(id,3).getValue();
 				var o = winObj.myGridStudentSection.cells(id,4).getValue();
 				var p = winObj.myGridStudentSection.cells(id,5).getValue();
+				var q = winObj.myGridStudentSection.cells(id,6).getValue();
+				var r = winObj.myGridStudentSection.cells(id,7).getValue();
+				var s = winObj.myGridStudentSection.cells(id,8).getValue();
 				if(n&&o&&p) {
 					extra['studentsection_id['+id+']'] = k;
 					extra['studentsection_seq['+id+']'] = l;
@@ -996,6 +1010,9 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 					extra['studentsection_yearlevel['+id+']'] = n;
 					extra['studentsection_starttime['+id+']'] = o;
 					extra['studentsection_endtime['+id+']'] = p;
+					extra['studentsection_maxinout['+id+']'] = q;
+					extra['studentsection_breakstarttime['+id+']'] = r;
+					extra['studentsection_breakendtime['+id+']'] = s;
 				}
 			});
 
@@ -1003,10 +1020,12 @@ $myToolbar = array($moduleid.'edit',$moduleid.'save',$moduleid.'cancel',$modulei
 				var k = winObj.myGridStudentYearlevel.cells(id,0).getValue();
 				var l = winObj.myGridStudentYearlevel.cells(id,1).getValue();
 				var m = winObj.myGridStudentYearlevel.cells(id,2).getValue();
+				var n = winObj.myGridStudentYearlevel.cells(id,3).getValue();
 				//if(m) {
 					extra['studentyearlevel_id['+id+']'] = k;
 					extra['studentyearlevel_seq['+id+']'] = l;
 					extra['studentyearlevel_yearlevel['+id+']'] = m;
+					extra['studentyearlevel_simassignment['+id+']'] = n;
 				//}
 			});
 

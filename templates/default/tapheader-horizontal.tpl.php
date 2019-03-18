@@ -458,6 +458,7 @@ $settings_titlefontsize = getOption('$SETTINGS_TITLEFONTSIZE',30);
 	}
 
 </style>
+<input type="hidden" name="terminalname" id="kioskname" value="<?php echo !empty($_GET['kiosk']) ? trim($_GET['kiosk']) : ''; ?>" />
 <div id="advertisement">this is an advertisement</div>
 <div id="contenttop">
 	<div id="contenttopleft">

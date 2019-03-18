@@ -21,6 +21,8 @@ if(defined('ANNOUNCE')) {
 
 $settings_verticaldisplay = getOption('$SETTINGS_VERTICALDISPLAY',false);
 
+//pre(array('$_GET'=>$_GET));
+
 if($settings_verticaldisplay) {
 	require_once('tapheader-vertical.tpl.php');
 } else {

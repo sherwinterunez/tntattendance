@@ -118,6 +118,9 @@ if(!class_exists('APP_app_group')) {
 							$content['groupref_name'] = !empty($post['studentsection_sectionname'][$k]) ? $post['studentsection_sectionname'][$k] : '';
 							$content['groupref_starttime'] = !empty($post['studentsection_starttime'][$k]) ? $post['studentsection_starttime'][$k] : '';
 							$content['groupref_endtime'] = !empty($post['studentsection_endtime'][$k]) ? $post['studentsection_endtime'][$k] : '';
+							$content['groupref_maxinout'] = !empty($post['studentsection_maxinout'][$k])&&intval($post['studentsection_maxinout'][$k])>0 ? intval($post['studentsection_maxinout'][$k]) : 0;
+							$content['groupref_breakstarttime'] = !empty($post['studentsection_breakstarttime'][$k]) ? $post['studentsection_breakstarttime'][$k] : '';
+							$content['groupref_breakendtime'] = !empty($post['studentsection_breakendtime'][$k]) ? $post['studentsection_breakendtime'][$k] : '';
 
 							$content['groupref_type'] = 1;
 
@@ -177,6 +180,7 @@ if(!class_exists('APP_app_group')) {
 
 							$content['groupref_seq'] = !empty($post['studentyearlevel_seq'][$k]) ? $post['studentyearlevel_seq'][$k] : 0;
 							$content['groupref_name'] = !empty($post['studentyearlevel_yearlevel'][$k]) ? $post['studentyearlevel_yearlevel'][$k] : '';
+							$content['groupref_simassignment'] = !empty($post['studentyearlevel_simassignment'][$k]) ? $post['studentyearlevel_simassignment'][$k] : '';
 
 							$content['groupref_type'] = 2;
 
@@ -185,6 +189,8 @@ if(!class_exists('APP_app_group')) {
 								if(!empty($content['groupref_name'])) {
 
 									$content['groupref_updatestamp'] = 'now()';
+
+									//log_notice(array('groupref'=>$content));
 
 									if(!($result = $appdb->update("tbl_groupref",$content,"groupref_id=".$groupref_id))) {
 										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -656,7 +662,10 @@ if(!class_exists('APP_app_group')) {
 						if(!empty($result['rows'][0]['groupref_id'])) {
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$seq,'yearlevel'=>array('options'=>$optyearlevel),'data'=>array($v['groupref_id'],$seq,$v['groupref_name'],getGroupRefName($v['groupref_yearlevel']),$v['groupref_starttime'],$v['groupref_endtime']));
+								if(empty($v['groupref_maxinout'])) {
+									$v['groupref_maxinout'] = '';
+								}
+								$rows[] = array('id'=>$seq,'yearlevel'=>array('options'=>$optyearlevel),'data'=>array($v['groupref_id'],$seq,$v['groupref_name'],getGroupRefName($v['groupref_yearlevel']),$v['groupref_starttime'],$v['groupref_endtime'],$v['groupref_maxinout'],$v['groupref_breakstarttime'],$v['groupref_breakendtime']));
 								$seq++;
 							}
 
@@ -664,7 +673,7 @@ if(!class_exists('APP_app_group')) {
 
 						if($this->post['method']=='groupedit'||empty($rows)) {
 							for($i=0;$i<10;$i++) {
-								$rows[] = array('id'=>$seq,'data'=>array(0,$seq,'','','',''));
+								$rows[] = array('id'=>$seq,'yearlevel'=>array('options'=>$optyearlevel),'data'=>array(0,$seq,'','','','','','',''));
 								$seq++;
 							}
 						}
@@ -687,7 +696,7 @@ if(!class_exists('APP_app_group')) {
 						if(!empty($result['rows'][0]['groupref_id'])) {
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$seq,'data'=>array($v['groupref_id'],$seq,$v['groupref_name']));
+								$rows[] = array('id'=>$seq,'data'=>array($v['groupref_id'],$seq,$v['groupref_name'],$v['groupref_simassignment']));
 								$seq++;
 							}
 
@@ -695,13 +704,19 @@ if(!class_exists('APP_app_group')) {
 
 						if($this->post['method']=='groupedit'||empty($rows)) {
 							for($i=0;$i<10;$i++) {
-								$rows[] = array('id'=>$seq,'data'=>array(0,$seq,''));
+								$rows[] = array('id'=>$seq,'data'=>array(0,$seq,'',''));
 								$seq++;
 							}
 						}
 
+						$sims = getAllSims(9,true);
+
 						if(!empty($rows)) {
 							$retval = array('rows'=>$rows);
+
+							if(!empty($sims)) {
+								$retval['sims'] = $sims;
+							}
 						}
 					} else
 					if($this->post['table']=='employeedepartment') {

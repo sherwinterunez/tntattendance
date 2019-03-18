@@ -1394,6 +1394,39 @@ ALTER TABLE ONLY tbl_upload ADD CONSTRAINT tbl_upload_primary_key PRIMARY KEY (u
 
 select upload_id,upload_sid,upload_studentprofileid,upload_name,upload_type,upload_size,upload_temp,upload_createstamp from tbl_upload;
 
+-- tbl_uploads
+
+DROP SEQUENCE IF EXISTS tbl_uploads_seq CASCADE;
+
+CREATE SEQUENCE tbl_uploads_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_uploads;
+
+CREATE TABLE tbl_uploads (
+    upload_id bigint DEFAULT nextval(('tbl_uploads_seq'::text)::regclass) NOT NULL,
+    upload_sid text DEFAULT ''::text NOT NULL,
+    upload_studentprofileid integer NOT NULL DEFAULT 0,
+    upload_name text DEFAULT ''::text NOT NULL,
+    upload_content text DEFAULT ''::text NOT NULL,
+    upload_type text DEFAULT ''::text NOT NULL,
+    upload_size integer NOT NULL DEFAULT 0,
+    upload_temp integer NOT NULL DEFAULT 0,
+    upload_deleted integer NOT NULL DEFAULT 0,
+    upload_flag integer NOT NULL DEFAULT 0,
+    upload_createstamp timestamp with time zone DEFAULT now(),
+    upload_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_uploads ADD CONSTRAINT tbl_uploads_primary_key PRIMARY KEY (upload_id);
+
+SELECT pg_catalog.setval('tbl_uploads_seq', 16406, true);
+
+
 -- tbl_studentdtr
 
 DROP SEQUENCE IF EXISTS tbl_studentdtr_seq CASCADE;
@@ -1444,6 +1477,31 @@ CREATE TABLE tbl_rfidqueue (
 );
 
 ALTER TABLE ONLY tbl_rfidqueue ADD CONSTRAINT tbl_rfidqueue_primary_key PRIMARY KEY (rfidqueue_id);
+
+-- tbl_rfidnotfound
+
+DROP SEQUENCE IF EXISTS tbl_rfidnotfound_seq CASCADE;
+
+CREATE SEQUENCE tbl_rfidnotfound_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_rfidnotfound;
+
+CREATE TABLE tbl_rfidnotfound (
+    rfidnotfound_id bigint DEFAULT nextval(('tbl_rfidnotfound_seq'::text)::regclass) NOT NULL,
+    rfidnotfound_rfid text DEFAULT ''::text NOT NULL,
+    rfidnotfound_ip text DEFAULT ''::text NOT NULL,
+    rfidnotfound_active integer NOT NULL DEFAULT 0,
+    rfidnotfound_deleted integer NOT NULL DEFAULT 0,
+    rfidnotfound_flag integer NOT NULL DEFAULT 0,
+    rfidnotfound_createstamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_rfidnotfound ADD CONSTRAINT tbl_rfidnotfound_primary_key PRIMARY KEY (rfidnotfound_id);
 
 -- tbl_client
 
@@ -1550,7 +1608,43 @@ CREATE TABLE tbl_monitor (
 
 ALTER TABLE ONLY tbl_monitor ADD CONSTRAINT tbl_monitor_primary_key PRIMARY KEY (monitor_id);
 
+-- tbl_facevector
+
+DROP SEQUENCE IF EXISTS tbl_facevector_seq CASCADE;
+
+CREATE SEQUENCE tbl_facevector_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+DROP TABLE IF EXISTS tbl_facevector;
+
+CREATE TABLE tbl_facevector (
+    facevector_id bigint DEFAULT nextval(('tbl_facevector_seq'::text)::regclass) NOT NULL,
+    facevector_hash  text DEFAULT ''::text NOT NULL,
+    facevector_file  text DEFAULT ''::text NOT NULL,
+    facevector_low cube,
+    facevector_high cube,
+    facevector_status integer NOT NULL DEFAULT 0,
+    facevector_active integer NOT NULL DEFAULT 0,
+    facevector_deleted integer NOT NULL DEFAULT 0,
+    facevector_flag integer NOT NULL DEFAULT 0,
+    facevector_createstamp timestamp with time zone DEFAULT now(),
+    facevector_updatestamp timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE ONLY tbl_facevector ADD CONSTRAINT tbl_facevector_primary_key PRIMARY KEY (facevector_id);
+
+CREATE UNIQUE INDEX indx_facevector_hash ON tbl_facevector USING btree (facevector_hash);
+
+
 ===================================================================================================
+
+alter table tbl_groupref add column groupref_maxinout integer NOT NULL DEFAULT 0;
+alter table tbl_groupref add column groupref_breakstarttime text DEFAULT ''::text NOT NULL;
+alter table tbl_groupref add column groupref_breakendtime text DEFAULT ''::text NOT NULL;
 
 alter table tbl_monitor add column monitor_queued integer NOT NULL DEFAULT 0;
 alter table tbl_monitor add column monitor_waiting integer NOT NULL DEFAULT 0;
@@ -1604,6 +1698,10 @@ alter table tbl_smsoutbox add column smsoutbox_failedstamp timestamp with time z
 alter table tbl_smsoutbox add column smsoutbox_priority integer NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_latenoti integer NOT NULL DEFAULT 0;
 alter table tbl_smsoutbox add column smsoutbox_absentnoti integer NOT NULL DEFAULT 0;
+
+alter table tbl_smsoutbox add column smsoutbox_textassistid integer NOT NULL DEFAULT 0;
+alter table tbl_smsoutbox add column smsoutbox_textassistip text DEFAULT ''::text NOT NULL;
+alter table tbl_smsoutbox add column smsoutbox_contactname text DEFAULT ''::text NOT NULL
 
 alter table tbl_users alter column user_email type text;
 alter table tbl_users alter column user_hash type text;

@@ -45,6 +45,7 @@ if(!class_exists('APP_SimpleImage')) {
 
 		var $image;
 		var $image_type;
+		var $mime;
 
 		function load($filename) {
 			$image_info = getimagesize($filename);
@@ -58,12 +59,36 @@ if(!class_exists('APP_SimpleImage')) {
 			}
 		}
 
-		function loadfromstring($imagedata) {
+		function loadfromstring2($imagedata) {
 			$image_info = getimagesizefromstring($imagedata);
 			//pre(array('$image_info'=>$image_info,'IMAGETYPE_JPEG'=>IMAGETYPE_JPEG));
 			$this->image_type = $image_info[2];
 			//if( $this->image_type == IMAGETYPE_JPEG ) {
 				$this->image = imagecreatefromstring($imagedata);
+			//} elseif( $this->image_type == IMAGETYPE_GIF ) {
+				//$this->image = imagecreatefromgif($filename);
+			//} elseif( $this->image_type == IMAGETYPE_PNG ) {
+				//$this->image = imagecreatefrompng($filename);
+			//}
+		}
+
+		function loadfromstring($imagedata) {
+			$image_info = getimagesizefromstring($imagedata);
+
+			//pre(array('$image_info'=>$image_info));
+
+			//pre(array('$image_info'=>$image_info,'IMAGETYPE_JPEG'=>IMAGETYPE_JPEG));
+			$this->image_type = $image_info[2];
+			$this->mime = $image_info['mime'];
+			//if( $this->image_type == IMAGETYPE_JPEG ) {
+				$this->image = @imagecreatefromstring($imagedata);
+
+				if(!empty($this->image)) {
+					return true;
+				}
+
+				return false;
+
 			//} elseif( $this->image_type == IMAGETYPE_GIF ) {
 				//$this->image = imagecreatefromgif($filename);
 			//} elseif( $this->image_type == IMAGETYPE_PNG ) {

@@ -151,7 +151,7 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 			$img = new APP_SimpleImage;
 
-			$img->loadfromstring($content);
+			/*$img->loadfromstring($content);
 
 			$wd = $img->getWidth();
 			$ht = $img->getHeight();
@@ -170,7 +170,33 @@ if(!empty($_GET['pid'])&&is_numeric($_GET['pid'])&&intval($_GET['pid'])>0) {
 
 			@$img->output(IMAGETYPE_JPEG, $imagefile);
 
-			$img->output();
+			$img->output();*/
+
+			if($img->loadfromstring($content)) {
+
+				$wd = $img->getWidth();
+				$ht = $img->getHeight();
+
+				if($wd>$ht) {
+					$img->resizeToHeight($size);
+				} else {
+					$img->resizeToWidth($size);
+				}
+
+				$img->crop($size);
+
+				//print_r($content);
+
+				//pre(array('$imagefile'=>$imagefile));
+
+				@$img->output(IMAGETYPE_JPEG, $imagefile);
+
+				$img->output();
+
+			} else {
+				header("Content-Type: ".$img->mime);
+				die($content);
+			}
 
 		}
 

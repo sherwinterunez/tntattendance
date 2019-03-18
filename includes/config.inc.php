@@ -24,15 +24,21 @@ if(defined('ANNOUNCE')) {
 
 //--HEADEND
 
-define('DB_USER', 'sherwint_sherwin');
-define('DB_PASS', 'joshua04');
-//define('DB_NAME', 'sherwint_sms102');
-//define('DB_NAME', 'sherwint_shinagawa');
-//define('DB_NAME', 'sherwint_tntattendance');
-define('DB_NAME', 'sherwint_tntmobile');
-define('DB_IP','127.0.0.1');
-define('DB_PORT','5432');
-define('DB_HOST', DB_IP.':'.DB_PORT);
+define('ALTDB', ABS_PATH . 'includes/altdb.inc.php');
+
+if(file_exists(ALTDB)) {
+	require_once(ALTDB);
+} else {
+	define('DB_USER', 'sherwint_sherwin');
+	define('DB_PASS', 'joshua04');
+	//define('DB_NAME', 'sherwint_sms102');
+	//define('DB_NAME', 'sherwint_shinagawa');
+	//define('DB_NAME', 'sherwint_tntattendance');
+	define('DB_NAME', 'sherwint_tntmobile');
+	define('DB_IP','127.0.0.1');
+	define('DB_PORT','5432');
+	define('DB_HOST', DB_IP.':'.DB_PORT);
+}
 
 define('APP_CODE', 'DEMO');
 

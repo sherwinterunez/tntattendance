@@ -281,7 +281,9 @@ function modemInit($dev=false,$mobileNo=false,$ip='',$baud=115200,$simMenu=false
 
 		trigger_error("$dev $mobileNo $ip waiting for AT+CNUM",E_USER_NOTICE);
 
-		if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\nOK\r\n",10)) {
+		//if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\nOK\r\n",10)) {
+
+		if($sms->sendMessageReadPort("AT+CNUM\r\n", "\+CNUM\:\s+(.+?)\r\n",10)) {
 			$result = $sms->getResult();
 			print_r(array('$result'=>$result));
 			$flag=true;

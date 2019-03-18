@@ -8,7 +8,7 @@ const ADDRESS = '0.0.0.0';
 
 var PHPFPM = require('./node_modules/node-phpfpm');
 
-//var io     = require('./node_modules/socket.io');
+var io     = require('./node_modules/socket.io');
 var spawn = require('child_process').spawn;
 const { exec } = require('child_process');
 //var http = require('http');
@@ -79,6 +79,8 @@ var http = require('http');
 
 var debug = false;
 
+var sockclients = [];
+
 var server = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
   //res.end('Hello World\n');
@@ -100,7 +102,46 @@ var server = http.createServer(function (req, res) {
     return true;
   }*/
 
-  if(req.url==='/restartkiosk') {
+  if(req.url.match(/\/rfidnotfound\/(.*)\//gi)) {
+
+    var rnf = req.url.match(/\/rfidnotfound\/(.*)\//gi);
+
+    //console.log('rnf',rnf);
+
+    var sp = rnf[0].split('/');
+
+    console.log(sp[2]);
+
+    if(typeof(sockclients)!='undefined' && typeof(sp[2])!='undefined') {
+      for(xy in sockclients) {
+        //console.log('sockclients:',xy);
+        //console.log('headers',sockclients[xy].handshake.headers);
+        //console.log('address',sockclients[xy].handshake.address);
+
+        if(typeof(sockclients[xy])!='undefined') {
+          sockclients[xy].send({'msg':decodeURIComponent(sp[2])});
+        }
+      }
+    }
+
+  } else if(req.url==='/rfidnotfound') {
+
+    //console.log('sockclients',sockclients);
+
+    if(typeof(sockclients)!='undefined') {
+      for(xy in sockclients) {
+        console.log('sockclients:',xy);
+        console.log('headers',sockclients[xy].handshake.headers);
+        console.log('address',sockclients[xy].handshake.address);
+
+        if(typeof(sockclients[xy])!='undefined') {
+          sockclients[xy].send({'msg':'Hello, Sherwin!'});
+        }
+      }
+    }
+
+
+  } else if(req.url==='/restartkiosk') {
     //poweroffFlag = true;
     //runPortCheck = true;
     spawn("killall", ["midori"]);
@@ -173,6 +214,17 @@ var server = http.createServer(function (req, res) {
 
     res.end('rfidalarm');
     return true;
+  } else if(req.url==='/relay') {
+    // /usr/bin/python /srv/www/tnt.dev/ir/relay.py
+
+    const child = spawn("python", ["/srv/www/tnt.dev/ir/relay.py"]);
+
+    child.stdout.on("data", function (data) {
+      console.log(data.toString('utf-8'))
+    });
+
+    res.end('relay');
+    return true;
   } else {
     var rid = req.url.match(/\/rfidreader\/(.*)\//gi);
     if(rid) {
@@ -213,6 +265,75 @@ server.listen(PORT, ADDRESS, function () {
     console.log('Press CTRL+C to exit');
 
     doInit();
+});
+
+function Testing(client) {
+
+  if(client) {
+
+    client.send({'msg':'Working...'});
+
+    //console.log('Working...');
+
+    client.st = setTimeout(function(){
+      Testing(client);
+    }, 5000);
+  }
+}
+
+var io = io.listen(server);
+
+io.on('connection', function(client){
+
+  console.log(client);
+
+  client.on('call', function(msg, fn) {
+
+    client.myfilename = msg;
+
+    console.log('call',msg);
+
+    fn(0,'sherwin!');
+
+    var tail = spawn("tail", ["-f", client.myfilename]);
+    client.send( { filename : client.myfilename } );
+
+    tail.stdout.on("data", function (data) {
+      //console.log(data.toString('utf-8'))
+      client.send( { tail : data.toString('utf-8') } )
+    });
+
+    //client.st = setTimeout(function(){
+    //  Testing(client);
+    //}, 5000);
+
+  });
+
+  client.on('start', function(msg, fn) {
+    console.log('start',msg);
+
+    sockclients[msg] = client;
+    client.sid = msg;
+
+    /*client.st = setTimeout(function(){
+      Testing(client);
+    }, 5000);*/
+
+  });
+
+  client.on('disconnect', (reason) => {
+    console.log('disconnect',reason);
+
+    if(typeof(client.sid)!='undefined') {
+      console.log('disconnect',reason,client.sid);
+      sockclients[client.sid] = null;
+    }
+    if(typeof(client.st)!='undefined') {
+      clearTimeout(client.st);
+    }
+  });
+
+
 });
 
 //var filename = '/var/log/messages';
@@ -490,6 +611,10 @@ function rfidRead(dev,ip) {
       //setTimeout(doInit, (60*1000*2));
 
       //processCount--;
+
+      if(output.match(/STATUS_RFIDPORTERROR/)) {
+        process.exit(1);
+      }
 
       setTimeout(function(){
         rfidRead(dev,ip);

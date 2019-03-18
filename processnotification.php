@@ -29,7 +29,7 @@ if(defined('ANNOUNCE')) {
 }
 
 //define('INCLUDE_PATH', ABS_PATH . 'includes/');
-
+require_once(ABS_PATH.'/vendor/autoload.php'); //MESSENGER APP
 require_once(ABS_PATH.'includes/index.php');
 //require_once(ABS_PATH.'modules/index.php');
 
@@ -67,6 +67,13 @@ if(!empty(($license=checkLicense()))) {
 
 global $appdb;
 
+//MESSENGER PUSH NOTIFICATION
+$facebook = new FacebookMessengerSendApi\SendAPI();
+
+//MESSENGER - PAU
+$settings_sendmessenger  = getOption('$SETTINGS_SENDMESSENGER',false);
+$settings_messengertoken = getOption('$SETTINGS_MESSENGERTOKEN',false);
+
 $settings_sendtimeinnotification  = getOption('$SETTINGS_SENDTIMEINNOTIFICATION',true);
 $settings_sendtimeoutnotification  = getOption('$SETTINGS_SENDTIMEOUTNOTIFICATION',true);
 $settings_sendlatenotification  = getOption('$SETTINGS_SENDLATENOTIFICATION',false);
@@ -79,6 +86,11 @@ $settings_timeoutnotification = getOption('$SETTINGS_TIMEOUTNOTIFICATION');
 
 $settings_latenotification = getOption('$SETTINGS_LATENOTIFICATION',false);
 $settings_absentnotification = getOption('$SETTINGS_ABSENTNOTIFICATION',false);
+
+if(!empty($settings_messengertoken)) {
+} else {
+	$settings_sendmessenger = false;
+}
 
 if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_notified=0 order by studentdtr_id asc limit 5"))) {
 	json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -116,6 +128,8 @@ if(!empty($notifications)) {
 
 		$profile = getStudentProfile($v['studentdtr_studentid']);
 
+		$yearlevel = getStudentYearLevelID($v['studentdtr_studentid']);
+
 		$studentprofile_id = $v['studentdtr_studentid'];
 
 		print_r(array('$profile'=>$profile));
@@ -149,6 +163,7 @@ if(!empty($notifications)) {
 		$msgin = str_replace('%i%',date('i',$v['studentdtr_unixtime']),$msgin);
 		$msgin = str_replace('%s%',date('s',$v['studentdtr_unixtime']),$msgin);
 		$msgin = str_replace('%r%',date('r',$v['studentdtr_unixtime']),$msgin);
+		$msgin = str_replace('%KIOSK%',$v['studentdtr_kiosk'],$msgin);
 
 		$msgout = str_replace('%d%',date('d',$v['studentdtr_unixtime']),$msgout);
 		$msgout = str_replace('%F%',date('F',$v['studentdtr_unixtime']),$msgout);
@@ -166,6 +181,8 @@ if(!empty($notifications)) {
 		$msgout = str_replace('%i%',date('i',$v['studentdtr_unixtime']),$msgout);
 		$msgout = str_replace('%s%',date('s',$v['studentdtr_unixtime']),$msgout);
 		$msgout = str_replace('%r%',date('r',$v['studentdtr_unixtime']),$msgout);
+
+		$msgout = str_replace('%KIOSK%',$v['studentdtr_kiosk'],$msgout);
 
 		$dt = date('m/d/Y H:i:s',$v['studentdtr_unixtime']);
 
@@ -247,10 +264,16 @@ if(!empty($notifications)) {
 		//$settings_sendpushnotification  = getOption('$SETTINGS_SENDPUSHNOTIFICATION',false);
 		//$settings_sendsmsnotification  = getOption('$SETTINGS_SENDSMSNOTIFICATION',true);
 
+		$fbmessenger = 0;
+
 		$push = 0;
 
 		if($settings_sendpushnotification) {
 			$push = 1;
+		}
+
+		if($settings_sendmessenger&&!empty($profile['studentprofile_messengerid'])&&IsInternet()) {
+			$fbmessenger = $profile['studentprofile_messengerid'];
 		}
 
 		$status = 1; // waiting
@@ -259,17 +282,24 @@ if(!empty($notifications)) {
 			if(!$settings_sendtimeinnotification) {
 				$status = 4;
 				$push = 0;
+				$fbmessenger = 0;
 			}
 		} else
 		if($studentdtr_type=='OUT') {
 			if(!$settings_sendtimeoutnotification) {
 				$status = 4;
 				$push = 0;
+				$fbmessenger = 0;
 			}
 		}
 
 		if(!$settings_sendsmsnotification) {
 			$status = 4;
+		}
+
+		if(!empty($fbmessenger)) {
+			$status = 4;
+			$push = 0;
 		}
 
 		$studentdtr_notified = time();
@@ -283,9 +313,11 @@ if(!empty($notifications)) {
 			die;
 		}
 
-		$asim = getAllSims(3);
+		//$asim = getAllSims(3,true);
 
-		pre(array('$asim'=>$asim));
+		$asim = getGroupAssignedSim($yearlevel);
+
+		//pre(array('$asim'=>$asim));
 
 		if(!empty($asim)) {
 
@@ -310,14 +342,14 @@ if(!empty($notifications)) {
 					if(!empty($license['sc'])) {
 						$msgin .= ' '.$license['sc'];
 					}
-					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
-					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin,$push,1,$status,0,0,$studentprofile_id);
+					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgin,'$license[sc]'=>$license['sc'],'$fbmessenger'=>$fbmessenger));
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgin,$push,1,$status,0,0,$studentprofile_id,$fbmessenger);
 				} else {
 					if(!empty($license['sc'])) {
 						$msgout .= ' '.$license['sc'];
 					}
-					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
-					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout,$push,1,$status,0,0,$studentprofile_id);
+					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msgout,'$license[sc]'=>$license['sc'],'$fbmessenger'=>$fbmessenger));
+					sendToOutBoxPriority($mobileno,$n['sim_number'],$msgout,$push,1,$status,0,0,$studentprofile_id,$fbmessenger);
 				}
 
 				break;
@@ -330,14 +362,14 @@ if(!empty($notifications)) {
 				if(!empty($license['sc'])) {
 					$msgin .= ' '.$license['sc'];
 				}
-				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgin,'$license[sc]'=>$license['sc']));
-				sendToOutBoxPriority($mobileno,false,$msgin,$push,1,$status,0,0,$studentprofile_id);
+				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgin,'$license[sc]'=>$license['sc'],'$fbmessenger'=>$fbmessenger));
+				sendToOutBoxPriority($mobileno,false,$msgin,$push,1,$status,0,0,$studentprofile_id,$fbmessenger);
 			} else {
 				if(!empty($license['sc'])) {
 					$msgout .= ' '.$license['sc'];
 				}
-				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgout,'$license[sc]'=>$license['sc']));
-				sendToOutBoxPriority($mobileno,false,$msgout,$push,1,$status,0,0,$studentprofile_id);
+				pre(array('$mobileno'=>$mobileno,'$m'=>false,'$msgin'=>$msgout,'$license[sc]'=>$license['sc'],'$fbmessenger'=>$fbmessenger));
+				sendToOutBoxPriority($mobileno,false,$msgout,$push,1,$status,0,0,$studentprofile_id,$fbmessenger);
 			}
 
 		}
@@ -423,6 +455,8 @@ if($settings_sendlatenotification) {
 
 			$profile = getStudentProfile($studentprofile_id);
 
+			$yearlevel = getStudentYearLevelID($studentprofile_id);
+
 			if(!empty($profile['studentprofile_section'])) {
 			} else {
 				continue;
@@ -506,7 +540,15 @@ if($settings_sendlatenotification) {
 					$push = 1;
 				}
 
-				$asim = getAllSims(3);
+				$fbmessenger = 0;
+
+				if($settings_sendmessenger&&!empty($profile['studentprofile_messengerid'])&&IsInternet()) {
+					$fbmessenger = 1;
+				}
+
+				//$asim = getAllSims(3,true);
+
+				$asim = getGroupAssignedSim($yearlevel);
 
 				pre(array('$asim'=>$asim));
 
@@ -520,7 +562,7 @@ if($settings_sendlatenotification) {
 							$msg .= ' '.$license['sc'];
 						}
 						pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msg,'$license[sc]'=>$license['sc']));
-						sendToOutBoxPriority($mobileno,$n['sim_number'],$msg,$push,1,$status,1,0,$studentprofile_id);
+						sendToOutBoxPriority($mobileno,$n['sim_number'],$msg,$push,1,$status,1,0,$studentprofile_id,$fbmessenger);
 
 						break;
 					}
@@ -532,7 +574,7 @@ if($settings_sendlatenotification) {
 						$msg .= ' '.$license['sc'];
 					}
 					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msg,'$license[sc]'=>$license['sc']));
-					sendToOutBoxPriority($mobileno,false,$msg,$push,1,$status,1,0,$studentprofile_id);
+					sendToOutBoxPriority($mobileno,false,$msg,$push,1,$status,1,0,$studentprofile_id,$fbmessenger);
 
 				}
 
@@ -619,6 +661,8 @@ if($settings_sendabsentnotification) {
 			$fullname = getStudentFullName($studentprofile_id);
 
 			$profile = getStudentProfile($studentprofile_id);
+
+			$yearlevel = getStudentYearLevelID($studentprofile_id);
 
 			if(!empty($profile['studentprofile_section'])) {
 			} else {
@@ -719,7 +763,15 @@ if($settings_sendabsentnotification) {
 					$push = 1;
 				}
 
-				$asim = getAllSims(3);
+				$fbmessenger = 0;
+
+				if($settings_sendmessenger&&!empty($profile['studentprofile_messengerid'])&&IsInternet()) {
+					$fbmessenger = 1;
+				}
+
+				//$asim = getAllSims(3,true);
+
+				$asim = getGroupAssignedSim($yearlevel);
 
 				pre(array('$asim'=>$asim));
 
@@ -733,7 +785,7 @@ if($settings_sendabsentnotification) {
 							$msg .= ' '.$license['sc'];
 						}
 						pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msg,'$license[sc]'=>$license['sc']));
-						sendToOutBoxPriority($mobileno,$n['sim_number'],$msg,$push,1,$status,0,1,$studentprofile_id);
+						sendToOutBoxPriority($mobileno,$n['sim_number'],$msg,$push,1,$status,0,1,$studentprofile_id,$fbmessenger);
 
 						break;
 					}
@@ -745,7 +797,7 @@ if($settings_sendabsentnotification) {
 						$msg .= ' '.$license['sc'];
 					}
 					pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$msgin'=>$msg,'$license[sc]'=>$license['sc']));
-					sendToOutBoxPriority($mobileno,false,$msg,$push,1,$status,0,1,$studentprofile_id);
+					sendToOutBoxPriority($mobileno,false,$msg,$push,1,$status,0,1,$studentprofile_id,$fbmessenger);
 
 				}
 
@@ -756,125 +808,6 @@ if($settings_sendabsentnotification) {
 
 } // if($settings_sendabsentnotification) {
 
-///////////////////////////////////////////////////////////////////////////////
 
-// send push notification
 
-$notifications = false;
-
-if(!($result = $appdb->query("select * from tbl_smsoutbox where smsoutbox_sendpush>0 and smsoutbox_pushstatus=1 and smsoutbox_pushid=0 order by smsoutbox_id asc limit 1"))) {
-	json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-	die;
-}
-
-if(!empty($result['rows'][0]['smsoutbox_id'])) {
-	$notifications = $result['rows'];
-}
-
-if(!empty($notifications)) {
-
-	print_r(array('outbox notifications'=>$notifications));
-
-	foreach($notifications as $k=>$v) {
-
-		$ch = new MyCURL;
-
-		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, true);
-		//curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, 0);
-		//curl_setopt($ch->ch, CURLOPT_CAINFO, ABS_PATH . "cacert/cacert.pem");
-
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch->ch, CURLOPT_SSL_VERIFYHOST, false);
-
-		$smsoutbox_message = $v['smsoutbox_message'];
-
-		$fullname = getStudentFullName($v['smsoutbox_contactid']);
-
-		$profile = getStudentProfile($v['smsoutbox_contactid']);
-
-		if(!empty($fullname)) {
-			$smsoutbox_message = str_replace('%STUDENTFULLNAME%',strtoupper($fullname),$smsoutbox_message);
-		}
-
-		$smsoutbox_message = str_replace('%FIRSTNAME%',strtoupper($profile['studentprofile_firstname']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%LASTNAME%',strtoupper($profile['studentprofile_lastname']),$smsoutbox_message);
-		$smsoutbox_message = str_replace('%MIDDLENAME%',strtoupper($profile['studentprofile_middlename']),$smsoutbox_message);
-
-		//$dt = date('m/d/Y H:i:s',$profile['studentdtr_unixtime']);
-
-		//$smsoutbox_message = str_replace('%DATETIME%',$dt,$smsoutbox_message);
-
-		$mobileno = getGuardianMobileNo($profile['studentprofile_id']);
-
-		if(!empty($mobileno)) {
-		} else {
-
-			$content = array();
-			$content['smsoutbox_pushid'] = 1;
-			$content['smsoutbox_pushstatus'] = 5;
-			$content['smsoutbox_pushsentstamp'] = 'now()';
-
-			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
-				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-				die;
-			}
-
-			continue;
-		}
-
-		$content = array();
-		$content['smsoutbox_pushstatus'] = 3;
-
-		if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
-			json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-			die;
-		}
-
-		$post = array();
-		$post['topic'] = 'tapntxt'.$mobileno;
-		$post['msg'] = $smsoutbox_message;
-		$post['title'] = 'TAP N TXT';
-
-		//pre(array('$post'=>$post,'$profile'=>$profile));
-
-		if(!($retcont = $ch->post(REMOTE_FCMSENDTOTOPIC_URL,$post))) {
-			print_r(array('error'=>$retcont));
-		}
-
-		//print_r(array('$retcont'=>$retcont,'$post'=>$post));
-
-		if(!empty($retcont['content'])) {
-			$retval = json_decode($retcont['content'],true);
-		}
-
-		if(!empty($retval['message_id'])) {
-
-			$content = array();
-			$content['smsoutbox_pushid'] = floatval($retval['message_id']);
-			$content['smsoutbox_pushstatus'] = 4;
-			$content['smsoutbox_pushsentstamp'] = 'now()';
-
-			//print_r(array('$retval'=>$retval,'$content'=>$content));
-
-			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
-				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-				die;
-			}
-
-		} else {
-
-			$content = array();
-			$content['smsoutbox_pushid'] = 1;
-			$content['smsoutbox_pushstatus'] = 5;
-			$content['smsoutbox_pushsentstamp'] = 'now()';
-
-			if(!($result = $appdb->update("tbl_smsoutbox",$content,"smsoutbox_id=".$v['smsoutbox_id']))) {
-				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-				die;
-			}
-
-		}
-
-	}
-
-}
+#eof

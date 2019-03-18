@@ -25,6 +25,15 @@ if(defined('ANNOUNCE')) {
 
 global $appdb;
 
+//MESSENGER - PAU
+if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_messengerid')) {
+	$appdb->query("alter table tbl_studentprofile add column studentprofile_messengerid text DEFAULT ''::text NOT NULL");
+}
+//MESSENGER - PAU
+if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_verification')) {
+	$appdb->query("alter table tbl_studentprofile add column studentprofile_verification text DEFAULT ''::text NOT NULL");
+}
+
 if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyear')) {
 	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyear text DEFAULT ''::text NOT NULL");
 }
@@ -35,6 +44,10 @@ if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyearstart')
 
 if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_schoolyearend')) {
 	$appdb->query("alter table tbl_studentprofile add column studentprofile_schoolyearend integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_studentprofile','studentprofile_studentmobileno')) {
+	$appdb->query("alter table tbl_studentprofile add column studentprofile_studentmobileno text DEFAULT ''::text NOT NULL");
 }
 
 if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_latenoti')) {
@@ -49,10 +62,47 @@ if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_failedcount')) {
 	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_failedcount integer NOT NULL DEFAULT 0");
 }
 
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_fbid')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_fbid text DEFAULT ''::text NOT NULL");
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_sendfb integer NOT NULL DEFAULT 0");
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_sendfbstatus integer NOT NULL DEFAULT 0");
+}
+
 if(!$appdb->isTableExist('tbl_rfidqueue')) {
 	$appdb->query("CREATE SEQUENCE tbl_rfidqueue_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1");
 	$appdb->query("CREATE TABLE tbl_rfidqueue (rfidqueue_id bigint DEFAULT nextval(('tbl_rfidqueue_seq'::text)::regclass) NOT NULL,rfidqueue_rfid text DEFAULT ''::text NOT NULL,rfidqueue_active integer NOT NULL DEFAULT 0,rfidqueue_deleted integer NOT NULL DEFAULT 0,rfidqueue_flag integer NOT NULL DEFAULT 0,rfidqueue_createstamp timestamp with time zone DEFAULT now())");
 	$appdb->query("ALTER TABLE ONLY tbl_rfidqueue ADD CONSTRAINT tbl_rfidqueue_primary_key PRIMARY KEY (rfidqueue_id)");
+}
+
+if(!$appdb->isTableExist('tbl_rfidnotfound')) {
+	$appdb->query("CREATE SEQUENCE tbl_rfidnotfound_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1");
+	$appdb->query("CREATE TABLE tbl_rfidnotfound (rfidnotfound_id bigint DEFAULT nextval(('tbl_rfidnotfound_seq'::text)::regclass) NOT NULL,rfidnotfound_rfid text DEFAULT ''::text NOT NULL,rfidnotfound_ip text DEFAULT ''::text NOT NULL,rfidnotfound_active integer NOT NULL DEFAULT 0,rfidnotfound_deleted integer NOT NULL DEFAULT 0,rfidnotfound_flag integer NOT NULL DEFAULT 0,rfidnotfound_createstamp timestamp with time zone DEFAULT now())");
+	$appdb->query("ALTER TABLE ONLY tbl_rfidnotfound ADD CONSTRAINT tbl_rfidnotfound_primary_key PRIMARY KEY (rfidnotfound_id)");
+}
+
+if(!$appdb->isColumnExist('tbl_rfidqueue','rfidqueue_ip')) {
+	$appdb->query("alter table tbl_rfidqueue add column rfidqueue_ip text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_rfidqueue','rfidqueue_millitime')) {
+	$appdb->query("alter table tbl_rfidqueue add column rfidqueue_millitime bigint NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_rfidqueue','rfidqueue_facerec')) {
+	$appdb->query("alter table tbl_rfidqueue add column rfidqueue_facerec integer NOT NULL DEFAULT 0");
+	$appdb->query("alter table tbl_rfidqueue add column rfidqueue_facehash text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_studentdtr','studentdtr_ip')) {
+	$appdb->query("alter table tbl_studentdtr add column studentdtr_ip text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_studentdtr','studentdtr_kiosk')) {
+	$appdb->query("alter table tbl_studentdtr add column studentdtr_kiosk text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_upload','upload_facerec')) {
+	$appdb->query("alter table tbl_upload add column upload_facerec integer NOT NULL DEFAULT 0");
 }
 
 if(!$appdb->isTableExist('tbl_client')) {
@@ -79,6 +129,33 @@ if(!$appdb->isColumnExist('tbl_monitor','monitor_queued')) {
 	$appdb->query("alter table tbl_monitor add column monitor_sending integer NOT NULL DEFAULT 0");
 	$appdb->query("alter table tbl_monitor add column monitor_sent integer NOT NULL DEFAULT 0");
 	$appdb->query("alter table tbl_monitor add column monitor_failed integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_groupref','groupref_maxinout')) {
+	$appdb->query("alter table tbl_groupref add column groupref_maxinout integer NOT NULL DEFAULT 0");
+	$appdb->query("alter table tbl_groupref add column groupref_breakstarttime text DEFAULT ''::text NOT NULL");
+	$appdb->query("alter table tbl_groupref add column groupref_breakendtime text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_groupref','groupref_simassignment')) {
+	$appdb->query("alter table tbl_groupref add column groupref_simassignment text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_textassistid')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_textassistid integer NOT NULL DEFAULT 0");
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_textassistip text DEFAULT ''::text NOT NULL");
+}
+
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_textassistsent')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_textassistsent integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_textassistsynced')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_textassistsynced integer NOT NULL DEFAULT 0");
+}
+
+if(!$appdb->isColumnExist('tbl_smsoutbox','smsoutbox_contactname')) {
+	$appdb->query("alter table tbl_smsoutbox add column smsoutbox_contactname text DEFAULT ''::text NOT NULL");
 }
 
 if(!$appdb->isColumnExist('tbl_monitor','monitor_clientnodeid')) {

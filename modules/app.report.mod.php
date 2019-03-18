@@ -239,9 +239,11 @@ select * from tbl_studentprofile where studentprofile_id not in (select distinct
 
 */
 
-					$sql = "";
+					$sql = "select * from tbl_studentprofile where $where2 studentprofile_id not in (select distinct B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where $where A.studentdtr_type='IN' and A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to)";
 
-					if(!($result = $appdb->query("select * from tbl_studentprofile where $where2 studentprofile_id not in (select distinct B.studentprofile_id from tbl_studentdtr as A, tbl_studentprofile as B where $where A.studentdtr_type='IN' and A.studentdtr_studentid=B.studentprofile_id and A.studentdtr_unixtime >= $from and A.studentdtr_unixtime <= $to)"))) {
+					log_notice(array('reportsql'=>$sql));
+
+					if(!($result = $appdb->query($sql))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
 					}

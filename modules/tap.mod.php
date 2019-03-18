@@ -56,6 +56,8 @@ if(!class_exists('APP_Tap')) {
 
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/moment.min.js');
 			$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.marquee.min.js');
+			//$apptemplate->add_script('//'.$_SERVER['SERVER_ADDR'].':8080/socket.io/socket.io.js');
+			$apptemplate->add_script('//127.0.0.1:8080/socket.io/socket.io.js');
 			//$apptemplate->add_script($apptemplate->templates_urlpath().'js/jquery.marquee.js?t='.time());
 			$apptemplate->add_script('/'.$this->pathid.'/js/');
 			//$apptemplate->add_script('/'.$this->pathid.'/js/?t='.time());
@@ -79,6 +81,7 @@ if(!class_exists('APP_Tap')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/getprevious/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'getPrevious'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/setprevious/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'setPrevious'))));
 			$approuter->addroute(array('^/'.$this->pathid.'$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/\?(.*)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'render'))));
 
 
 			///$approuter->addroute(array('^/'.$this->pathid.'/session/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'session'))));
@@ -307,6 +310,7 @@ if(!class_exists('APP_Tap')) {
 			$retval['sysinfo'] = 'Server IP: '.$retval['localip'].' | Load: '.round($retval['load'][0],2).', '.round($retval['load'][1],2).', '.round($retval['load'][2],2);
 			$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
 			$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
+			$retval['licenseexpiration'] = !empty($license['de']) ? $license['de'] : 0;
 
 			//$load = sys_getloadavg();
 
@@ -455,14 +459,26 @@ if(!class_exists('APP_Tap')) {
 		} // function setPrevious($vars) {
 
 		function tapped($vars) {
-			global $appdb, $appaccess;
+			global $appdb, $appaccess, $memcached;
 
 			//pre(array('$vars'=>$vars));
 
 			if(!empty($vars['post']['rfid'])&&!empty($vars['post']['unixtime'])&&is_numeric($vars['post']['unixtime'])&&!empty($vars['post']['imagesize'])&&is_numeric($vars['post']['imagesize'])) {
 
+				$xbypass = false;
+				$kioskname = 'KIOSK';
+
+				if(!empty($vars['post']['xbypass'])) {
+					$xbypass = true;
+				}
+
+				if(!empty($vars['post']['kiosk'])) {
+					$kioskname = trim($vars['post']['kiosk']);
+				}
+
 				$settings_servershutdownrfid = getOption('$SETTINGS_SERVERSHUTDOWNRFID',false);
 				$settings_servershutdownrfidenable = getOption('$SETTINGS_SERVERSHUTDOWNRFIDENABLE',false);
+				$settings_globaldisplay = getOption('$SETTINGS_GLOBALDISPLAY',false);
 
 				if($settings_servershutdownrfidenable&&$settings_servershutdownrfid&&$vars['post']['rfid']==$settings_servershutdownrfid) {
 					$curl = new MyCurl;
@@ -481,9 +497,16 @@ if(!class_exists('APP_Tap')) {
 				$vars['post']['unixtime'] = intval(getDbUnixDate());
 				$post = $vars['post'];
 
-				if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_rfid='".$post['rfid']."'"))) {
-					json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-					die;
+				if(!empty($post['facerec'])) {
+					if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_id='".$post['rfid']."'"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+				} else {
+					if(!($result = $appdb->query("select * from tbl_studentprofile where studentprofile_rfid='".$post['rfid']."'"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
 				}
 
 				if(!empty($result['rows'][0]['studentprofile_id'])) {
@@ -492,6 +515,17 @@ if(!class_exists('APP_Tap')) {
 					$retval = array();
 					$retval['return_code'] = 4594;
 					$retval['return_message'] = 'RFID '.$post['rfid'].' not found!';
+					$retval['remote_ip'] = trim($_SERVER['REMOTE_ADDR']);
+					$retval['notfound'] = true;
+
+					$content = array();
+					$content['rfidnotfound_rfid'] = $post['rfid'];
+					$content['rfidnotfound_ip'] = trim($_SERVER['REMOTE_ADDR']);
+
+					if(!($result = $appdb->insert("tbl_rfidnotfound",$content,"rfidnotfound_id"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
 
 					log_notice($retval);
 
@@ -531,6 +565,10 @@ if(!class_exists('APP_Tap')) {
 
 					$startTime = getSectionStartTime($vars['studentinfo']['studentprofile_section']);
 					$endTime = getSectionEndTime($vars['studentinfo']['studentprofile_section']);
+					$startBreakTime = getSectionBreakStartTime($vars['studentinfo']['studentprofile_section']);
+					$endBreakTime = getSectionBreakEndTime($vars['studentinfo']['studentprofile_section']);
+
+					$maxInOut = getSectionMaxInOut($vars['studentinfo']['studentprofile_section']);
 
 					if(!empty($startTime)) {
 						$startTimeStamp = date2timestamp("$month/$day/$year $startTime",'m/d/Y H:i:s');
@@ -540,15 +578,43 @@ if(!class_exists('APP_Tap')) {
 						$endTimeStamp = date2timestamp("$month/$day/$year $endTime",'m/d/Y H:i:s');
 					}
 
-					if(!($result = $appdb->query("select *,(extract(epoch from now()) - extract(epoch from studentdtr_tappedstamp)) as elapsedtime from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit 1"))) {
+					if(!empty($startBreakTime)) {
+						$startBreakTimeStamp = date2timestamp("$month/$day/$year $startBreakTime",'m/d/Y H:i:s');
+					}
+
+					if(!empty($endBreakTime)) {
+						$endBreakTimeStamp = date2timestamp("$month/$day/$year $endBreakTime",'m/d/Y H:i:s');
+					}
+
+					$limit = 1;
+
+					if(!empty($maxInOut)) {
+						$limit = $maxInOut * 2;
+					}
+
+					$sql = "select *,(extract(epoch from now()) - extract(epoch from studentdtr_tappedstamp)) as elapsedtime, now() as now from tbl_studentdtr where studentdtr_studentid=".$vars['studentinfo']['studentprofile_id']." and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $limit";
+
+					log_notice(array('$sql'=>$sql,'unixtime'=>$post['unixtime'],'$startTimeStamp'=>$startTimeStamp,'$endTimeStamp'=>$endTimeStamp));
+
+					if(!($result = $appdb->query($sql))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 						die;
 					}
 
 					$late = false;
+					$earlyBreak = false;
+					$lateBreak = false;
 
 					if(!empty($startTimeStamp)&&$post['unixtime']>($startTimeStamp+$settings_tardinessgraceperiodminute)) {
 						$late = true;
+					}
+
+					if(!empty($startBreakTimeStamp)&&$post['unixtime']<$startBreakTimeStamp) {
+						$earlyBreak = true;
+					}
+
+					if(!empty($endBreakTimeStamp)&&$post['unixtime']>$endBreakTimeStamp) {
+						$lateBreak = true;
 					}
 
 					$type = 'IN';
@@ -556,6 +622,7 @@ if(!class_exists('APP_Tap')) {
 					$bypass = false;
 
 					if(!empty($result['rows'][0]['studentdtr_id'])) {
+
 						$studentdtr_id = $result['rows'][0]['studentdtr_id'];
 						$vars['studentdtr'] = $result['rows'][0];
 						$vars['$appdb'] = $appdb;
@@ -568,6 +635,36 @@ if(!class_exists('APP_Tap')) {
 							$type = 'IN';
 						}
 
+						if(!empty($maxInOut)) {
+							$numIn = 0;
+							$numOut = 0;
+
+							foreach($result['rows'] as $k=>$v) {
+								if($v['studentdtr_type']=='IN') {
+									$numIn++;
+								} else
+								if($v['studentdtr_type']=='OUT') {
+									$numOut++;
+								}
+							}
+
+							if($type=='OUT'&&$numOut>=$maxInOut) {
+								$vars['maxinoutalarm'] = 1;
+							} else
+							if($type=='IN'&&$numIn>=$maxInOut) {
+								$vars['maxinoutalarm'] = 1;
+							}
+						}
+
+						if(!empty($startBreakTimeStamp)&&!empty($endBreakTimeStamp)) {
+							if($type=='OUT'&&!empty($earlyBreak)) {
+								$vars['breakalarm'] = 1;
+							} else
+							if($type=='IN'&&!empty($lateBreak)) {
+								$vars['breakalarm'] = 1;
+							}
+						}
+
 						$settings_rfidinterval = getOption('$SETTINGS_RFIDINTERVAL',0) * 60;
 
 						//$interval = $post['unixtime'] - $vars['studentdtr']['studentdtr_unixtime'];
@@ -576,21 +673,33 @@ if(!class_exists('APP_Tap')) {
 
 						$interval = intval($vars['studentdtr']['elapsedtime']);
 
+						log_notice(array('studentdtr'=>$vars['studentdtr'],'$settings_rfidinterval'=>$settings_rfidinterval,'$interval'=>$interval,'$post[unixtime]'=>$post['unixtime'],'$endTimeStamp'=>$endTimeStamp,'$type'=>$type));
+
 						//pre(array('$interval'=>$interval,'$settings_rfidinterval'=>$settings_rfidinterval));
 
+						$doalarm = false;
+
+						if(!empty($post['maxinoutalarm'])&&!empty($vars['maxinoutalarm'])) {
+
+						} else
+						if(!empty($post['breakalarm'])&&!empty($vars['breakalarm'])) {
+
+						} else
+						if($post['unixtime']>=$endTimeStamp&&$type=='OUT') {
+
+						} else
+						if($post['unixtime']>=$endTimeStamp&&$type=='IN') {
+
+							$bypass = true;
+
+						} else
 						if($interval>$settings_rfidinterval) {
 
 						} else {
 
-							if($post['unixtime']>$endTimeStamp&&$type=='OUT') {
+							$bypass = true;
 
-							} else {
-
-								$bypass = true;
-
-								$appdb->update("tbl_studentdtr",array('studentdtr_tappedstamp'=>'now()'),"studentdtr_id=".$studentdtr_id);
-
-							}
+							$appdb->update("tbl_studentdtr",array('studentdtr_tappedstamp'=>'now()'),"studentdtr_id=".$studentdtr_id);
 
 						}
 
@@ -608,6 +717,14 @@ if(!class_exists('APP_Tap')) {
 						$content['studentdtr_unixtime'] = $post['unixtime'];
 						$content['studentdtr_active'] = 1;
 						$content['studentdtr_type'] = $type;
+
+						if(!empty($kioskname)) {
+							$content['studentdtr_kiosk'] = trim($kioskname);
+						}
+
+						if(!empty($_SERVER['REMOTE_ADDR'])) {
+							$content['studentdtr_ip'] = trim($_SERVER['REMOTE_ADDR']);
+						}
 
 						if($type=='IN'&&!empty($late)) {
 							$content['studentdtr_late'] = 1;
@@ -662,167 +779,416 @@ if(!class_exists('APP_Tap')) {
 
 							//pre(array('$studentprofile_schoolyear'=>$studentprofile_schoolyear));
 
-							if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$current_schoolyear'"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							if(!empty($result['rows'][0]['db'])) {
-								$studentprofile_db = $result['rows'][0]['db'];
-							}
-
-							if(!($result = $appdb->query("select count(studentdtr_id) as in from tbl_studentdtr where studentdtr_type='IN' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							if(!empty($result['rows'][0]['in'])) {
-								$studentprofile_in = $result['rows'][0]['in'];
-							}
-
-							if(!($result = $appdb->query("select count(studentdtr_id) as out from tbl_studentdtr where studentdtr_type='OUT' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							if(!empty($result['rows'][0]['out'])) {
-								$studentprofile_out = $result['rows'][0]['out'];
-							}
-
-							if(!($result = $appdb->query("select count(studentdtr_id) as late from tbl_studentdtr where studentdtr_type='IN'and studentdtr_late>0  and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							if(!empty($result['rows'][0]['late'])) {
-								$studentprofile_late = $result['rows'][0]['late'];
-							}
-
-	/*
-	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
-
-	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='IN' and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
-
-	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='OUT' and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
-
-	select count(studentdtr_id) as db from tbl_studentdtr where studentdtr_type='IN' and studentdtr_late>0 and studentdtr_unixtime >= 1488729600 and studentdtr_unixtime <= 1488815999;
-	*/
-
-							//pre(array('$result'=>$result));
-
-							$retval = array();
-							$retval['db'] = intval($studentprofile_db);
-							$retval['in'] = intval($studentprofile_in);
-							$retval['out'] = intval($studentprofile_out);
-							$retval['late'] = intval($studentprofile_late);
-							$retval['type'] = $type;
-							$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$vars['studentinfo']['studentprofile_id'];
-							$retval['studentinfo'] = $vars['studentinfo'];
-							$retval['currentTimeStamp'] = $post['unixtime'];
-							$retval['currentTime'] = pgDateUnix($post['unixtime']);
-							$retval['startTimeStamp'] = $startTimeStamp;
-							$retval['startTime'] = pgDateUnix($startTimeStamp);
-							$retval['endTimeStamp'] = $endTimeStamp;
-							$retval['endTime'] = pgDateUnix($endTimeStamp);
-							$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
-							$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
-							//$retval['studentdtr'] = $vars['studentdtr'];
-
 							if($type=='IN') {
-								$retval['remarks'] = getOption('$SETTINGS_TIMEINMESSAGE','Welcome to School! Have a nice day!');
+
+								$statsvar = '$STATS_TIMEIN_'.$year.'_'.$month.'_'.$day;
+
+								$stats_timein = getOption($statsvar, 0);
+
+								$stats_timein = $stats_timein + 1;
+
+								log_notice(array('$statsvar'=>$statsvar,'$stats_timein'=>$stats_timein,'$xbypass'=>$xbypass));
+
+								setSetting($statsvar, $stats_timein);
+
+								if(!empty($memcached)) {
+									$memcached->set('STATSTIMEIN', $stats_timein);
+								}
 
 								if(!empty($late)) {
-									$retval['remarks'] = getOption('$SETTINGS_LATEMESSAGE','Welcome to School! Have a nice day! Please be early next time!');
+
+									$statsvar = '$STATS_TIMEINLATE_'.$year.'_'.$month.'_'.$day;
+
+									$stats_timeinlate = getOption($statsvar, 0);
+
+									$stats_timeinlate = $stats_timeinlate + 1;
+
+									log_notice(array('$statsvar'=>$statsvar,'$stats_timeinlate'=>$stats_timeinlate,'$xbypass'=>$xbypass));
+
+									setSetting($statsvar, $stats_timeinlate);
+
+									if(!empty($memcached)) {
+										$memcached->set('STATSTIMEINLATE', $stats_timeinlate);
+									}
+
 								}
+
 							} else {
-								$retval['remarks'] = getOption('$SETTINGS_TIMEOUTMESSAGE','Goodbye! See you later!');
-							}
 
-							$fullname = '';
+								$statsvar = '$STATS_TIMEOUT_'.$year.'_'.$month.'_'.$day;
 
-							if(!empty($vars['studentinfo']['studentprofile_firstname'])) {
-								$fullname .= trim($vars['studentinfo']['studentprofile_firstname']).' ';
-							}
+								$stats_timeout = getOption($statsvar, 0);
 
-							if(!empty($vars['studentinfo']['studentprofile_middlename'])) {
-								$fullname .= trim($vars['studentinfo']['studentprofile_middlename']).' ';
-							}
+								$stats_timeout = $stats_timeout + 1;
 
-							if(!empty($vars['studentinfo']['studentprofile_lastname'])) {
-								$fullname .= trim($vars['studentinfo']['studentprofile_lastname']).' ';
-							}
+								log_notice(array('$statsvar'=>$statsvar,'$stats_timeout'=>$stats_timeout,'$xbypass'=>$xbypass));
 
-							$retval['fullname'] = strtoupper(trim($fullname));
+								setSetting($statsvar, $stats_timeout);
 
-							$retval['yearlevel'] = !empty($vars['studentinfo']['studentprofile_yearlevel']) ? getGroupRefName($vars['studentinfo']['studentprofile_yearlevel']) : 'Year Level';
-							$retval['section'] = !empty($vars['studentinfo']['studentprofile_section']) ? getGroupRefName($vars['studentinfo']['studentprofile_section']) : 'Section';
-
-							// get previous time-in/time-out for this day
-
-							// studentdtr_unixtime >= $from and studentdtr_unixtime <= $to
-
-							//if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
-
-							$prevtotal = 10;
-
-							if(!empty($vars['post']['total'])&&is_numeric($vars['post']['total'])&&intval($vars['post']['total'])>0) {
-								$prevtotal = intval($vars['post']['total']) + 1;
-							}
-
-							if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $prevtotal"))) {
-								json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
-								die;
-							}
-
-							//pre(array('$result'=>$result));
-
-							if(!empty($result['rows'][0]['studentdtr_id'])) {
-
-								$previous = array();
-
-								$first = true;
-
-								foreach($result['rows'] as $k=>$student) {
-
-									if($first) {
-										$first = false;
-										continue;
-									}
-
-									$tmp = array();
-
-									if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
-
-										$fullname = '';
-
-										if(!empty($profile['studentprofile_firstname'])) {
-											$fullname .= trim($profile['studentprofile_firstname']).' ';
-										}
-
-										if(!empty($profile['studentprofile_middlename'])) {
-											$fullname .= trim($profile['studentprofile_middlename']).' ';
-										}
-
-										if(!empty($profile['studentprofile_lastname'])) {
-											$fullname .= trim($profile['studentprofile_lastname']).' ';
-										}
-
-										$tmp['dtrid'] = $student['studentdtr_id'];
-										$tmp['studentid'] = $profile['studentprofile_id'];
-										$tmp['fullname'] = strtoupper(trim($fullname));
-										$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
-										$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
-										$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
-										$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel" class="bold">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
-
-										$previous[] = $tmp;
-									}
+								if(!empty($memcached)) {
+									$memcached->set('STATSTIMEOUT', $stats_timeout);
 								}
 
 							}
 
-							$retval['previous'] = $previous;
+							if(!empty($xbypass)) {
+								$toretval = array();
+								$toretval['rfid'] = $vars['studentinfo']['studentprofile_rfid'];
+								$toretval['success'] = $vars['studentinfo']['studentprofile_rfid'].' Success!';
+								$toretval['type'] = $type;
 
+								if(!empty($vars['maxinoutalarm'])) {
+									$toretval['maxinoutalarm'] = 1;
+								}
+
+								if(!empty($vars['breakalarm'])) {
+									$toretval['breakalarm'] = 1;
+								}
+
+								if(!empty($memcached)) {
+////////////////////////////////////////
+
+									//pre(array('$vars'=>$vars));
+
+									//log_notice(array('memcached'=>'Saving to memcached...'));
+
+									//log_notice(array('$_SERVER'=>$_SERVER));
+
+									$currentunixtime = intval(getDbUnixDate());
+
+									$month = intval(date('m', $currentunixtime));
+									$day = intval(date('d', $currentunixtime));
+									$year = intval(date('Y', $currentunixtime));
+									$hour = intval(date('H', $currentunixtime));
+									$minute = intval(date('i', $currentunixtime));
+									$second = intval(date('s', $currentunixtime));
+
+									$from = date2timestamp("$month/$day/$year 00:00:00",'m/d/Y H:i:s');
+									$to = date2timestamp("$month/$day/$year 23:59:59",'m/d/Y H:i:s');
+
+									$post = $vars['post'];
+
+									$current_schoolyear = getCurrentSchoolYear();
+
+									$studentprofile_db = 0;
+									$studentprofile_in = getOption('$STATS_TIMEIN_'.$year.'_'.$month.'_'.$day, 0);
+									$studentprofile_late = getOption('$STATS_TIMEINLATE_'.$year.'_'.$month.'_'.$day, 0);
+									$studentprofile_out = getOption('$STATS_TIMEOUT_'.$year.'_'.$month.'_'.$day, 0);
+
+									if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$current_schoolyear'"))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									if(!empty($result['rows'][0]['db'])) {
+										$studentprofile_db = $result['rows'][0]['db'];
+									}
+
+									$retval = array();
+									$retval['db'] = intval($studentprofile_db);
+									$retval['in'] = intval($studentprofile_in);
+									$retval['out'] = intval($studentprofile_out);
+									$retval['late'] = intval($studentprofile_late);
+
+									$prevtotal = getOption('$SETTINGS_VERTICALDISPLAYNUMBEROFPREVIOUS',10);
+
+									if(!empty($vars['post']['total'])&&is_numeric($vars['post']['total'])&&intval($vars['post']['total'])>0) {
+										$prevtotal = intval($vars['post']['total']) + 1;
+									}
+
+									$where = '';
+
+									if(empty($settings_globaldisplay)&&!empty($_SERVER['REMOTE_ADDR'])) {
+										$where = " studentdtr_ip='".trim($_SERVER['REMOTE_ADDR'])."' and ";
+									}
+
+									$sql = "select * from tbl_studentdtr where $where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $prevtotal";
+
+									log_notice(array('$sql'=>$sql));
+
+									if(!($result = $appdb->query($sql))) {
+										json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+										die;
+									}
+
+									//pre(array('$result'=>$result));
+
+									if(!empty($result['rows'][0]['studentdtr_id'])) {
+
+										$previous = array();
+
+										$first = true;
+
+										foreach($result['rows'] as $k=>$student) {
+
+											if($first) {
+
+												if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
+
+													$fullname = '';
+
+													if(!empty($profile['studentprofile_firstname'])) {
+														$fullname .= trim($profile['studentprofile_firstname']).' ';
+													}
+
+													if(!empty($profile['studentprofile_middlename'])) {
+														$fullname .= trim($profile['studentprofile_middlename']).' ';
+													}
+
+													if(!empty($profile['studentprofile_lastname'])) {
+														$fullname .= trim($profile['studentprofile_lastname']).' ';
+													}
+
+													$retval['recordid'] = $student['studentdtr_id'];
+													$retval['type'] = $type = $student['studentdtr_type'];
+													$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$profile['studentprofile_id'];
+													//$retval['studentinfo'] = $vars['studentinfo'];
+													//$retval['currentTimeStamp'] = $post['unixtime'];
+													//$retval['currentTime'] = pgDateUnix($post['unixtime']);
+													//$retval['startTimeStamp'] = $startTimeStamp;
+													//$retval['startTime'] = pgDateUnix($startTimeStamp);
+													//$retval['endTimeStamp'] = $endTimeStamp;
+													//$retval['endTime'] = pgDateUnix($endTimeStamp);
+													$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
+													$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
+													//$retval['studentdtr'] = $vars['studentdtr'];
+
+													if($type=='IN') {
+														$retval['remarks'] = getOption('$SETTINGS_TIMEINMESSAGE','Welcome to School! Have a nice day!');
+
+														if(!empty($student['studentdtr_late'])) {
+															$retval['remarks'] = getOption('$SETTINGS_LATEMESSAGE','Welcome to School! Have a nice day! Please be early next time!');
+														}
+													} else {
+														$retval['remarks'] = getOption('$SETTINGS_TIMEOUTMESSAGE','Goodbye! See you later!');
+													}
+
+													$retval['fullname'] = strtoupper(trim($fullname));
+
+													$retval['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
+													$retval['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
+
+												}
+
+												$first = false;
+												continue;
+											}
+
+											$tmp = array();
+
+											if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
+
+												$fullname = '';
+
+												if(!empty($profile['studentprofile_firstname'])) {
+													$fullname .= trim($profile['studentprofile_firstname']).' ';
+												}
+
+												if(!empty($profile['studentprofile_middlename'])) {
+													$fullname .= trim($profile['studentprofile_middlename']).' ';
+												}
+
+												if(!empty($profile['studentprofile_lastname'])) {
+													$fullname .= trim($profile['studentprofile_lastname']).' ';
+												}
+
+												$tmp['dtrid'] = $student['studentdtr_id'];
+												$tmp['studentid'] = $profile['studentprofile_id'];
+												$tmp['fullname'] = strtoupper(trim($fullname));
+												$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
+												$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
+												$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
+												$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel" class="bold">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
+
+												$previous[] = $tmp;
+											}
+										}
+
+									}
+
+									if(!empty($previous)&&is_array($previous)) {
+										$retval['previous'] = $previous;
+									} else {
+										$retval['previous'] = array();
+									}
+
+									if(empty($settings_globaldisplay)&&!empty($_SERVER['REMOTE_ADDR'])) {
+										$memcached->set('DISPLAY_'.$_SERVER['REMOTE_ADDR'], json_encode($retval));
+									} else {
+										$memcached->set('DISPLAY_GLOBAL', json_encode($retval));
+									}
+
+									$retval = $toretval;
+
+////////////////////////////////////////
+								}
+
+							} else {
+
+								if(!($result = $appdb->query("select count(studentprofile_id) as db from tbl_studentprofile where studentprofile_schoolyear='$current_schoolyear'"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+
+								if(!empty($result['rows'][0]['db'])) {
+									$studentprofile_db = $result['rows'][0]['db'];
+								}
+
+								if(!($result = $appdb->query("select count(studentdtr_id) as in from tbl_studentdtr where studentdtr_type='IN' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+
+								if(!empty($result['rows'][0]['in'])) {
+									$studentprofile_in = $result['rows'][0]['in'];
+								}
+
+								if(!($result = $appdb->query("select count(studentdtr_id) as out from tbl_studentdtr where studentdtr_type='OUT' and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+
+								if(!empty($result['rows'][0]['out'])) {
+									$studentprofile_out = $result['rows'][0]['out'];
+								}
+
+								if(!($result = $appdb->query("select count(studentdtr_id) as late from tbl_studentdtr where studentdtr_type='IN'and studentdtr_late>0  and studentdtr_unixtime >= $from and studentdtr_unixtime <= $to"))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+
+								if(!empty($result['rows'][0]['late'])) {
+									$studentprofile_late = $result['rows'][0]['late'];
+								}
+
+								$retval = array();
+								$retval['db'] = intval($studentprofile_db);
+								$retval['in'] = intval($studentprofile_in);
+								$retval['out'] = intval($studentprofile_out);
+								$retval['late'] = intval($studentprofile_late);
+								$retval['type'] = $type;
+								$retval['image'] = '/studentphoto.php?size='.$post['imagesize'].'&pid='.$vars['studentinfo']['studentprofile_id'];
+								$retval['studentinfo'] = $vars['studentinfo'];
+								$retval['currentTimeStamp'] = $post['unixtime'];
+								$retval['currentTime'] = pgDateUnix($post['unixtime']);
+								$retval['startTimeStamp'] = $startTimeStamp;
+								$retval['startTime'] = pgDateUnix($startTimeStamp);
+								$retval['endTimeStamp'] = $endTimeStamp;
+								$retval['endTime'] = pgDateUnix($endTimeStamp);
+								$retval['showadsinterval'] = intval(getOption('$SETTINGS_SHOWADSINTERVAL',30)) * 60 * 1000;
+								$retval['showadsintervalenable'] = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
+								//$retval['studentdtr'] = $vars['studentdtr'];
+
+								if(!empty($vars['alarm'])) {
+									$retval['alarm'] = 1;
+								}
+
+								if($type=='IN') {
+									$retval['remarks'] = getOption('$SETTINGS_TIMEINMESSAGE','Welcome to School! Have a nice day!');
+
+									if(!empty($late)) {
+										$retval['remarks'] = getOption('$SETTINGS_LATEMESSAGE','Welcome to School! Have a nice day! Please be early next time!');
+									}
+								} else {
+									$retval['remarks'] = getOption('$SETTINGS_TIMEOUTMESSAGE','Goodbye! See you later!');
+								}
+
+								$fullname = '';
+
+								if(!empty($vars['studentinfo']['studentprofile_firstname'])) {
+									$fullname .= trim($vars['studentinfo']['studentprofile_firstname']).' ';
+								}
+
+								if(!empty($vars['studentinfo']['studentprofile_middlename'])) {
+									$fullname .= trim($vars['studentinfo']['studentprofile_middlename']).' ';
+								}
+
+								if(!empty($vars['studentinfo']['studentprofile_lastname'])) {
+									$fullname .= trim($vars['studentinfo']['studentprofile_lastname']).' ';
+								}
+
+								$retval['fullname'] = strtoupper(trim($fullname));
+
+								$retval['yearlevel'] = !empty($vars['studentinfo']['studentprofile_yearlevel']) ? getGroupRefName($vars['studentinfo']['studentprofile_yearlevel']) : 'Year Level';
+								$retval['section'] = !empty($vars['studentinfo']['studentprofile_section']) ? getGroupRefName($vars['studentinfo']['studentprofile_section']) : 'Section';
+
+								// get previous time-in/time-out for this day
+
+								// studentdtr_unixtime >= $from and studentdtr_unixtime <= $to
+
+								//if(!($result = $appdb->query("select * from tbl_studentdtr order by studentdtr_id desc limit 10"))) {
+
+								$prevtotal = 10;
+
+								if(!empty($vars['post']['total'])&&is_numeric($vars['post']['total'])&&intval($vars['post']['total'])>0) {
+									$prevtotal = intval($vars['post']['total']) + 1;
+								}
+
+								$where = '';
+
+								if(empty($settings_globaldisplay)&&!empty($_SERVER['REMOTE_ADDR'])) {
+									$where = " studentdtr_ip='".trim($_SERVER['REMOTE_ADDR'])."' and ";
+								}
+
+								$sql = "select * from tbl_studentdtr where $where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $prevtotal";
+
+								//log_notice(array('$sql'=>$sql));
+
+								if(!($result = $appdb->query($sql))) {
+									json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+									die;
+								}
+
+								//pre(array('$result'=>$result));
+
+								if(!empty($result['rows'][0]['studentdtr_id'])) {
+
+									$previous = array();
+
+									$first = true;
+
+									foreach($result['rows'] as $k=>$student) {
+
+										if($first) {
+											$first = false;
+											continue;
+										}
+
+										$tmp = array();
+
+										if(!empty(($profile = getStudentProfile($student['studentdtr_studentid'])))) {
+
+											$fullname = '';
+
+											if(!empty($profile['studentprofile_firstname'])) {
+												$fullname .= trim($profile['studentprofile_firstname']).' ';
+											}
+
+											if(!empty($profile['studentprofile_middlename'])) {
+												$fullname .= trim($profile['studentprofile_middlename']).' ';
+											}
+
+											if(!empty($profile['studentprofile_lastname'])) {
+												$fullname .= trim($profile['studentprofile_lastname']).' ';
+											}
+
+											$tmp['dtrid'] = $student['studentdtr_id'];
+											$tmp['studentid'] = $profile['studentprofile_id'];
+											$tmp['fullname'] = strtoupper(trim($fullname));
+											$tmp['image'] = '/studentphoto.php?size=150&pid='.$profile['studentprofile_id'];
+											$tmp['yearlevel'] = !empty($profile['studentprofile_yearlevel']) ? getGroupRefName($profile['studentprofile_yearlevel']) : 'Year Level';
+											$tmp['section'] = !empty($profile['studentprofile_section']) ? getGroupRefName($profile['studentprofile_section']) : 'Section';
+											$tmp['html'] = '<img src="'.$tmp['image'].'" /><div id="studentprevlabel" class="bold">'.$tmp['fullname'].'</div><div id="studentprevlabel">'.$tmp['yearlevel'].' - '.$tmp['section'].'</div><br class="br" />';
+
+											$previous[] = $tmp;
+										}
+									}
+
+								}
+
+								$retval['previous'] = $previous;
+
+							}
 							//pre(array('$retval'=>$retval));
 
 							header_json();
@@ -851,9 +1217,18 @@ if(!class_exists('APP_Tap')) {
 		} // function tapped($vars) {
 
 		function refresh($vars) {
-			global $appdb, $appaccess;
+			global $appdb, $appaccess, $memcached;
 
 			//pre(array('$vars'=>$vars));
+
+			if(!empty($vars['post'])) {
+			} else {
+				header_json();
+				json_encode_return(array());
+				die;
+			}
+
+			log_notice(array('$vars'=>$vars));
 
 			$currentunixtime = intval(getDbUnixDate());
 
@@ -875,6 +1250,8 @@ if(!class_exists('APP_Tap')) {
 			$studentprofile_in = 0;
 			$studentprofile_out = 0;
 			$studentprofile_late = 0;
+
+			$settings_globaldisplay = getOption('$SETTINGS_GLOBALDISPLAY',false);
 
 			//$studentprofile_schoolyear = getCurrentSchoolYear();
 
@@ -928,7 +1305,17 @@ if(!class_exists('APP_Tap')) {
 				$prevtotal = intval($vars['post']['total']) + 1;
 			}
 
-			if(!($result = $appdb->query("select * from tbl_studentdtr where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $prevtotal"))) {
+			$where = '';
+
+			if(empty($settings_globaldisplay)&&!empty($_SERVER['REMOTE_ADDR'])) {
+				$where = " studentdtr_ip='".trim($_SERVER['REMOTE_ADDR'])."' and ";
+			}
+
+			$sql = "select * from tbl_studentdtr where $where studentdtr_unixtime >= $from and studentdtr_unixtime <= $to order by studentdtr_id desc limit $prevtotal";
+
+			//log_notice(array('$sql'=>$sql));
+
+			if(!($result = $appdb->query($sql))) {
 				json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
 				die;
 			}
@@ -1036,6 +1423,14 @@ if(!class_exists('APP_Tap')) {
 
 			//pre(array('$retval'=>$retval));
 
+			if(!empty($memcached)) {
+				if(empty($settings_globaldisplay)&&!empty($_SERVER['REMOTE_ADDR'])) {
+					$memcached->set('DISPLAY_'.$_SERVER['REMOTE_ADDR'], json_encode($retval));
+				} else {
+					$memcached->set('DISPLAY_GLOBAL', json_encode($retval));
+				}
+			}
+
 			header_json();
 			json_encode_return($retval);
 			die;
@@ -1060,7 +1455,7 @@ if(!class_exists('APP_Tap')) {
 		function render($vars) {
 			global $apptemplate, $appform, $current_page;
 
-			$this->check_url();
+			//$this->check_url();
 
 			$apptemplate->header($this->desc.' | '.getOption('$APP_NAME',APP_NAME),'tapheader');
 

@@ -59,6 +59,61 @@ function getContactIDByNumber($number=false) {
 	return false;
 }
 
+function getContactFullNameByNumber($number=false) {
+	global $appdb;
+
+	if(!empty($number)) {
+	} else return false;
+
+	$res = parseMobileNo($number);
+
+	if($res) {
+
+		$number = $res[2].$res[3];
+
+		//$number = $parsedMobileNo['network'] . $parsedMobileNo['number'];
+
+		//$sql = "select contact_id from tbl_contact where contact_number like '%".$number."'";
+
+		$sql = "select studentprofile_id,studentprofile_firstname,studentprofile_middlename,studentprofile_lastname from tbl_studentprofile where studentprofile_guardianmobileno like '%".$number."'";
+
+	} else {
+
+		//$sql = "select contact_id from tbl_contact where contact_number='".$number."'";
+
+		$sql = "select studentprofile_id,studentprofile_firstname,studentprofile_middlename,studentprofile_lastname from tbl_studentprofile where studentprofile_guardianmobileno='".$number."'";
+
+	}
+
+	//print_r(array('$sql'=>$sql));
+
+	if(!($result = $appdb->query($sql))) {
+		return false;
+	}
+
+	if(!empty($result['rows'][0]['studentprofile_id'])) {
+
+		$fullname = '';
+
+		if(!empty($result['rows'][0]['studentprofile_firstname'])) {
+			$fullname .= trim($result['rows'][0]['studentprofile_firstname']).' ';
+		}
+
+		if(!empty($result['rows'][0]['studentprofile_middlename'])) {
+			$fullname .= trim($result['rows'][0]['studentprofile_middlename']).' ';
+		}
+
+		if(!empty($result['rows'][0]['studentprofile_lastname'])) {
+			$fullname .= trim($result['rows'][0]['studentprofile_lastname']).' ';
+		}
+
+		if(!empty($fullname)) {
+			return $fullname;
+		}
+	}
+	return false;
+}
+
 function getContactByNumber($number=false) {
 	global $appdb;
 
@@ -721,10 +776,16 @@ function getNetworkName($number=false) {
 	return 'Unknown';
 }
 
-function getAllSims($mode=0) {
+function getAllSims($mode=0,$onlineOnly=false) {
 	global $appdb;
 
-	if(!($result = $appdb->query("select * from tbl_sim where sim_disabled=0 and sim_deleted=0"))) {
+	if(!empty($onlineOnly)) {
+		$sql = "select * from tbl_sim where sim_disabled=0 and sim_deleted=0 and sim_online=1";
+	} else {
+		$sql = "select * from tbl_sim where sim_disabled=0 and sim_deleted=0";
+	}
+
+	if(!($result = $appdb->query($sql))) {
 		return false;
 	}
 
@@ -795,6 +856,13 @@ function getAllSims($mode=0) {
 			}
 
 			return $sims;
+		} else
+		if($mode==9) {
+			foreach($result['rows'] as $v) {
+				$sims[] = $v['sim_number'];
+			}
+
+			return $sims;
 		}
 
 
@@ -802,6 +870,55 @@ function getAllSims($mode=0) {
 	}
 
 	return false;
+}
+
+function getGroupAssignedSim($groupid=false,$online=false) {
+	global $appdb, $getGroupAssignedSim_, $getGroupAssignedASim_, $getGroupAssignedOSim_;
+
+	if(!empty($getGroupAssignedASim_)) {
+	} else {
+		$getGroupAssignedASim_ = getAllSims(3,$online);
+
+		$getGroupAssignedOSim_ = array();
+
+		foreach($getGroupAssignedASim_ as $k=>$v) {
+			$getGroupAssignedOSim_[] = $k;
+		}
+	}
+
+	if(!empty($getGroupAssignedSim_)) {
+	} else {
+		if(!($result = $appdb->query("select * from tbl_groupref where groupref_type=2 and groupref_simassignment!=''"))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['groupref_id'])) {
+			$getGroupAssignedSim_ = array();
+
+			foreach($result['rows'] as $k=>$v) {
+				$sa = explode(',',$v['groupref_simassignment']);
+				$gs = array();
+
+				foreach($sa as $g=>$h) {
+					if(!empty($getGroupAssignedASim_[$h])) {
+						$gs[$h] = $getGroupAssignedASim_[$h];
+					}
+				}
+
+				if(!empty($gs)) {
+					$getGroupAssignedSim_[$v['groupref_id']] = $gs;
+				}
+			}
+		}
+	}
+
+	//print_r(array('$getGroupAssignedASim_'=>$getGroupAssignedASim_,'$getGroupAssignedSim_'=>$getGroupAssignedSim_,'$getGroupAssignedOSim_'=>$getGroupAssignedOSim_));
+
+	if(!empty($groupid)&&is_numeric($groupid)&&intval($groupid)>0&&!empty($getGroupAssignedSim_[$groupid])) {
+		return $getGroupAssignedSim_[$groupid];
+	}
+
+	return $getGroupAssignedASim_;
 }
 
 function getAllSimsName() {
@@ -1288,7 +1405,111 @@ function getSectionEndTime($id=false) {
 	return false;
 }
 
+function getSectionMaxInOut($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_maxinout'])) {
+		return $result['rows'][0]['groupref_maxinout'];
+	}
+
+	return false;
+}
+
+function getSectionBreakStartTime($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_breakstarttime'])) {
+		return $result['rows'][0]['groupref_breakstarttime'];
+	}
+
+	return false;
+}
+
+function getSectionBreakEndTime($id=false) {
+	global $appdb;
+
+	if(!empty($id)&&is_numeric($id)&&$id>0) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_groupref where groupref_id=$id";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['groupref_breakendtime'])) {
+		return $result['rows'][0]['groupref_breakendtime'];
+	}
+
+	return false;
+}
+
 function getGuardianMobileNo($studentId) {
+	global $appdb, $tblStudentProfile_;
+
+	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
+	} else {
+		return false;
+	}
+
+	if(!empty($tblStudentProfile_)) {
+	} else {
+		$tblStudentProfile_ = array();
+	}
+
+	if(!empty($tblStudentProfile_[$studentId])) {
+	} else {
+		$sql = "select * from tbl_studentprofile where studentprofile_id=$studentId";
+
+		if(!($result=$appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['studentprofile_id'])) {
+			$tblStudentProfile_[$studentId] = $result['rows'][0];
+		}
+	}
+
+	//pre($result);
+
+	if(!empty($tblStudentProfile_[$studentId])&&!empty($tblStudentProfile_[$studentId]['studentprofile_guardianmobileno'])) {
+		return $tblStudentProfile_[$studentId]['studentprofile_guardianmobileno'];
+	}
+
+	return false;
+}
+
+function getGuardianMobileNo2($studentId) {
 	global $appdb;
 
 	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
@@ -1312,6 +1533,59 @@ function getGuardianMobileNo($studentId) {
 }
 
 function getStudentFullName($studentId) {
+	global $appdb, $tblStudentProfile_;
+
+	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
+	} else {
+		return false;
+	}
+
+	if(!empty($tblStudentProfile_)) {
+	} else {
+		$tblStudentProfile_ = array();
+	}
+
+	if(!empty($tblStudentProfile_[$studentId])) {
+	} else {
+		$sql = "select * from tbl_studentprofile where studentprofile_id=$studentId";
+
+		if(!($result=$appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['studentprofile_id'])) {
+			$tblStudentProfile_[$studentId] = $result['rows'][0];
+		}
+	}
+	//pre($result);
+
+	if(!empty($tblStudentProfile_[$studentId])) {
+
+		$sp = $tblStudentProfile_[$studentId];
+
+		$fullname = '';
+
+		if(!empty($sp['studentprofile_firstname'])) {
+			$fullname .= trim($sp['studentprofile_firstname']);
+		}
+
+		if(!empty($sp['studentprofile_middlename'])) {
+			$fullname .= ' '.trim($sp['studentprofile_middlename']);
+		}
+
+		if(!empty($sp['studentprofile_lastname'])) {
+			$fullname .= ' '.trim($sp['studentprofile_lastname']);
+		}
+
+		if(!empty($fullname)) {
+			return $fullname;
+		}
+	}
+
+	return false;
+}
+
+function getStudentFullName2($studentId) {
 	global $appdb;
 
 	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
@@ -1354,6 +1628,58 @@ function getStudentFullName($studentId) {
 }
 
 function getStudentProfile($studentId) {
+	global $appdb, $tblStudentProfile_;
+
+	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
+	} else {
+		return false;
+	}
+
+	if(!empty($tblStudentProfile_)) {
+	} else {
+		$tblStudentProfile_ = array();
+	}
+
+	if(!empty($tblStudentProfile_[$studentId])) {
+	} else {
+		$sql = "select * from tbl_studentprofile where studentprofile_id=$studentId";
+
+		if(!($result=$appdb->query($sql))) {
+			return false;
+		}
+
+		if(!empty($result['rows'][0]['studentprofile_id'])) {
+			$tblStudentProfile_[$studentId] = $result['rows'][0];
+		}
+	}
+
+	//pre($result);
+
+	if(!empty($tblStudentProfile_[$studentId])) {
+		return $tblStudentProfile_[$studentId];
+	}
+
+	return false;
+}
+
+function getStudentYearLevelID($studentId) {
+	global $appdb, $tblStudentProfile_;
+
+	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
+	} else {
+		return false;
+	}
+
+	$profile = getStudentProfile($studentId);
+
+	if(!empty($profile['studentprofile_yearlevel'])) {
+		return $profile['studentprofile_yearlevel'];
+	}
+
+	return false;
+}
+
+function getStudentProfile2($studentId) {
 	global $appdb;
 
 	if(!empty($studentId)&&is_numeric($studentId)&&$studentId>0) {
@@ -1371,6 +1697,29 @@ function getStudentProfile($studentId) {
 
 	if(!empty($result['rows'][0]['studentprofile_id'])) {
 		return $result['rows'][0];
+	}
+
+	return false;
+}
+
+function getStudentProfileByNumber($studentNumber) {
+	global $appdb;
+
+	if(!empty($studentNumber)) {
+	} else {
+		return false;
+	}
+
+	$sql = "select * from tbl_studentprofile where studentprofile_number='".$studentNumber."'";
+
+	if(!($result=$appdb->query($sql))) {
+		return false;
+	}
+
+	//pre($result);
+
+	if(!empty($result['rows'][0]['studentprofile_id'])) {
+		return getStudentProfile($result['rows'][0]['studentprofile_id']);
 	}
 
 	return false;
@@ -1689,7 +2038,11 @@ function getDbDate($mode=0,$f1='m-d-Y',$f2='H:i') {
 }
 
 function getDbUnixDate() {
-	global $appdb;
+	global $appdb, $_getDbUnixDate;
+
+	if(!empty($_getDbUnixDate)) {
+		return $_getDbUnixDate;
+	}
 
 	if(!($result=$appdb->query("select extract(epoch from now()) as unixstamp"))) {
 		return false;
@@ -1698,14 +2051,15 @@ function getDbUnixDate() {
 	// m-d-Y H:i
 
 	if(!empty($result['rows'][0]['unixstamp'])) {
-		return $result['rows'][0]['unixstamp'];
+		$_getDbUnixDate = $result['rows'][0]['unixstamp'];
+		return $_getDbUnixDate;
 	}
 
 	//pre(array('$result'=>$result));
 	return false;
 }
 
-function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0,$latenoti=0,$absentnoti=0,$thecontactid=0) {
+function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$status=1,$delay=0,$eload=0,$push=0,$priority=0,$latenoti=0,$absentnoti=0,$thecontactid=0,$fb=false) {
 	global $appdb;
 
 	if(!empty($simnumber)) {
@@ -1737,12 +2091,34 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 
 	$contactid = getContactIDByNumber($contactnumber);
 
+	$contactname = getContactFullNameByNumber($contactnumber);
+
 	if(!$contactid) {
 		$contactid = 0;
 	}
 
 	if(!empty($thecontactid)) {
 		$contactid = $thecontactid;
+
+		$yearlevel = getStudentYearLevelID($thecontactid);
+
+		if(!empty($yearlevel)) {
+			$gas = getGroupAssignedSim($yearlevel);
+		}
+
+		if(!empty($gas)) {
+			shuffle($gas);
+
+			//log_notice(array('$contactid'=>$contactid,'$yearlevel'=>$yearlevel,'$gas'=>$gas));
+
+			foreach($gas as $k=>$v) {
+				$simnumber = $v['sim_number'];
+				break;
+			}
+
+			log_notice(array('$contactid'=>$contactid,'$yearlevel'=>$yearlevel,'$gas'=>$gas,'$simnumber'=>$simnumber));
+
+		}
 	}
 
 	if(strlen($message)>160) {
@@ -1787,6 +2163,16 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 			$content['smsoutbox_absentnoti'] = 1;
 		}
 
+		if(!empty($contactname)) {
+			$content['smsoutbox_contactname'] = $contactname;
+		}
+
+		if(!empty($fb)) {
+			$content['smsoutbox_fbid'] = $fb;
+			$content['smsoutbox_sendfb'] = 1;
+			$content['smsoutbox_sendfbstatus'] = 1;
+		}
+
 	} else {
 
 		$content = array();
@@ -1821,6 +2207,16 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 			$content['smsoutbox_absentnoti'] = 1;
 		}
 
+		if(!empty($contactname)) {
+			$content['smsoutbox_contactname'] = $contactname;
+		}
+
+		if(!empty($fb)) {
+			$content['smsoutbox_fbid'] = $fb;
+			$content['smsoutbox_sendfb'] = 1;
+			$content['smsoutbox_sendfbstatus'] = 1;
+		}
+
 	}
 
 	if(!($result = $appdb->insert("tbl_smsoutbox",$content,"smsoutbox_id"))) {
@@ -1834,12 +2230,16 @@ function sendToOutBox($contactnumber=false,$simnumber=false,$message=false,$stat
 	return false;
 }
 
-function sendToOutBoxPush($contactnumber=false,$simnumber=false,$message=false,$push=0) {
-	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push);
+function sendToOutBoxPush($contactnumber=false,$simnumber=false,$message=false,$push=0,$contactid=0) {
+	return sendToOutBox($contactnumber,$simnumber,$message,1,0,0,$push,0,0,0,$contactid);
 }
 
-function sendToOutBoxPriority($contactnumber=false,$simnumber=false,$message=false,$push=0,$priority=1,$status=1,$latenoti=0,$absentnoti=0,$contactid=0) {
-	return sendToOutBox($contactnumber,$simnumber,$message,$status,0,0,$push,$priority,$latenoti,$absentnoti,$contactid);
+function sendToOutBoxPushAndFb($contactnumber=false,$simnumber=false,$message=false,$push=0,$status=4,$contactid=0,$fb=false) {
+	return sendToOutBox($contactnumber,$simnumber,$message,$status,0,0,$push,0,0,0,$contactid,$fb);
+}
+
+function sendToOutBoxPriority($contactnumber=false,$simnumber=false,$message=false,$push=0,$priority=1,$status=1,$latenoti=0,$absentnoti=0,$contactid=0,$fb=false) {
+	return sendToOutBox($contactnumber,$simnumber,$message,$status,0,0,$push,$priority,$latenoti,$absentnoti,$contactid,$fb);
 }
 
 function wLog($text='',$module='') {

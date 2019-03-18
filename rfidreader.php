@@ -60,7 +60,7 @@ class APP_SMS extends SMS {
 
 		$validParams = 'raw ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke time 5';
 
-		if(!($this->deviceSet($device)&&$this->deviceOpen('rb')&&$this->setBaudRate($baudrate,$validParams))) {
+		if(!($this->deviceSet($device)&&$this->deviceOpen('rb')&&$this->setBaudRate($baudrate,$validParams,true))) {
 			return false;
 		}
 
@@ -83,13 +83,18 @@ function RFIDRead($dev=false,$mobileNo=false,$ip='') {
 	$sms->mobileNo = $mobileNo;
 	$sms->ip = $ip;
 
-	if(!$sms->deviceInit($dev)) {
+	$settings_uhfrfidreaderbaudrate = getOption('$SETTINGS_UHFRFIDREADERBAUDRATE',115200);
+
+	if(!$sms->deviceInit($dev, $settings_uhfrfidreaderbaudrate)) {
 		$em = 'Error initializing device!';
 		atLog($em,'retrievesms',$dev,$mobileNo,$ip,logdt());
 		trigger_error("$dev $mobileNo $ip $em",E_USER_NOTICE);
-		setSetting('STATUS_SIMERROR','1');
+		setSetting('STATUS_RFIDPORTERROR','1');
+		echo 'STATUS_RFIDPORTERROR';
 		return false;
 	}
+
+	setSetting('STATUS_RFIDPORTERROR','0');
 
 	echo 'RFIDRead!';
 
@@ -99,8 +104,15 @@ function RFIDRead($dev=false,$mobileNo=false,$ip='') {
 
 	$settings_uhfrfidreadinterval = getOption('$SETTINGS_UHFRFIDREADINTERVAL',60);
 
+	$settings_usev2rfidreader = getOption('$SETTINGS_USERV2RFIDREADER',false);
+
 	$sms->showbuf = true;
-	$sms->readRFIDPort('hello',$settings_uhfrfidreadinterval,true);
+
+	if(!empty($settings_usev2rfidreader)) {
+		$sms->readRFIDPort2('hello',$settings_uhfrfidreadinterval,true);
+	} else {
+		$sms->readRFIDPort('hello',$settings_uhfrfidreadinterval,true);
+	}
 
 	$history = $sms->getHistory();
 

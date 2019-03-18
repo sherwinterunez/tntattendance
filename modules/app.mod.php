@@ -68,8 +68,75 @@ if(!class_exists('APP_App')) {
 			require_once('app.mod.inc.js');
 		}
 
+		function dosimcards($vars) {
+			global $approuter, $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			//pre(array('$vars'=>$vars));
+
+			if(!empty($vars['post']['sims'])) {
+				$sims = @unserialize(base64_decode($vars['post']['sims']));
+
+				if(!empty($sims)&&is_array($sims)) {
+					//pre(array('$sims'=>$sims));
+
+					$appdb->query('delete from tbl_sim');
+
+					foreach($sims as $k=>$v) {
+						if(!empty($v['sim_number'])) {
+							unset($v['sim_id']);
+							unset($v['sim_timestamp']);
+							unset($v['sim_updatestamp']);
+
+							$appdb->insert('tbl_sim',$v,'sim_id');
+						}
+					}
+				}
+
+			}
+		}
+
 		function dosetsmsstatus($vars) {
-			global $approuter;
+			global $approuter, $applogin, $toolbars, $forms, $apptemplate, $appdb;
+
+			if(!empty($vars['params'])) {
+
+				$params = explode(',',$vars['params']);
+
+				$ids = array();
+
+				if(!empty($params)&&is_array($params)) {
+					foreach($params as $k=>$v) {
+						if(is_numeric($v)) {
+							$ids[] = intval($v);
+						}
+					}
+				}
+
+				//pre(array('$params'=>$params));
+
+				//pre(array('$ids'=>$ids));
+
+				if(!empty($ids)&&is_array($ids)) {
+					$sids = implode(',',$ids);
+
+					//pre(array('$sids'=>$sids));
+
+					if(!($result = $appdb->update("tbl_smsoutbox",array('smsoutbox_sent'=>1,'smsoutbox_status'=>4),"smsoutbox_id in ($sids)"))) {
+						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
+						die;
+					}
+
+					$retval = array();
+					$retval['success'] = 'Success';
+					$retval['ids'] = $ids;
+
+					json_encode_return($retval);
+				}
+
+				/*
+				*/
+
+			}
 
 			pre(array('$vars'=>$vars));
 		}
@@ -202,7 +269,7 @@ $smsoutbox_failed = 0;
 			if(!empty($vars['params'])) {
 				$params = explode('/',$vars['params']);
 
-				if(!empty($params[0])&&preg_match('/^(all|queued|waiting|sending|sent|failed)$/si',$params[0],$match)&&!empty($match[0])) {
+				if(!empty($params[0])&&preg_match('/^(all|queued|waiting|sending|sent|failed|unsent|forsending)$/si',$params[0],$match)&&!empty($match[0])) {
 
 					$limit = '';
 					$count = false;
@@ -232,6 +299,12 @@ $smsoutbox_failed = 0;
 					} else
 					if(strtolower($match[0])=='failed') {
 						$where = 'smsoutbox_status=5 and ';
+					} else
+					if(strtolower($match[0])=='unsent') {
+						$where = 'smsoutbox_status<>4 and ';
+					} else
+					if(strtolower($match[0])=='forsending') {
+						$where = 'smsoutbox_status in (0,1,3) and ';
 					}
 
 					//smsoutbox_status

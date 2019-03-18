@@ -82,6 +82,15 @@ if(!class_exists('APP_app_newmessage')) {
 
 				$push = 0;
 
+				//MESSENGER - PAU
+				$settings_sendmessenger  = getOption('$SETTINGS_SENDMESSENGER',false);
+				$settings_messengertoken = getOption('$SETTINGS_MESSENGERTOKEN',false);
+
+				if(!empty($settings_messengertoken)) {
+				} else {
+					$settings_sendmessenger = false;
+				}
+
 				if(!empty($post['method'])&&($post['method']=='newmessageedit')) {
 					$readonly = false;
 				}
@@ -97,8 +106,12 @@ if(!class_exists('APP_app_newmessage')) {
 					}
 
 					$contacts = array();
+					$fbmessenger = array();
 
 					if(!empty($post['sendto'])) {
+						$sendto = str_replace(';',',',$sendto);
+						$sendto = str_replace('|',',',$sendto);
+						$sendto = str_replace(' ',',',$sendto);
 						$sendto = explode(',',$post['sendto']);
 						if(!empty($sendto)&&is_array($sendto)) {
 							foreach($sendto as $k=>$v) {
@@ -114,8 +127,19 @@ if(!class_exists('APP_app_newmessage')) {
 						}
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
 							foreach($result['rows'] as $k=>$v) {
-								if(!empty($v['studentprofile_guardianmobileno'])) {
-									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+
+								if($settings_sendmessenger&&!empty($v['studentprofile_messengerid'])&&IsInternet()) {
+									$fbmessenger[$v['studentprofile_id']] = $v['studentprofile_messengerid'];
+								}
+
+								if(!empty($post['sendopt'])&&$post['sendopt']==1) {
+									if(!empty($v['studentprofile_guardianmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_guardianmobileno'];
+									}
+								} else {
+									if(!empty($v['studentprofile_studentmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_studentmobileno'];
+									}
 								}
 							}
 						}
@@ -128,8 +152,19 @@ if(!class_exists('APP_app_newmessage')) {
 						}
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
 							foreach($result['rows'] as $k=>$v) {
-								if(!empty($v['studentprofile_guardianmobileno'])) {
-									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+
+								if($settings_sendmessenger&&!empty($v['studentprofile_messengerid'])&&IsInternet()) {
+									$fbmessenger[$v['studentprofile_id']] = $v['studentprofile_messengerid'];
+								}
+
+								if(!empty($post['sendopt'])&&$post['sendopt']==1) {
+									if(!empty($v['studentprofile_guardianmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_guardianmobileno'];
+									}
+								} else {
+									if(!empty($v['studentprofile_studentmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_studentmobileno'];
+									}
 								}
 							}
 						}
@@ -142,14 +177,30 @@ if(!class_exists('APP_app_newmessage')) {
 						}
 						if(!empty($result['rows'][0]['studentprofile_id'])) {
 							foreach($result['rows'] as $k=>$v) {
-								if(!empty($v['studentprofile_guardianmobileno'])) {
-									$contacts[$v['studentprofile_guardianmobileno']] = $v['studentprofile_guardianmobileno'];
+
+								if($settings_sendmessenger&&!empty($v['studentprofile_messengerid'])&&IsInternet()) {
+									$fbmessenger[$v['studentprofile_id']] = $v['studentprofile_messengerid'];
+								}
+
+								if(!empty($post['sendopt'])&&$post['sendopt']==1) {
+									if(!empty($v['studentprofile_guardianmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_guardianmobileno'];
+									}
+								} else {
+									if(!empty($v['studentprofile_studentmobileno'])) {
+										$contacts[$v['studentprofile_id']] = $v['studentprofile_studentmobileno'];
+									}
 								}
 							}
 						}
 					}
 
 					$retval['contacts'] = $contacts;
+					$retval['fbmessenger'] = $fbmessenger;
+
+					log_notice(array('$retval'=>$retval));
+					log_notice(array('$contacts'=>$contacts));
+					log_notice(array('$fbmessenger'=>$fbmessenger));
 
 					/*if(!($result = $appdb->query("select * from tbl_studentprofile where upload_studentprofileid=0 and upload_sid='".$content['upload_sid']."' and upload_name='".$post['itemId']."'"))) {
 						json_encode_return(array('error_code'=>123,'error_message'=>'Error in SQL execution.<br />'.$appdb->lasterror,'$appdb->lasterror'=>$appdb->lasterror,'$appdb->queries'=>$appdb->queries));
@@ -163,25 +214,40 @@ if(!class_exists('APP_app_newmessage')) {
 
 						if(!empty($asim)&&is_array($asim)) {
 
-							foreach($contacts as $mobileno) {
+							foreach($contacts as $sid=>$mobileno) {
 								shuffle($asim);
 
 								foreach($asim as $m=>$n) {
 									//pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$sms'=>$post['sms']));
 									//sendToOutBox($mobileno,$n['sim_number'],$post['sms']);
-									sendToOutBoxPush($mobileno,$n['sim_number'],$post['sms'],$push);
+									//sendToOutBoxPush($mobileno,$n['sim_number'],$post['sms'],$push);
+
+									if(!empty($fbmessenger[$sid])) {
+										sendToOutBoxPushAndFb($mobileno,$n['sim_number'],$post['sms'],$push,4,$sid,$fbmessenger[$sid]);
+									} else {
+										sendToOutBoxPush($mobileno,$n['sim_number'],$post['sms'],$push,$sid);
+									}
+
 									break;
 								}
 
 							}
 						} else {
-							foreach($contacts as $mobileno) {
+							foreach($contacts as $sid=>$mobileno) {
 								//shuffle($asim);
 
 								//foreach($asim as $m=>$n) {
 									//pre(array('$mobileno'=>$mobileno,'$m'=>$n['sim_number'],'$sms'=>$post['sms']));
 									//sendToOutBox($mobileno,$n['sim_number'],$post['sms']);
-									sendToOutBoxPush($mobileno,false,$post['sms'],$push);
+									//sendToOutBoxPush($mobileno,false,$post['sms'],$push);
+									//sendToOutBoxPushAndFb($mobileno,false,$post['sms'],$push);
+
+									if(!empty($fbmessenger[$sid])) {
+										sendToOutBoxPushAndFb($mobileno,$n['sim_number'],$post['sms'],$push,4,$sid,$fbmessenger[$sid]);
+									} else {
+										sendToOutBoxPush($mobileno,$n['sim_number'],$post['sms'],$push,$sid);
+									}
+
 									//break;
 								//}
 
@@ -228,10 +294,55 @@ if(!class_exists('APP_app_newmessage')) {
 				$block = array();
 
 				$block[] = array(
-					'type' => 'input',
+					'type' => 'label',
 					'label' => 'SEND TO',
+					'labelWidth' => 80,
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 0,
+				);
+
+				$block[] = array(
+					'type' => 'radio',
+					'label' => 'GUARDIANS',
+					'labelWidth' => 70,
+					'name' => 'newmessage_sendopt',
+					'value' => '1',
+					'position' => 'label-right',
+					'checked' => true,
+				);
+
+				$block[] = array(
+					'type' => 'newcolumn',
+					'offset' => 2,
+				);
+
+				$block[] = array(
+					'type' => 'radio',
+					'label' => 'STUDENTS',
 					'labelWidth' => 60,
-					'inputWidth' => 240,
+					'name' => 'newmessage_sendopt',
+					'value' => '2',
+					'position' => 'label-right',
+				);
+
+				$params['tbDetails'][] = array(
+					'type' => 'block',
+					'width' => 280,
+					'blockOffset' => 0,
+					'offsetTop' => 5,
+					'list' => $block,
+				);
+
+				$block = array();
+
+				$block[] = array(
+					'type' => 'input',
+					'label' => 'MOBILE NO',
+					'labelWidth' => 80,
+					'inputWidth' => 220,
 					'name' => 'newmessage_sendto',
 					'readonly' => false,
 					'inputMask' => array('alias'=>'Regex','regex'=>'[0-9\;\,\s]+','prefix'=>'','autoUnmask'=>true),
@@ -585,7 +696,7 @@ if(!class_exists('APP_app_newmessage')) {
 									$studentname .= ' '.$v['studentprofile_lastname'];
 								}
 
-								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_guardianmobileno'],$studentname));
+								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$v['studentprofile_id'],$v['studentprofile_guardianmobileno'],$v['studentprofile_studentmobileno'],$studentname));
 							}
 
 							$retval = array('rows'=>$rows);

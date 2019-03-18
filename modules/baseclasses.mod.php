@@ -218,6 +218,7 @@ if(!class_exists('APP_Base')) {
 			$approuter->addroute(array('^/'.$this->pathid.'/getstatus/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetstatus'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getinbox/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetinbox'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/getoutbox/(.+?)$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid.'&params=$1', 'callback'=>array($this,'dogetoutbox'))));
+			$approuter->addroute(array('^/'.$this->pathid.'/simcards/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'dosimcards'))));
 			$approuter->addroute(array('^/'.$this->pathid.'/(.+?)\/(.+?)\/(.+?)$' => array('id'=>$this->pathid,'param'=>'routerid='.$this->pathid.'&module=$1&action=$2&params=$3', 'callback'=>array($this,'doapi'))));
 
 			//$approuter->addroute(array('^/'.$this->pathid.'/rules/$' => array('id'=>$this->pathid,'param'=>'action='.$this->pathid, 'callback'=>array($this,'show_rules'))));
@@ -252,6 +253,7 @@ if(!class_exists('APP_Base')) {
 			global $apptemplate;
 
 			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/skyblue/dhtmlx.css');
+			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/web/dhtmlx-blue.css');
 			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/web/dhtmlx.css');
 			$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'css/styles.min.css');
 			//$apptemplate->add_css('styles',$apptemplate->templates_urlpath().'dhtmlx/skins/skyblue/dhtmlx.css');
@@ -387,6 +389,10 @@ if(!class_exists('APP_Base')) {
 			json_return_error(4,array('vars'=>$vars));
 
 		} // ajax*/
+
+		function dosimcards($vars) {
+			global $approuter;
+		}
 
 		function dosetsmsstatus($vars) {
 			global $approuter;

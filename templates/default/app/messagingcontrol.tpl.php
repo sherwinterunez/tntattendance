@@ -736,11 +736,11 @@ $access = $applogin->getAccess();
 					<?php if(in_array('sent',$access)) { ?>
 					{id: "sent", text: "Sent", icon: "pictures.png"},
 					<?php } ?>
-					<?php /* ?>
+					<?php  ?>
 					{type: "separator"},
 					<?php if(in_array('networks',$access)) { ?>
 					{id: "networks", text: "Networks", icon: "documents.png"},
-					<?php } */ ?>
+					<?php } ?>
 					<?php if(in_array('sim',$access)) { ?>
 					{id: "sim", text: "SIM", icon: "documents.png"},
 					<?php } /* ?>

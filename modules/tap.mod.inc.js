@@ -37,6 +37,8 @@ $settings_showadsinterval = intval($settings_showadsinterval) * 60 * 1000;
 
 $settings_showadsintervalenable = getOption('$SETTINGS_SHOWADSINTERVALENABLE',0);
 
+$settings_kioskname = getOption('$SETTINGS_KIOSKNAME','KIOSK');
+
 ?>
 /*
 *
@@ -58,6 +60,7 @@ var loginForm = [
 	{type: "hidden", value: "350", name:"imagesize"},
 	{type: "hidden", value: "<?php echo $settings_showadsinterval; ?>", name:"showadsinterval"},
 	{type: "hidden", value: "<?php echo $settings_showadsintervalenable; ?>", name:"showadsintervalenable"},
+	{type: "hidden", value: "<?php echo $settings_kioskname; ?>", name:"kioskname"},
 ];
 
 srt.checkFocus = function() {
@@ -92,6 +95,15 @@ srt.etap = function() {
 		var showadsinterval = parseInt(myForm.getItemValue("showadsinterval"));
 		var unixtime = myForm.getItemValue("unixtime");
 		var imagesize = myForm.getItemValue("imagesize");
+		var kioskname = myForm.getItemValue("kioskname");
+
+		var kname = $("#kioskname").val();
+
+		if(kname) {
+			//alert(kname);
+			kioskname = kname;
+		}
+
 	    console.log("Enter key has been pressed!");
 	    console.log("Value: "+rfid);
 	    myForm.setItemValue("rfid","");
@@ -100,7 +112,7 @@ srt.etap = function() {
 
 	    //console.log($(this.base));
 
-		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize,function(data){
+		postData('/'+settings.router_id+'/tapped/','rfid='+rfid+'&unixtime='+unixtime+'&imagesize='+imagesize+'&kiosk='+kioskname,function(data){
 
 			//if(data) {
 

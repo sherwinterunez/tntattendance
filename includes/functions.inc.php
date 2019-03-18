@@ -848,6 +848,43 @@ function isValidIp($ip) {
   return inet_pton($ip) !== false;
 }
 
+function isValidIps($ips,$retval=false) {
+
+	if(!empty($ips)) {
+		$ips = str_replace('|',',',$ips);
+		$ips = str_replace(';',',',$ips);
+		$ips = str_replace('/',',',$ips);
+		$ips = str_replace(':',',',$ips);
+
+		$ipsa = explode(',',$ips);
+
+		//print_r(array('$ipsa'=>$ipsa));
+
+		$valid = array();
+
+		if(!empty($ipsa)&&is_array($ipsa)) {
+			foreach($ipsa as $v) {
+				if(!empty($v)) {
+					if(isValidIp($v)) {
+						$valid[] = trim($v);
+					} else {
+						return false;
+					}
+				} else {
+					continue;
+				}
+			}
+
+			if(!empty($retval)) {
+				return implode(',',$valid);
+			}
+			return true;
+		}
+	}
+
+  return false;
+}
+
 function getMacAddress() {
 	$out = false;
 	$mac = array();
@@ -893,6 +930,21 @@ function getMacAddress() {
 	if(!empty($mac)&&is_array($mac)) {
 		return $mac;
 	}
+
+	return false;
+}
+
+function IsInternet() {
+	$out = false;
+
+	myExec('/sbin/ifconfig tun0 | grep netmask | awk \'{print $2}\'| cut -f2 -d:',$out);
+
+	//print_r(array('$out'=>$out));
+
+	if(!empty($out[0])&&isValidIp(trim($out[0]))) {
+		return true;
+	}
+
 
 	return false;
 }

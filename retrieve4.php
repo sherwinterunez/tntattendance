@@ -135,11 +135,11 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 
 			$pdu = new PduFactory();
 
-			$optionx = getOption('$ELOAD_NUMBERS',array());
+			//$optionx = getOption('$ELOAD_NUMBERS',array());
 
-			if(!empty($optionx)) {
-				$eloadnumbers = explode(',', $optionx);
-			}
+			//if(!empty($optionx)) {
+				//$eloadnumbers = explode(',', $optionx);
+			//}
 
 			foreach($matches[2] as $key=>$pdustr) {
 
@@ -193,7 +193,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 							$cid = getContactIDByNumber($number);
 
 							if($cid) {
-								$smsinboxtemp_contactsid = getContactIDByNumber($number);
+								$smsinboxtemp_contactsid = $cid;
 								$smsinboxtemp_contactnumber = getContactNumber($smsinboxtemp_contactsid);
 							} else {
 								$smsinboxtemp_contactsid = 0;
@@ -230,7 +230,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 							$cid = getContactIDByNumber($number);
 
 							if($cid) {
-								$messages[$number]['id'] = getContactIDByNumber($number);
+								$messages[$number]['id'] = $cid;
 								$messages[$number]['number'] = getContactNumber($messages[$number]['id']);
 							} else {
 								$messages[$number]['id'] = 0;
@@ -246,7 +246,7 @@ function retrieveSMS($dev=false,$mobileNo=false,$ip='') {
 						$cid = getContactIDByNumber($number);
 
 						if($cid) {
-							$messages[$number]['id'] = getContactIDByNumber($number);
+							$messages[$number]['id'] = $cid;
 							$messages[$number]['number'] = getContactNumber($messages[$number]['id']);
 						} else {
 							$messages[$number]['id'] = 0;

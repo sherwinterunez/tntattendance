@@ -508,6 +508,7 @@ if(!class_exists('APP_app_contact')) {
 
 					$content['studentprofile_guardianname'] = !empty($post['studentprofile_guardianname']) ? $post['studentprofile_guardianname'] : $guardianname;
 					$content['studentprofile_guardianmobileno'] = !empty($post['studentprofile_guardianmobileno']) ? $post['studentprofile_guardianmobileno'] : '';
+					$content['studentprofile_studentmobileno'] = !empty($post['studentprofile_studentmobileno']) ? $post['studentprofile_studentmobileno'] : '';
 
 					$studentprofile_guardianemail = sha1(microtime()).'@yahoo.com';
 
@@ -862,6 +863,17 @@ if(!class_exists('APP_app_contact')) {
 				);
 
 				$params['tbStudentProfile'][] = array(
+					'type' => 'input',
+					'label' => 'STUDENT MOBILE NO.',
+					'labelWidth' => 180,
+					'name' => 'studentprofile_studentmobileno',
+					'inputMask' => array('mask'=>'09999999999'),
+					'readonly' => $readonly,
+					'required' => !$readonly,
+					'value' => !empty($params['studentinfo']['studentprofile_studentmobileno']) ? $params['studentinfo']['studentprofile_studentmobileno'] : '',
+				);
+
+				$params['tbStudentProfile'][] = array(
 					'type' => 'newcolumn',
 					'offset' => 20,
 				);
@@ -1140,7 +1152,7 @@ if(!class_exists('APP_app_contact')) {
 							$seq = 1;
 
 							foreach($result['rows'] as $k=>$v) {
-								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$seq,$v['studentprofile_id'],$v['studentprofile_schoolyear'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail']));
+								$rows[] = array('id'=>$v['studentprofile_id'],'data'=>array(0,$seq,$v['studentprofile_id'],$v['studentprofile_schoolyear'],$v['studentprofile_number'],$v['studentprofile_rfid'],$v['studentprofile_firstname'],$v['studentprofile_lastname'],$v['studentprofile_middlename'],getGroupRefName($v['studentprofile_yearlevel']),getGroupRefName($v['studentprofile_section']),$v['studentprofile_guardianname'],$v['studentprofile_guardianmobileno'],$v['studentprofile_guardianemail'],$v['studentprofile_studentmobileno']));
 								$seq++;
 							}
 
